@@ -64,8 +64,8 @@
     "variables": {
         "vnetId": "[resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
-        "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-nic')]",
-        "networkSecurityGroupName": "[concat(parameters('virtualMachineName'), '-nsg')]"
+        "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-nic')]"
+
     },
     "resources": [
         {
@@ -208,7 +208,7 @@
             "apiVersion": "2017-10-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+
             ],
             "properties": {
                 "ipConfigurations": [
@@ -221,35 +221,11 @@
                             "privateIPAllocationMethod": "Dynamic"
                         }
                     }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-                }
-            }
-        },
-        {
-            "name": "[variables('networkSecurityGroupName')]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2017-10-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "priority": 1000,
-                            "protocol": "Tcp",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourceAddressPrefix": "VirtualNetwork",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "VirtualNetwork",
-                            "destinationPortRange": "3389"
-                        }
-                    }
                 ]
+
             }
         }
+
     ],
     "outputs": {}
 }
