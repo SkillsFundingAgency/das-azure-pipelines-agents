@@ -1,17 +1,20 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)]
-    [string]$EnvironmentName,
+
     [Parameter(Mandatory = $false)]
     [string]$Location = "West Europe",
+    [Parameter(Mandatory = $true)]
+    [string]$DeploymentStorageAccountName,
     [Parameter(Mandatory = $false)]
-    [string]$DeploymentStorageAccountName = "dasarmdeploymentstest",
-    [Parameter(Mandatory = $false)]
-    [string]$DeploymentStorageAccountContainer = "buildserverdeploy"
+    [string]$DeploymentStorageAccountContainer = "buildserverdeploy",
+    [Parameter(Mandatory = $true)]
+    [string]$ResourceGroupName
+
+
 )
 
 try {
-    $ResourceGroupName = "das-$EnvironmentName-build-rg".ToLower()
+
 
     # --- Set Template parameters
     $ParametersPath = "$PSScriptRoot\parameters.json"
@@ -29,7 +32,7 @@ try {
         DSCConfigurations    = (Get-ChildItem -Path "$PSScriptRoot\dsc" | Select-Object -ExpandProperty FullName)
     }
 
-    . "$PSScriptRoot\..\Invoke-Deployment.ps1" @DeploymentParameters
+    . "$PSScriptRoot\\Invoke-Deployment.ps1" @DeploymentParameters
 }
 catch {
     throw "$_"
