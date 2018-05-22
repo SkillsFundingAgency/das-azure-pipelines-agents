@@ -105,7 +105,7 @@
                             "count": "[parameters('agentCount')]",
                             "input": {
                                 "name": "[concat(parameters('virtualMachineName'), '-data', copyIndex('dataDisks'))]",
-                                "diskSizeGB": 256,
+                                "diskSizeGB": 64,
                                 "lun": "[copyIndex('dataDisks')]",
                                 "createOption": "Empty",
                                 "managedDisk": {
