@@ -34,7 +34,6 @@ try {
      }
 
 
-
     # --- Set Template parameters
     $ParametersPath = "$PSScriptRoot\parameters.json"
     $Parameters = Get-Content -Path $ParametersPath -Raw | ConvertFrom-Json
