@@ -49,6 +49,11 @@ try {
         $null = New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Confirm:$false
     }
 
+    # --- Add Resource Lock on Resource Group
+    Write-Host "- Creating Resource Lock on: $ResourceGroupName"
+    $null = New-AzureRMResourceLock -LockName 'RL-Delete' -LockLevel 'CanNotDelete' -ResourceGroupName $ResourceGroupName -LockNotes 'To prevent accidental deletion' -Force
+
+
     # --- Create shared Storage Account
     Write-Host "- Creating Storage Account and retrieving access key: $StorageAccountName"
     #$StorageAccount = Get-AzureRmStorageAccount -ResourceGroup $ResourceGroupName -Name $StorageAccountName -ErrorAction SilentlyContinue

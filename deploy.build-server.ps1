@@ -15,7 +15,7 @@ param(
 
 try {
 
-    Install-Module xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration -Scope CurrentUser
+    Install-Module xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration -Scope CurrentUser -Force
 
      # --- Install Dependencies From PSGallery
      Write-Host "Installing DSC Dependencies"
