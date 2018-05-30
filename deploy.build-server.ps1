@@ -15,6 +15,7 @@ param(
 
 try {
 
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     Install-Module xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration -Scope CurrentUser
 
      # --- Install Dependencies From PSGallery

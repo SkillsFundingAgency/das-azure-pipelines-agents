@@ -19,6 +19,7 @@ Configuration BuildServerConfiguration {
         LocalConfigurationManager {
             RebootNodeIfNeeded = $True
             ConfigurationMode  = "ApplyOnly"
+
         }
 
         # --- Use TLS 1.2
