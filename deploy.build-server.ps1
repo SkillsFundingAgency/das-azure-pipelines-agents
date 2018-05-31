@@ -16,7 +16,12 @@ param(
 try {
 
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration -Scope CurrentUser
+    Install-Module xDisk -MinimumVersion 1.0 -Force -Scope CurrentUser
+    Install-Module xPendingReboot -MinimumVersion 0.4.0.0 -Force -Scope CurrentUser
+    Install-Module xNetworking -MinimumVersion 5.7.0.0 -Force -Scope CurrentUser
+    Install-Module xPSDesiredStateConfiguration -MinimumVersion 8.2.0.0 -Force -Scope CurrentUser
+
+
 
      # --- Install Dependencies From PSGallery
      Write-Host "Installing DSC Dependencies"
