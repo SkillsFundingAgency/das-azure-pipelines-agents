@@ -8,8 +8,8 @@ Configuration BuildServerConfiguration {
     )
 
     $AgentCount = (Get-Disk).Count - 2  # Agent disks = Total disks - osDisk - Temp Disk
-    $AgentDownloadPath = "C:/Downloads/Agent.zip"
-    $AgentExtractPath = "C:/Downloads/Agent"
+    $AgentDownloadPath = "D:/Downloads/Agent.zip"
+    $AgentExtractPath = "D:/Downloads/Agent"
     $DriveLetters = 'FGHIJKLMNOPQSRTUVWXYZ'
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration
