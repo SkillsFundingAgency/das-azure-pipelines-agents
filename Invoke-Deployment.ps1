@@ -49,6 +49,7 @@ try {
         $null = New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Confirm:$false
     }
 
+
     # --- Create shared Storage Account
     Write-Host "- Creating Storage Account and retrieving access key: $StorageAccountName"
     #$StorageAccount = Get-AzureRmStorageAccount -ResourceGroup $ResourceGroupName -Name $StorageAccountName -ErrorAction SilentlyContinue

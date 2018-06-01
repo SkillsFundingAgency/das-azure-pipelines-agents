@@ -14,11 +14,13 @@ Configuration BuildServerConfiguration {
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration
 
+
     Node localhost {
 
         LocalConfigurationManager {
             RebootNodeIfNeeded = $True
             ConfigurationMode  = "ApplyOnly"
+
         }
 
         # --- Use TLS 1.2

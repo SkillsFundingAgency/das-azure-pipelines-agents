@@ -56,16 +56,18 @@
         "vstsPAT": {
             "type": "securestring"
         },
-        "dscExtensionUpdateTagVersion" : {
+        "dscExtensionUpdateTagVersion": {
             "defaultValue": "1",
             "type": "string"
+        },
+        "dnsServers": {
+            "type": "array"
         }
     },
     "variables": {
         "vnetId": "[resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
         "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-nic')]"
-
     },
     "resources": [
         {
@@ -105,7 +107,7 @@
                             "count": "[parameters('agentCount')]",
                             "input": {
                                 "name": "[concat(parameters('virtualMachineName'), '-data', copyIndex('dataDisks'))]",
-                                "diskSizeGB": 256,
+                                "diskSizeGB": 64,
                                 "lun": "[copyIndex('dataDisks')]",
                                 "createOption": "Empty",
                                 "managedDisk": {
@@ -207,9 +209,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2017-10-01",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-
-            ],
+            "dependsOn": [],
             "properties": {
                 "ipConfigurations": [
                     {
@@ -221,11 +221,12 @@
                             "privateIPAllocationMethod": "Dynamic"
                         }
                     }
-                ]
-
+                ],
+                "dnsSettings": {
+                    "dnsServers": "[parameters('dnsServers')]"
+                }
             }
         }
-
     ],
     "outputs": {}
 }
