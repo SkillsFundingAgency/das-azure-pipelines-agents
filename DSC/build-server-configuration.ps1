@@ -12,7 +12,7 @@ Configuration BuildServerConfiguration {
     $AgentExtractPath = "D:/Downloads/Agent"
     $DriveLetters = 'FGHIJKLMNOPQSRTUVWXYZ'
 
-    Import-DscResource -Module @{ModuleName="PSDesiredStateConfiguration";RequiredVersion="1.1"}, @{ModuleName="xDisk";RequiredVersion="1.0"}, @{ModuleName="xPendingReboot";RequiredVersion="0.4.0.0"}, @{ModuleName="xNetworking";RequiredVersion="5.7.0.0"}, @{ModuleName="xPSDesiredStateConfiguration";RequiredVersion="8.2.0.0"}
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration
 
 
     Node localhost {
