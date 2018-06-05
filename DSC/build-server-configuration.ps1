@@ -4,13 +4,20 @@ Configuration BuildServerConfiguration {
         [string]$VSTSPAT,
         [string]$VSTSAccountName,
         [string]$PoolName,
-        [string]$AgentNamePrefix
+        [string]$AgentNamePrefix,
+        [Parameter(Mandatory = $false)]
+        [string]$storagePoolName = "DASstoragePool01",
+        [Parameter(Mandatory = $false)]
+        [string]$virtualDiskName = "DASvirtualDisk01",
+        [int]$AgentCount = 10
     )
 
-    $AgentCount = (Get-Disk).Count - 2  # Agent disks = Total disks - osDisk - Temp Disk
+    #$AgentCount = (Get-Disk).Count - 2  # Agent disks = Total disks - osDisk - Temp Disk
     $AgentDownloadPath = "D:/Downloads/Agent.zip"
     $AgentExtractPath = "D:/Downloads/Agent"
     $DriveLetters = 'FGHIJKLMNOPQSRTUVWXYZ'
+    $volumePrefix = "VirtualDisk"
+    $volumeSize = "100GB"
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration
 
@@ -21,6 +28,16 @@ Configuration BuildServerConfiguration {
             RebootNodeIfNeeded = $True
             ConfigurationMode  = "ApplyOnly"
 
+        }
+
+        <#
+         Feature section
+         Start with disabling SMB 1
+        #>
+
+        WindowsFeature SMBv1 {
+            Name   = "FS-SMB1"
+            Ensure = "Absent"
         }
 
         # --- Use TLS 1.2
@@ -56,58 +73,85 @@ Configuration BuildServerConfiguration {
             }
         }
 
-        # --- Partition any unpartitioned disks
-        $UnpartitionedDisks = @(Get-Disk | Where-Object {$_.NumberOfPartitions -lt 1})
-        for ($j=0; $j -lt $UnpartitionedDisks.Length; $j++) {
-            if ($j -eq 0) {
-                xWaitforDisk "DataDisk$($j)" {
-                    DiskNumber       = $UnpartitionedDisks[$j].Number
-                    RetryIntervalSec = 30
-                    RetryCount       = 20
-                }
-            }
-            else {
-                xWaitforDisk "DataDisk$($j)" {
-                    DiskNumber       = $UnpartitionedDisks[$j].Number
-                    RetryIntervalSec = 30
-                    RetryCount       = 20
-                    DependsOn        = "[xPendingReboot]Reboot$($j-1)"
-                }
-            }
+        #Script StoragePool
+        Script StoragePool {
+            SetScript  = {
 
-            xDisk "AddDataDisk$($j)" {
-                DiskNumber  = $UnpartitionedDisks[$j].Number
-                DriveLetter = $DriveLetters[$UnpartitionedDisks[$j].Number-2]
-                DependsOn   = "[xWaitforDisk]DataDisk$($j)"
+                New-StoragePool -FriendlyName $using:storagePoolName -StorageSubSystemFriendlyName '*storage*' -PhysicalDisks (Get-PhysicalDisk –CanPool $True)
             }
-
-            xPendingReboot "Reboot$($j)" {
-                Name      = "RebootForDisk$($j)"
-                DependsOn = "[xDisk]AddDataDisk$($j)"
+            TestScript = {
+                (Get-StoragePool -ErrorAction SilentlyContinue -FriendlyName $using:storagePoolName).OperationalStatus -eq 'OK'
+            }
+            GetScript  = {
+                @{Ensure = if ((Get-StoragePool -FriendlyName $using:storagePoolName).OperationalStatus -eq 'OK') {'Present'} Else {'Absent'}}
             }
         }
 
-        # --- Download and Extract VSTS Agent Files
-        if ($UnpartitionedDisks.Length -gt 0) {
-            xRemoteFile DownloadVSTSAgent {
-                DestinationPath = $AgentDownloadPath
-                Uri             = $AgentDownloadUrl
-                DependsOn       = "[xPendingReboot]Reboot$($UnpartitionedDisks.Length-1)"
+        #Script VirtualDisk
+
+        Script VirtualDisk {
+            SetScript  = {
+
+                $disks = Get-StoragePool –FriendlyName $using:storagePoolName -IsPrimordial $False | Get-PhysicalDisk
+                $diskNum = $disks.Count
+                New-VirtualDisk –StoragePoolFriendlyName $using:storagePoolName –FriendlyName $using:virtualDiskName –ResiliencySettingName simple -NumberOfColumns $diskNum –UseMaximumSize
             }
+            TestScript = {
+                (get-virtualdisk -ErrorAction SilentlyContinue -friendlyName $using:virtualDiskName).operationalStatus -EQ 'OK'
+            }
+            GetScript  = {
+                @{Ensure = if ((Get-VirtualDisk -FriendlyName $using:virtualDiskName).OperationalStatus -eq 'OK') {'Present'} Else {'Absent'}}
+            }
+            DependsOn  = "[Script]StoragePool"
         }
-        else {
-            xRemoteFile DownloadVSTSAgent {
-                DestinationPath = $AgentDownloadPath
-                Uri             = $AgentDownloadUrl
+
+        Script FormatDisk {
+            SetScript  = {
+                $DriveLetters = $using:DriveLetters
+                Get-VirtualDisk –FriendlyName $using:virtualDiskName | Get-Disk | Initialize-Disk –Passthru
+
+                for ($i = 0; $i -lt $using:AgentCount; $i++) {
+
+                    Get-VirtualDisk –FriendlyName $using:virtualDiskName | Get-Disk | New-Partition -DriveLetter $DriveLetters[$i] -Size $using:volumeSize | Format-Volume -NewFileSystemLabel $using:volumePrefix$i –AllocationUnitSize 64KB -FileSystem NTFS
+
+                }
+
             }
+            TestScript = {
+                for ($i = 0; $i -lt $using:AgentCount; $i++) {
+
+                    if (  (get-volume -ErrorAction SilentlyContinue -filesystemlabel $using:volumePrefix$i).filesystem -NE 'NTFS' ) {
+                        return $false
+                    }
+
+
+                }
+                return $true
+            }
+            GetScript  = {
+                @{Ensure = if ((get-volume -filesystemlabel $using:volumePrefix$i).filesystem -EQ 'NTFS') {'Present'} Else {'Absent'}}
+            }
+            DependsOn  = "[Script]VirtualDisk"
+        }
+
+        xRemoteFile DownloadVSTSAgent {
+            DestinationPath = $AgentDownloadPath
+            Uri             = $AgentDownloadUrl
+            DependsOn       = "[Script]FormatDisk"
         }
 
         xArchive ExtractVSTSAgent {
-            Path        =  $AgentDownloadPath
+            Path        = $AgentDownloadPath
             Destination = $AgentExtractPath
             Ensure      = "Present"
             DependsOn   = "[xRemoteFile]DownloadVSTSAgent"
         }
+
+        xPendingReboot "Reboot" {
+            Name      = "Reboot1"
+            DependsOn = "[xArchive]ExtractVSTSAgent"
+        }
+
 
         # --- Configure an agent on each disk
         $ConfigureAgentSetScript = {
@@ -133,7 +177,7 @@ Configuration BuildServerConfiguration {
             &"$($DriveLetters[$i]):\config.cmd" $args
         }
 
-        for ($i=0; $i -lt ($AgentCount); $i++) {
+        for ($i = 0; $i -lt ($AgentCount); $i++) {
             if ($i -eq 0) {
                 Script "ConfigureAgent$i" {
                     SetScript  = {
@@ -156,7 +200,7 @@ Configuration BuildServerConfiguration {
                     GetScript  = {
                         return @()
                     }
-                    DependsOn  = "[xArchive]ExtractVSTSAgent"
+                    DependsOn  = "[xPendingReboot]Reboot"
                 }
             }
             else {

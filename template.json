@@ -129,7 +129,8 @@
                 },
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
-                  }
+                  },
+                  "licenseType": "Windows_Server"
             },
             "resources": [
                 {
