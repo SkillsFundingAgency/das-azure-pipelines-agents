@@ -62,8 +62,8 @@ try {
             SkuName       = "Standard_LRS"
         }
         $StorageAccount = New-AzureRmStorageAccount @StorageAccountParameters
-
     }
+    
     $StorageAccountResourceGroupName = $StorageAccount.ResourceGroupName
     $StorageAccountPrimaryKey = (Get-AzureRmStorageAccountKey -ResourceGroup $StorageAccountResourceGroupName -Name $StorageAccountName)[0].Value
 

@@ -47,8 +47,8 @@
         "vstsPAT": {
             "value": ""
         },
-        "dnsServers":{
-            "value": ""
+        "dnsServers": {
+            "value": []
         }
     }
 }

@@ -6,28 +6,26 @@ Configuration BuildServerConfiguration {
         [string]$PoolName,
         [string]$AgentNamePrefix,
         [Parameter(Mandatory = $false)]
-        [string]$storagePoolName = "DASstoragePool01",
+        [string]$StoragePoolName = "DASstoragePool01",
         [Parameter(Mandatory = $false)]
-        [string]$virtualDiskName = "DASvirtualDisk01",
-        [int]$AgentCount = 10
+        [string]$VirtualDiskName = "DASvirtualDisk01",
+        [int]$AgentCount = 8
     )
 
     #$AgentCount = (Get-Disk).Count - 2  # Agent disks = Total disks - osDisk - Temp Disk
     $AgentDownloadPath = "D:/Downloads/Agent.zip"
     $AgentExtractPath = "D:/Downloads/Agent"
     $DriveLetters = 'FGHIJKLMNOPQSRTUVWXYZ'
-    $volumePrefix = "VirtualDisk"
-    $volumeSize = "100GB"
+    $VolumePrefix = "VirtualDisk"
+    $VolumeSize = 40GB
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration
-
 
     Node localhost {
 
         LocalConfigurationManager {
             RebootNodeIfNeeded = $True
             ConfigurationMode  = "ApplyOnly"
-
         }
 
         <#
@@ -59,7 +57,7 @@ Configuration BuildServerConfiguration {
 
         Script InstallAzureRMModule {
             SetScript  = {
-                Install-Module AzureRM -AllowClobber -Force -Scope AllUsers
+                Install-Module AzureRM -RequiredVersion 5.7.0 -AllowClobber -Force -Scope AllUsers
             }
             TestScript = {
                 $AzureRMInstalled = Get-Module AzureRM -ListAvailable
@@ -73,34 +71,29 @@ Configuration BuildServerConfiguration {
             }
         }
 
-        #Script StoragePool
         Script StoragePool {
             SetScript  = {
-
-                New-StoragePool -FriendlyName $using:storagePoolName -StorageSubSystemFriendlyName '*storage*' -PhysicalDisks (Get-PhysicalDisk –CanPool $True)
+                New-StoragePool -FriendlyName $using:StoragePoolName -StorageSubSystemFriendlyName '*storage*' -PhysicalDisks (Get-PhysicalDisk -CanPool $True)
             }
             TestScript = {
-                (Get-StoragePool -ErrorAction SilentlyContinue -FriendlyName $using:storagePoolName).OperationalStatus -eq 'OK'
+                (Get-StoragePool -ErrorAction SilentlyContinue -FriendlyName $using:StoragePoolName).OperationalStatus -eq 'OK'
             }
             GetScript  = {
-                @{Ensure = if ((Get-StoragePool -FriendlyName $using:storagePoolName).OperationalStatus -eq 'OK') {'Present'} Else {'Absent'}}
+                @{Ensure = if ((Get-StoragePool -FriendlyName $using:StoragePoolName).OperationalStatus -eq 'OK') {'Present'} else {'Absent'}}
             }
         }
 
-        #Script VirtualDisk
-
         Script VirtualDisk {
             SetScript  = {
-
-                $disks = Get-StoragePool –FriendlyName $using:storagePoolName -IsPrimordial $False | Get-PhysicalDisk
-                $diskNum = $disks.Count
-                New-VirtualDisk –StoragePoolFriendlyName $using:storagePoolName –FriendlyName $using:virtualDiskName –ResiliencySettingName simple -NumberOfColumns $diskNum –UseMaximumSize
+                $Disks = @(Get-StoragePool -FriendlyName $using:StoragePoolName -IsPrimordial $false | Get-PhysicalDisk)
+                $DiskNum = $Disks.Count
+                New-VirtualDisk -StoragePoolFriendlyName $using:StoragePoolName -FriendlyName $using:VirtualDiskName -ResiliencySettingName simple -NumberOfColumns $DiskNum -UseMaximumSize
             }
             TestScript = {
-                (get-virtualdisk -ErrorAction SilentlyContinue -friendlyName $using:virtualDiskName).operationalStatus -EQ 'OK'
+                (Get-VirtualDisk -ErrorAction SilentlyContinue -FriendlyName $using:VirtualDiskName).OperationalStatus -eq 'OK'
             }
             GetScript  = {
-                @{Ensure = if ((Get-VirtualDisk -FriendlyName $using:virtualDiskName).OperationalStatus -eq 'OK') {'Present'} Else {'Absent'}}
+                @{Ensure = if ((Get-VirtualDisk -FriendlyName $using:VirtualDiskName).OperationalStatus -eq 'OK') {'Present'} else {'Absent'}}
             }
             DependsOn  = "[Script]StoragePool"
         }
@@ -108,28 +101,25 @@ Configuration BuildServerConfiguration {
         Script FormatDisk {
             SetScript  = {
                 $DriveLetters = $using:DriveLetters
-                Get-VirtualDisk –FriendlyName $using:virtualDiskName | Get-Disk | Initialize-Disk –Passthru
+                Get-VirtualDisk -FriendlyName $using:VirtualDiskName | Get-Disk | Initialize-Disk -Passthru
 
                 for ($i = 0; $i -lt $using:AgentCount; $i++) {
-
-                    Get-VirtualDisk –FriendlyName $using:virtualDiskName | Get-Disk | New-Partition -DriveLetter $DriveLetters[$i] -Size $using:volumeSize | Format-Volume -NewFileSystemLabel $using:volumePrefix$i –AllocationUnitSize 64KB -FileSystem NTFS
-
+                    Get-VirtualDisk -FriendlyName $using:VirtualDiskName | Get-Disk | New-Partition -DriveLetter $DriveLetters[$i] -Size $using:VolumeSize | Format-Volume -NewFileSystemLabel $using:VolumePrefix$i -AllocationUnitSize 64KB -FileSystem NTFS
                 }
 
+                #Force refresh drive cache
+                $null = Get-PSDrive
             }
             TestScript = {
                 for ($i = 0; $i -lt $using:AgentCount; $i++) {
-
-                    if (  (get-volume -ErrorAction SilentlyContinue -filesystemlabel $using:volumePrefix$i).filesystem -NE 'NTFS' ) {
+                    if (  (Get-Volume -ErrorAction SilentlyContinue -FileSystemLabel $using:VolumePrefix$i).FileSystem -ne 'NTFS' ) {
                         return $false
                     }
-
-
                 }
                 return $true
             }
             GetScript  = {
-                @{Ensure = if ((get-volume -filesystemlabel $using:volumePrefix$i).filesystem -EQ 'NTFS') {'Present'} Else {'Absent'}}
+                @{Ensure = if ((Get-Volume -filesystemlabel $using:VolumePrefix$i).FileSystem -eq 'NTFS') {'Present'} else {'Absent'}}
             }
             DependsOn  = "[Script]VirtualDisk"
         }
@@ -146,12 +136,6 @@ Configuration BuildServerConfiguration {
             Ensure      = "Present"
             DependsOn   = "[xRemoteFile]DownloadVSTSAgent"
         }
-
-        xPendingReboot "Reboot" {
-            Name      = "Reboot1"
-            DependsOn = "[xArchive]ExtractVSTSAgent"
-        }
-
 
         # --- Configure an agent on each disk
         $ConfigureAgentSetScript = {
@@ -200,7 +184,7 @@ Configuration BuildServerConfiguration {
                     GetScript  = {
                         return @()
                     }
-                    DependsOn  = "[xPendingReboot]Reboot"
+                    DependsOn  = "[xArchive]ExtractVSTSAgent"
                 }
             }
             else {

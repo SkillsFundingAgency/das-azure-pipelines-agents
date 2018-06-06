@@ -24,9 +24,6 @@
         "subnetName": {
             "type": "string"
         },
-        "agentCount": {
-            "type": "int"
-        },
         "workspaceId": {
             "type": "string",
             "defaultValue": ""
@@ -63,7 +60,6 @@
         "dnsServers": {
             "type": "array"
         }
-
     },
     "variables": {
         "vnetId": "[resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
@@ -107,10 +103,10 @@
                     "copy": [
                         {
                             "name": "dataDisks",
-                            "count": "[parameters('agentCount')]",
+                            "count": 1,
                             "input": {
                                 "name": "[concat(parameters('virtualMachineName'), '-data', copyIndex('dataDisks'))]",
-                                "diskSizeGB": 64,
+                                "diskSizeGB": 512,
                                 "lun": "[copyIndex('dataDisks')]",
                                 "createOption": "Empty",
                                 "managedDisk": {
@@ -129,8 +125,8 @@
                 },
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
-                  },
-                  "licenseType": "Windows_Server"
+                },
+                "licenseType": "Windows_Server"
             },
             "resources": [
                 {
@@ -214,7 +210,7 @@
         {
             "name": "[variables('availabilitySetName')]",
             "type": "Microsoft.Compute/availabilitySets",
-            "sku":{
+            "sku": {
                 "name": "Aligned"
             },
             "apiVersion": "2017-03-30",
@@ -224,9 +220,9 @@
                 "platformUpdateDomainCount": 20,
                 "virtualMachines": [
                     {
-                      "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
+                        "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
                     }
-                  ]
+                ]
             }
         },
         {
