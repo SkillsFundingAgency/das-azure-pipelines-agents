@@ -47,9 +47,6 @@
         "vstsAgentPoolName": {
             "type": "string"
         },
-        "vstsAgentNamePrefix": {
-            "type": "string"
-        },
         "vstsPAT": {
             "type": "securestring"
         },
@@ -194,7 +191,7 @@
                                 "AgentDownloadUrl": "[parameters('agentDownloadUrl')]",
                                 "VSTSAccountName": "[parameters('vstsAccountName')]",
                                 "PoolName": "[parameters('vstsAgentPoolName')]",
-                                "AgentNamePrefix": "[parameters('vstsAgentNamePrefix')]"
+                                "AgentNamePrefix": "[parameters('virtualMachineName')]"
                             }
                         },
                         "protectedSettings": {
