@@ -20,9 +20,6 @@
         "subnetName": {
             "value": ""
         },
-        "agentCount": {
-            "value": 5
-        },
         "workspaceId": {
             "value": ""
         },
@@ -41,14 +38,11 @@
         "vstsAgentPoolName": {
             "value": ""
         },
-        "vstsAgentNamePrefix": {
-            "value": ""
-        },
         "vstsPAT": {
             "value": ""
         },
-        "dnsServers":{
-            "value": ""
+        "dnsServers": {
+            "value": []
         }
     }
 }

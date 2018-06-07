@@ -9,31 +9,27 @@ param(
     [string]$DeploymentStorageAccountContainer = "buildserverdeploy",
     [Parameter(Mandatory = $true)]
     [string]$ResourceGroupName
-
-
 )
 
 try {
 
     Install-Module xDisk, xPendingReboot, xNetworking, xPSDesiredStateConfiguration -Scope CurrentUser
 
-
-
-     # --- Install Dependencies From PSGallery
-     Write-Host "Installing DSC Dependencies"
-     $Dependencies = "xDisk", "xPendingReboot", "xNetworking", "xPSDesiredStateConfiguration"
-     foreach ($Resource in $Dependencies) {
-         Write-Host "    $([char]9788) $Resource" -NoNewline
-         if (!(Get-Module -Name $Resource -ListAvailable)) {
-             if ($ENV:TF_BUILD) {
-                 Install-Module -Name $Resource -Scope AllUsers -Force
-             }
-             else {
-                 Install-Module -Name $Resource -Scope CurrentUser -Force
-             }
-         }
-         Write-Host " -> Complete" -ForegroundColor Green
-     }
+    # --- Install Dependencies From PSGallery
+    Write-Host "Installing DSC Dependencies"
+    $Dependencies = "xDisk", "xPendingReboot", "xNetworking", "xPSDesiredStateConfiguration"
+    foreach ($Resource in $Dependencies) {
+        Write-Host "    $([char]9788) $Resource" -NoNewline
+        if (!(Get-Module -Name $Resource -ListAvailable)) {
+            if ($ENV:TF_BUILD) {
+                Install-Module -Name $Resource -Scope AllUsers -Force
+            }
+            else {
+                Install-Module -Name $Resource -Scope CurrentUser -Force
+            }
+        }
+        Write-Host " -> Complete" -ForegroundColor Green
+    }
 
 
     # --- Set Template parameters

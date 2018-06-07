@@ -24,9 +24,6 @@
         "subnetName": {
             "type": "string"
         },
-        "agentCount": {
-            "type": "int"
-        },
         "workspaceId": {
             "type": "string",
             "defaultValue": ""
@@ -50,9 +47,6 @@
         "vstsAgentPoolName": {
             "type": "string"
         },
-        "vstsAgentNamePrefix": {
-            "type": "string"
-        },
         "vstsPAT": {
             "type": "securestring"
         },
@@ -67,7 +61,8 @@
     "variables": {
         "vnetId": "[resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
-        "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-nic')]"
+        "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-nic')]",
+        "availabilitySetName": "[concat(parameters('virtualMachineName'), '-as')]"
     },
     "resources": [
         {
@@ -76,7 +71,8 @@
             "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]",
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
             ],
             "properties": {
                 "osProfile": {
@@ -104,10 +100,10 @@
                     "copy": [
                         {
                             "name": "dataDisks",
-                            "count": "[parameters('agentCount')]",
+                            "count": 1,
                             "input": {
                                 "name": "[concat(parameters('virtualMachineName'), '-data', copyIndex('dataDisks'))]",
-                                "diskSizeGB": 64,
+                                "diskSizeGB": 512,
                                 "lun": "[copyIndex('dataDisks')]",
                                 "createOption": "Empty",
                                 "managedDisk": {
@@ -123,7 +119,11 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
                         }
                     ]
-                }
+                },
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
+                },
+                "licenseType": "Windows_Server"
             },
             "resources": [
                 {
@@ -191,7 +191,7 @@
                                 "AgentDownloadUrl": "[parameters('agentDownloadUrl')]",
                                 "VSTSAccountName": "[parameters('vstsAccountName')]",
                                 "PoolName": "[parameters('vstsAgentPoolName')]",
-                                "AgentNamePrefix": "[parameters('vstsAgentNamePrefix')]"
+                                "AgentNamePrefix": "[parameters('virtualMachineName')]"
                             }
                         },
                         "protectedSettings": {
@@ -203,6 +203,24 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "[variables('availabilitySetName')]",
+            "type": "Microsoft.Compute/availabilitySets",
+            "sku": {
+                "name": "Aligned"
+            },
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "platformFaultDomainCount": 3,
+                "platformUpdateDomainCount": 20,
+                "virtualMachines": [
+                    {
+                        "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
+                    }
+                ]
+            }
         },
         {
             "name": "[variables('networkInterfaceName')]",
