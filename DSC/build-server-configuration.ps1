@@ -57,7 +57,7 @@ Configuration BuildServerConfiguration {
 
         Script InstallAzureRMModule {
             SetScript  = {
-                Install-Module AzureRM -RequiredVersion 5.7.0 -AllowClobber -Force -Scope AllUsers
+                Install-Module AzureRM -RequiredVersion 6.4.0 -AllowClobber -Force -Scope AllUsers
             }
             TestScript = {
                 $AzureRMInstalled = Get-Module AzureRM -ListAvailable
