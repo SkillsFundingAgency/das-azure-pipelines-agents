@@ -1,48 +1,48 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "virtualMachineName": {
-            "value": ""
-        },
-        "adminUsername": {
-            "value": ""
-        },
-        "adminPassword": {
-            "value": ""
-        },
-        "vnetName": {
-            "value": ""
-        },
-        "vnetResourceGroup": {
-            "value": ""
-        },
-        "subnetName": {
-            "value": ""
-        },
-        "workspaceId": {
-            "value": ""
-        },
-        "workspaceKey": {
-            "value": ""
-        },
-        "templateBaseUrl": {
-            "value": ""
-        },
-        "agentDownloadUrl": {
-            "value": ""
-        },
-        "vstsAccountName": {
-            "value": ""
-        },
-        "vstsAgentPoolName": {
-            "value": ""
-        },
-        "vstsPAT": {
-            "value": ""
-        },
-        "dnsServers": {
-            "value": []
-        }
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualMachineName": {
+      "value": ""
+    },
+    "adminUsername": {
+      "value": ""
+    },
+    "adminPassword": {
+      "value": ""
+    },
+    "vnetName": {
+      "value": ""
+    },
+    "vnetResourceGroup": {
+      "value": ""
+    },
+    "subnetName": {
+      "value": ""
+    },
+    "workspaceId": {
+      "value": ""
+    },
+    "workspaceKey": {
+      "value": ""
+    },
+    "templateBaseUrl": {
+      "value": ""
+    },
+    "agentDownloadUrl": {
+      "value": ""
+    },
+    "vstsAccountName": {
+      "value": ""
+    },
+    "vstsAgentPoolName": {
+      "value": ""
+    },
+    "vstsPAT": {
+      "value": ""
+    },
+    "dnsServers": {
+      "value": []
     }
+  }
 }

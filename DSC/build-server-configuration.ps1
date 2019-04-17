@@ -79,7 +79,7 @@ Configuration BuildServerConfiguration {
                 (Get-StoragePool -ErrorAction SilentlyContinue -FriendlyName $using:StoragePoolName).OperationalStatus -eq 'OK'
             }
             GetScript  = {
-                @{Ensure = if ((Get-StoragePool -FriendlyName $using:StoragePoolName).OperationalStatus -eq 'OK') {'Present'} else {'Absent'}}
+                @{Ensure = if ((Get-StoragePool -FriendlyName $using:StoragePoolName).OperationalStatus -eq 'OK') { 'Present' } else { 'Absent' } }
             }
         }
 
@@ -93,7 +93,7 @@ Configuration BuildServerConfiguration {
                 (Get-VirtualDisk -ErrorAction SilentlyContinue -FriendlyName $using:VirtualDiskName).OperationalStatus -eq 'OK'
             }
             GetScript  = {
-                @{Ensure = if ((Get-VirtualDisk -FriendlyName $using:VirtualDiskName).OperationalStatus -eq 'OK') {'Present'} else {'Absent'}}
+                @{Ensure = if ((Get-VirtualDisk -FriendlyName $using:VirtualDiskName).OperationalStatus -eq 'OK') { 'Present' } else { 'Absent' } }
             }
             DependsOn  = "[Script]StoragePool"
         }
@@ -119,7 +119,7 @@ Configuration BuildServerConfiguration {
                 return $true
             }
             GetScript  = {
-                @{Ensure = if ((Get-Volume -filesystemlabel $using:VolumePrefix$i).FileSystem -eq 'NTFS') {'Present'} else {'Absent'}}
+                @{Ensure = if ((Get-Volume -filesystemlabel $using:VolumePrefix$i).FileSystem -eq 'NTFS') { 'Present' } else { 'Absent' } }
             }
             DependsOn  = "[Script]VirtualDisk"
         }
