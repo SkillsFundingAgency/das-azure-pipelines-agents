@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04
+FROM apprenticeshipsdevops/azure-pipelines-base-agent:latest
 
 # Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
