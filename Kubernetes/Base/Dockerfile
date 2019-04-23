@@ -45,4 +45,6 @@ WORKDIR /vsts
 COPY ./start.sh .
 RUN chmod +x start.sh
 
+ENV AGENT_ALLOW_RUNASROOT=1
+
 CMD ["./start.sh"]
