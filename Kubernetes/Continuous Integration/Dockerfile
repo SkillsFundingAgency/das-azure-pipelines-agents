@@ -122,7 +122,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && rm -rf /etc/apt/sources.list.d/*
 
 # Install Powershell Modules
-RUN pwsh -NonInteractive -Command "Install-Module PSScriptAnalyzer, Pester -Scope AllUsers -Force"
+RUN pwsh -NonInteractive -Command "Install-Module PSScriptAnalyzer, Pester, Az -Scope AllUsers -Force"
 
 # # Install Gitversion
 # RUN apt-get update \
