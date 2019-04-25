@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: azure-pipelines-build-agent
 spec:
-  replicas: 6
+  replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
