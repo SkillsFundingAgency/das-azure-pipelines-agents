@@ -51,6 +51,15 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb
   && rm -rf /etc/apt/sources.list.d/* \
   && az --version
 
+# Install Java OpenJDK
+RUN apt-add-repository -y ppa:openjdk-r/ppa
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends openjdk-8-jdk \
+ && rm -rf /var/lib/apt/lists/*
+RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
 # Install Mono
 # RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
 #   && echo "deb https://download.mono-project.com/repo/ubuntu stable-xenial main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
