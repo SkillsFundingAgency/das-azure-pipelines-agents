@@ -6,6 +6,8 @@ trigger:
   paths:
     include:
       - "Kubernetes/Base/*"
+    exclude:
+      - "*"
 
 pr: none
 
