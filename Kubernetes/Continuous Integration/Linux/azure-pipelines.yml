@@ -72,7 +72,7 @@ steps:
     inputs:
       Contents: |
         Kubernetes/Continuous Integration/Linux/manifest.yaml
-        Kubernetes/Continuous Integration/Linux/template.json
+        Kubernetes/template.json
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
