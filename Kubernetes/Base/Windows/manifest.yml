@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-pipelines-build-agent-win
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: azure-pipelines-build-agent-win
+  template:
+    metadata:
+      labels:
+        app: azure-pipelines-build-agent-win
+    spec:
+      containers:
+        - name: azure-pipelines-build-agent-win
+          image: apprenticeshipsdevops/azure-pipelines-base-agent-win:latest
+          env:
+            - name: VSTS_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: vsts
+                  key: VSTS_ACCOUNT
+            - name: VSTS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vsts
+                  key: VSTS_TOKEN
+            - name: VSTS_POOL
+              value: DAS - Continuous Integration
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-volume
+      volumes:
+        - name: docker-volume
+          hostPath:
+            path: /var/run/docker.sock
