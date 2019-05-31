@@ -18,9 +18,6 @@ variables:
   IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-agent-win"
 
 steps:
-  - script: echo "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$IMAGE_NAME:$(Build.BuildNumber)"
-    displayName: "Set image name with tag"
-
   - script: docker pull $(IMAGE_NAME):latest || true
     displayName: "Pull latest docker image to cache"
 
@@ -31,26 +28,27 @@ steps:
       repository: $(IMAGE_NAME)
       Dockerfile: "Kubernetes/Base/Windows/Dockerfile"
       tags: |
-        $(IMAGE_NAME_WITH_TAG)
-        $(IMAGE_NAME):latest
+        $(Build.BuildNumber)
+        latest
       arguments: "--cache-from $(IMAGE_NAME):latest"
 
-  - task: Docker@1
-    displayName: Docker Hub login
+  - task: Docker@2
+    displayName: Docker Hub Login
     inputs:
-      command: "login"
-      containerregistrytype: Container Registry
-      dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
+      command: login
+      containerRegistry: "Apprenticeships DevOps Docker Hub"
 
-  - task: Docker@1
+  - task: Docker@2
     displayName: Push tagged image
     inputs:
-      command: Push an image
-      imageName: $(IMAGE_NAME_WITH_TAG)
+      command: push
+      repository: $(IMAGE_NAME)
+      tags: $(Build.BuildNumber)
 
-  - task: Docker@1
+  - task: Docker@2
     displayName: Push tagged image (latest) if master
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
-      command: Push an image
-      imageName: $(IMAGE_NAME):latest
+      command: push
+      repository: $(IMAGE_NAME)
+      tags: master
