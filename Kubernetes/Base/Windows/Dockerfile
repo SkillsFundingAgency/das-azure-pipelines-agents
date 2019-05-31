@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore@sha256:5d6ed58d7f27598db7a61b7a38cd755fa8165ae726aff39f14aa52468f0248dd
+FROM microsoft/windowsservercore@sha256:05de0a0ac13d3652bd1f2281b8589459ebb611092e3fe4d8f1be91f1f6984266
 ENV WINDOWS_IMAGE_VERSION=ltsc2019
 
 RUN mkdir C:\BuildAgent
