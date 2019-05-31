@@ -43,8 +43,7 @@ steps:
       dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
 
   - task: Docker@1
-    displayName: Push tagged image if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: Push tagged image
     inputs:
       command: Push an image
       imageName: $(IMAGE_NAME_WITH_TAG)
