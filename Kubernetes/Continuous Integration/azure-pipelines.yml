@@ -6,8 +6,6 @@ trigger:
   paths:
     include:
       - "Kubernetes/Continuous Integration/*"
-    exclude:
-      - "*"
 
 pr: none
 
