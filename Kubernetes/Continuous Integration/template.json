@@ -9,6 +9,9 @@
       "type": "int",
       "defaultValue": 128
     },
+    "agentNodeCount": {
+      "type": "int"
+    },
     "subnetName": {
       "type": "string"
     },
@@ -44,6 +47,9 @@
           },
           "agentPoolName": {
             "value": "[variables('agentPoolName')]"
+          },
+          "agentNodeCount": {
+            "value": "[parameters('agentNodeCount')]"
           },
           "osDiskSizeGB": {
             "value": "[parameters('osDiskSizeGB')]"
