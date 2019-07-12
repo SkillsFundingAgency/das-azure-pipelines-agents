@@ -13,6 +13,8 @@ spec:
       labels:
         app: azure-pipelines-build-agent
     spec:
+      nodeSelector:
+        agentpool: __agentPoolName__
       containers:
         - name: azure-pipelines-build-agent
           image: apprenticeshipsdevops/azure-pipelines-build-agent:__ImageVersion__
