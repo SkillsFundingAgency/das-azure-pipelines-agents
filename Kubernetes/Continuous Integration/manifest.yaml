@@ -1,28 +1,3 @@
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: azurefiles-standard
-provisioner: kubernetes.io/azure-file
-mountOptions:
-  - dir_mode=0777
-  - file_mode=0777
-  - uid=1000
-  - gid=1000
-parameters:
-  skuName: Standard_LRS
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: nuget-cache
-spec:
-  accessModes:
-  - ReadWriteMany
-  storageClassName: azurefiles-standard
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -68,5 +43,6 @@ spec:
           hostPath:
             path: /var/run/docker.sock
         - name: nuget-cache
-          persistentVolumeClaim:
-            claimName: nuget-cache
+          hostPath:
+            path: /var/nugetcache
+            type: DirectoryOrCreate
