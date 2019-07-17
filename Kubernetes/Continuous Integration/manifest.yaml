@@ -31,10 +31,18 @@ spec:
                   key: VSTS_TOKEN
             - name: VSTS_POOL
               value: DAS - Continuous Integration
+            - name: NUGET_PACKAGES
+              value: "/mnt/nugetcache/packages"
           volumeMounts:
             - mountPath: /var/run/docker.sock
               name: docker-volume
+            - mountPath: "/mnt/nugetcache"
+              name: nuget-cache
       volumes:
         - name: docker-volume
           hostPath:
             path: /var/run/docker.sock
+        - name: nuget-cache
+          hostPath:
+            path: /var/nugetcache
+            type: DirectoryOrCreate
