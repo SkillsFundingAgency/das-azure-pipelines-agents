@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nuget-cache
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 4Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,10 +43,17 @@ spec:
                   key: VSTS_TOKEN
             - name: VSTS_POOL
               value: DAS - Continuous Integration
+            - name: NUGET_PACKAGES
+              value: "/mnt/nugetcache/packages"
           volumeMounts:
             - mountPath: /var/run/docker.sock
               name: docker-volume
+            - mountPath: "/mnt/nugetcache"
+              name: nuget-cache
       volumes:
         - name: docker-volume
           hostPath:
             path: /var/run/docker.sock
+        - name: nuget-cache
+          persistentVolumeClaim:
+            claimName: nuget-cache
