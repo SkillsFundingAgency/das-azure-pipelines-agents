@@ -20,12 +20,12 @@ steps:
     displayName: "Set image name with tag"
 
   - script: docker pull $(IMAGE_NAME):latest || true
-    condition: ne(variables['Build.Reason'], 'BuildCompletion')
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
     displayName: "Pull latest docker image to cache"
 
   - task: Docker@1
     displayName: Build image with cache
-    condition: ne(variables['Build.Reason'], 'BuildCompletion')
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
@@ -35,7 +35,7 @@ steps:
 
   - task: Docker@1
     displayName: Build image without cache
-    condition: eq(variables['Build.Reason'], 'BuildCompletion')
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'BuildCompletion'))
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
