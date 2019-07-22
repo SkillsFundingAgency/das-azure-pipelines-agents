@@ -46,7 +46,7 @@ cd /vsts/agent
 
 web-server() {
   while true; do
-    printf 'HTTP/1.1 302 Found\r\nLocation: https://'$VSTS_ACCOUNT'.visualstudio.com/_admin/_AgentPool\r\n\r\n' | nc -l -p 80 -q 0 > /dev/null
+    printf 'HTTP/1.1 302 Found\r\nLocation: https://dev.azure.com/'$VSTS_ACCOUNT'/_admin/_AgentPool\r\n\r\n' | nc -l -p 80 -q 0 > /dev/null
   done
 }
 
@@ -65,7 +65,7 @@ echo Determining matching VSTS agent...
 VSTS_AGENT_RESPONSE=$(curl -LsS \
   -u user:$(cat "$VSTS_TOKEN_FILE") \
   -H 'Accept:application/json;api-version=3.0-preview' \
-  "https://$VSTS_ACCOUNT.visualstudio.com/_apis/distributedtask/packages/agent?platform=linux-x64")
+  "https://dev.azure.com/$VSTS_ACCOUNT/_apis/distributedtask/packages/agent?platform=linux-x64")
 
 if echo "$VSTS_AGENT_RESPONSE" | jq . >/dev/null 2>&1; then
   VSTS_AGENT_URL=$(echo "$VSTS_AGENT_RESPONSE" \
@@ -84,7 +84,7 @@ source ./env.sh
 
 ./bin/Agent.Listener configure --unattended \
   --agent "${VSTS_AGENT:-$(hostname)}" \
-  --url "https://$VSTS_ACCOUNT.visualstudio.com" \
+  --url "https://dev.azure.com/$VSTS_ACCOUNT" \
   --auth PAT \
   --token $(cat "$VSTS_TOKEN_FILE") \
   --pool "${VSTS_POOL:-Default}" \
@@ -95,6 +95,6 @@ web-server &
 ./bin/Agent.Listener run --once &
 wait $! && ./config.sh remove \
   --unattended \
-  --url "https://$VSTS_ACCOUNT.visualstudio.com" \
+  --url "https://dev.azure.com/$VSTS_ACCOUNT" \
   --auth PAT \
   --token $(cat "$VSTS_TOKEN_FILE")

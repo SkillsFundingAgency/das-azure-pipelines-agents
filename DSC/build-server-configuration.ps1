@@ -155,7 +155,7 @@ Configuration BuildServerConfiguration {
 
             Copy-Item -Path "$AgentExtractPath\*" -Destination "$($DriveLetters[$i]):\" -Recurse
 
-            $args = @("--unattended", "--url", "https://$($VSTSAccountName).visualstudio.com", "--auth", "pat", "--token", "$($VSTSPAT)", "--pool",
+            $args = @("--unattended", "--url", "https://dev.azure.com/$($VSTSAccountName)", "--auth", "pat", "--token", "$($VSTSPAT)", "--pool",
                 "$($PoolName)", "--agent", "$($AgentNamePrefix)-agent$($i)", "--acceptTeeEula", "--work", "$($DriveLetters[$i]):\agent", "--runAsService",
                 "--noRestart")
             &"$($DriveLetters[$i]):\config.cmd" $args
