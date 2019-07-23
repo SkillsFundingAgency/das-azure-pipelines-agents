@@ -16,6 +16,7 @@ spec:
       terminationGracePeriodSeconds: 300
       nodeSelector:
         agentpool: __agentPoolName__
+      dnsPolicy: Default
       containers:
         - name: azure-pipelines-build-agent
           image: apprenticeshipsdevops/azure-pipelines-build-agent:__ImageVersion__
