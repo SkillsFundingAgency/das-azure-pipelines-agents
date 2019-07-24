@@ -23,7 +23,7 @@ spec:
               - key: agentpool
                 operator: In
                 values:
-                - buildagents
+                - __agentPoolName__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
