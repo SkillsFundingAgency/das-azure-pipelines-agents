@@ -14,8 +14,27 @@ spec:
         app: azure-pipelines-build-agent
     spec:
       terminationGracePeriodSeconds: 300
-      nodeSelector:
-        agentpool: __agentPoolName__
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: agentpool
+                operator: In
+                values:
+                - buildagents
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - azure-pipelines-build-agent
+              topologyKey: failure-domain.beta.kubernetes.io/zone
       dnsPolicy: Default
       containers:
         - name: azure-pipelines-build-agent
