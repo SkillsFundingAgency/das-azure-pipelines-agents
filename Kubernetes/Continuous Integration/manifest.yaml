@@ -35,7 +35,6 @@ spec:
                   values:
                   - azure-pipelines-build-agent
               topologyKey: failure-domain.beta.kubernetes.io/zone
-      dnsPolicy: Default
       containers:
         - name: azure-pipelines-build-agent
           image: apprenticeshipsdevops/azure-pipelines-build-agent:__ImageVersion__
