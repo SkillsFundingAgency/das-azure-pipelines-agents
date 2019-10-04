@@ -16,10 +16,9 @@ spec:
       terminationGracePeriodSeconds: 300
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
               - key: agentpool
                 operator: In
                 values:
