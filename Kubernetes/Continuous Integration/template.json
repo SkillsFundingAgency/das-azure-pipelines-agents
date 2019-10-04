@@ -5,16 +5,12 @@
     "clusterName": {
       "type": "string"
     },
-    "osDiskSizeGB": {
-      "type": "int",
-      "defaultValue": 128
-    },
     "agentNodeCount": {
       "type": "int"
     },
     "agentVMSize": {
       "type": "string",
-      "defaultValue": "Standard_D2s_v3"
+      "defaultValue": "Standard_DS2_v2"
     },
     "subnetName": {
       "type": "string"
@@ -57,9 +53,6 @@
           },
           "agentVMSize": {
             "value": "[parameters('agentVMSize')]"
-          },
-          "osDiskSizeGB": {
-            "value": "[parameters('osDiskSizeGB')]"
           },
           "subnetName": {
             "value": "[parameters('subnetName')]"
