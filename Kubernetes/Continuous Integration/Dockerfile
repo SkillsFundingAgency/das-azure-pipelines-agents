@@ -131,7 +131,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && rm -rf /etc/apt/sources.list.d/*
 
 # Install Powershell Modules
-RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Pester, Az, AWSPowerShell.NetCore -Scope AllUsers -Force'
+RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Pester, Az, AWSPowerShell.NetCore, Indented.Net.Dns -Scope AllUsers -Force'
 
 # # Install Gitversion
 # RUN apt-get update \
