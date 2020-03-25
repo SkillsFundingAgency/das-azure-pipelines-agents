@@ -59,7 +59,7 @@ if (-not (Test-Path Env:AZP_URL)) {
 
 	Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
-	.\run.cmd --once
+	.\run.cmd
   }
   finally
   {
