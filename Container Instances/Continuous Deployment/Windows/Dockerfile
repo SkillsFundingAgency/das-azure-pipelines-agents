@@ -9,21 +9,7 @@ RUN choco config set cachelocation C:\chococache
 
 RUN choco install \
   git  \
-  --confirm \
-  --limit-output \
-  --timeout 216000 \
-  && rmdir /S /Q C:\chococache
-
-RUN choco install \
-  powershell-core --version=6.2.4 \
   powershell-core \
-  -m \
-  --confirm \
-  --limit-output \
-  --timeout 216000 \
-  && rmdir /S /Q C:\chococache
-
-RUN choco install \
   dacfx-18 \
   --confirm \
   --limit-output \
