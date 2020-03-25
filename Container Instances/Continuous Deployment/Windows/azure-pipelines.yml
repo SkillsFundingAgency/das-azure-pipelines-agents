@@ -18,10 +18,10 @@ variables:
   IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-deploy-agent-win"
 
 steps:
-  - script: echo "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$IMAGE_NAME:$(Build.BuildNumber)"
+  - script: echo "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]%IMAGE_NAME%:%BUILD_BUILDNUMBER%"
     displayName: "Set image name with tag"
 
-  - script: docker pull $(IMAGE_NAME):latest || true
+  - script: docker pull %IMAGE_NAME%:latest || exit 0
     condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
     displayName: "Pull latest docker image to cache"
 
