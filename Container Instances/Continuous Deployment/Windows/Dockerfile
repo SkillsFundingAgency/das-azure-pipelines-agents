@@ -15,3 +15,6 @@ RUN choco install \
   --limit-output \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
+
+RUN  @powershell -NoProfile -Command "Install-Module Azure, SqlServer -Scope AllUsers"
+RUN  @pwsh -NoProfile -Command "Install-Module Az -Scope AllUsers"

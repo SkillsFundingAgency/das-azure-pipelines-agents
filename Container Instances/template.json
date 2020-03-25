@@ -1,5 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "aciGroupName": {
       "type": "string"
@@ -29,7 +30,7 @@
     },
     "dockerImage": {
       "type": "string",
-      "defaultValue": "apprenticeshipsdevops/azure-pipelines-base-agent-win:latest"
+      "defaultValue": "apprenticeshipsdevops/azure-pipelines-deploy-agent-win:latest"
     }
   },
   "variables": {
