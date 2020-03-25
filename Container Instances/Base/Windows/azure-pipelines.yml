@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Container Instances/Windows/*"
+      - "Container Instances/Base/Windows/*"
     exclude:
       - "*"
 
@@ -26,7 +26,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Container Instances/Windows/Dockerfile"
+      Dockerfile: "Container Instances/Base/Windows/Dockerfile"
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2
@@ -44,7 +44,7 @@ steps:
 
   - task: Docker@2
     displayName: Push tagged image (latest) if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       command: push
       repository: $(IMAGE_NAME)

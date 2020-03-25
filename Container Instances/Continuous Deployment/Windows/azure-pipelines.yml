@@ -1,0 +1,82 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - "Container Instances/Continuous Deployment/Windows/*"
+    exclude:
+      - "*"
+
+pr: none
+
+pool:
+  vmImage: "windows-2019"
+
+variables:
+  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-deploy-agent-win"
+
+steps:
+  - script: echo "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$IMAGE_NAME:$(Build.BuildNumber)"
+    displayName: "Set image name with tag"
+
+  - script: docker pull $(IMAGE_NAME):latest || true
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
+    displayName: "Pull latest docker image to cache"
+
+  - task: Docker@1
+    displayName: Build image with cache
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
+    inputs:
+      command: Build an image
+      imageName: $(IMAGE_NAME)
+      dockerFile: Container Instances/Continuous Deployment/Windows/Dockerfile
+      addDefaultLabels: false
+      arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
+
+  - task: Docker@1
+    displayName: Build image without cache
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'BuildCompletion'))
+    inputs:
+      command: Build an image
+      imageName: $(IMAGE_NAME)
+      dockerFile: Container Instances/Continuous Deployment/Windows/Dockerfile
+      addDefaultLabels: false
+      arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
+
+  - task: Docker@1
+    displayName: Docker Hub login
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+      command: "login"
+      containerregistrytype: Container Registry
+      dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
+
+  - task: Docker@1
+    displayName: Push tagged image if master
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+      command: Push an image
+      imageName: $(IMAGE_NAME_WITH_TAG)
+
+  - task: Docker@1
+    displayName: Push tagged image (latest) if master
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+      command: Push an image
+      imageName: $(IMAGE_NAME):latest
+
+  - task: CopyFiles@2
+    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    inputs:
+      Contents: |
+        Container Instances/template.json
+      TargetFolder: "$(build.artifactstagingdirectory)/publish"
+      OverWrite: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact"
+    inputs:
+      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
+
