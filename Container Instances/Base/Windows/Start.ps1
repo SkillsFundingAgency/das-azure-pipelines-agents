@@ -67,5 +67,5 @@ if (-not (Test-Path Env:AZP_URL)) {
 
 	.\config.cmd remove --unattended `
 	  --auth PAT `
-	  --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
+	  --token "${Env:AZP_TOKEN}"
   }
