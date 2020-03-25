@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Kubernetes/Base/Windows/*"
+      - "Container Instances/Windows/*"
     exclude:
       - "*"
 
@@ -26,7 +26,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Kubernetes/Base/Windows/Dockerfile"
+      Dockerfile: "Container Instances/Windows/Dockerfile"
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2
@@ -48,4 +48,4 @@ steps:
     inputs:
       command: push
       repository: $(IMAGE_NAME)
-      tags: master
+      tags: latest
