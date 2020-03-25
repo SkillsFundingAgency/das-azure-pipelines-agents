@@ -18,5 +18,5 @@ RUN choco install \
 
 RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
 
-RUN  @powershell -NoProfile -Command "Install-Module Azure, SqlServer -Scope AllUsers"
-RUN  @pwsh -NoProfile -Command "Install-Module Az -Scope AllUsers"
+RUN  @powershell -NoProfile -Command "Install-Module Azure, SqlServer -Scope AllUsers -Force"
+RUN  @pwsh -NoProfile -Command "Install-Module Az -Scope AllUsers -Force"
