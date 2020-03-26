@@ -49,7 +49,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Kubernetes/Base/Dockerfile
+      dockerFile: Kubernetes/Base/Linux/Dockerfile
       addDefaultLabels: false
       arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 

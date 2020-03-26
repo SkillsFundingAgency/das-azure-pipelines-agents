@@ -41,7 +41,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Kubernetes/Continuous Integration/Dockerfile
+      dockerFile: Kubernetes/Continuous Integration/Linux/Dockerfile
       addDefaultLabels: false
       arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
