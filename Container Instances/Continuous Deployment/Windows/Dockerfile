@@ -23,3 +23,10 @@ RUN  @powershell -NoProfile -Command "Install-Module SqlServer -Force"
 RUN  @powershell -NoProfile -Command "Install-Module Az -AllowClobber -Force"
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
+
+
+
+
+
+#Cleanup
+RUN  @powershell -NoProfile -Command "Uninstall-Module -Name AzureRM.profile -RequiredVersion 5.8.2"
