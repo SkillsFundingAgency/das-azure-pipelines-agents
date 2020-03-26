@@ -19,13 +19,12 @@ RUN choco install \
 RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
 RUN  @powershell -NoProfile -Command "Install-Module AzureRm -Force"
 RUN  @powershell -NoProfile -Command "Install-Module Azure -AllowClobber -Force"
-RUN  @powershell -NoProfile -Command "Install-Module SqlServer -Force"
 RUN  @powershell -NoProfile -Command "Install-Module Az -AllowClobber -Force"
-RUN  @powershell -NoProfile -Command "Install-Module AzTable -AllowClobber -Force"
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
 
 
+RUN  @powershell -NoProfile -Command "Install-Module SqlServer, AzTable -Force"
 
 
 
