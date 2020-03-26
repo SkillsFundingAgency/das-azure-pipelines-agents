@@ -9,6 +9,14 @@ trigger:
     exclude:
       - "*"
 
+schedules:
+  - cron: "0 4 8-14 * Wed"
+    displayName: Monthly updates build
+    branches:
+      include:
+        - master
+    always: true
+
 pr: none
 
 pool:
