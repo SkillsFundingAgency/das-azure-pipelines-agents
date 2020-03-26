@@ -71,6 +71,22 @@ Configuration BuildServerConfiguration {
             }
         }
 
+        Script InstallAzTableModule {
+            SetScript  = {
+                Install-Module AzTable -RequiredVersion 2.0.2 -AllowClobber -Force -Scope AllUsers
+            }
+            TestScript = {
+                $AzTableInstalled = Get-Module AzTable -ListAvailable
+                if ($AzTableInstalled) {
+                    $InstalledAzTableMajor = ($AzTableInstalled | Sort-Object Version)[0].Version.Major
+                }
+                return $AzTableInstalled -and ($InstalledAzTableMajor -ge 2)
+            }
+            GetScript  = {
+                return @()
+            }
+        }
+
         Script StoragePool {
             SetScript  = {
                 New-StoragePool -FriendlyName $using:StoragePoolName -StorageSubSystemFriendlyName '*storage*' -PhysicalDisks (Get-PhysicalDisk -CanPool $True)
