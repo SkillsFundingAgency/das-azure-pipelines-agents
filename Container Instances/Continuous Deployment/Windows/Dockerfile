@@ -29,4 +29,4 @@ RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
 
 
 #Cleanup
-RUN  @powershell -NoProfile -Command "Uninstall-Module -Name AzureRM.profile -RequiredVersion 5.8.2"
+RUN  @powershell -NoProfile -Command "Uninstall-Module -Name AzureRM.profile -RequiredVersion 5.8.3"
