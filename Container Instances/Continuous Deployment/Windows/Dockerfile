@@ -18,7 +18,7 @@ RUN choco install \
 
 RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
 RUN  @powershell -NoProfile -Command "Install-Module Azure, SqlServer -Force"
-RUN  @powershell -NoProfile -Command "Install-Module AzureRm -RequiredVersion 6.4.0 -AllowClobber -Force"
+RUN  @powershell -NoProfile -Command "Install-Module AzureRm -RequiredVersion 6.4.0 -Force"
 RUN  @powershell -NoProfile -Command "Install-Module Az -AllowClobber -Force"
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
