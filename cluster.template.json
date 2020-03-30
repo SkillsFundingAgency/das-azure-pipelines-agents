@@ -47,12 +47,12 @@
     "vnetName": "[concat(variables('resourceNamePrefix'), '-vnet')]",
     "subnetName": "agent-aks",
     "agentPools": [
-      // {
-      //   "name": "linux",
-      //   "os": "Linux",
-      //   "nodeCount": "[parameters('linuxNodeCount')]",
-      //   "vmSize": "Standard_DS2_v2"
-      // },
+      {
+        "name": "linux",
+        "os": "Linux",
+        "nodeCount": "[parameters('linuxNodeCount')]",
+        "vmSize": "Standard_DS2_v2"
+      },
       {
         "name": "wndws",
         "os": "Windows",
@@ -72,13 +72,13 @@
           {
             "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "10.240.0.0/16"
+              "addressPrefix": "10.1.0.0/16"
             }
           }
         ],
         "addressSpace": {
           "addressPrefixes": [
-            "10.0.0.0/8"
+            "10.0.0.0/15"
           ]
         }
       }
