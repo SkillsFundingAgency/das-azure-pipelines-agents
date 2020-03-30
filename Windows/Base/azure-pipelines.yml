@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Container Instances/Base/Windows/*"
+      - "Windows/Base/*"
     exclude:
       - "*"
 
@@ -34,7 +34,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Container Instances/Base/Windows/Dockerfile"
+      Dockerfile: "Windows/Base/Dockerfile"
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2

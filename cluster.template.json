@@ -174,5 +174,9 @@
     }
   ],
   "outputs": {
+    "clusterName": {
+      "type": "string",
+      "value": "[variables('clusterName')]"
+    }
   }
 }
