@@ -48,13 +48,13 @@
     "subnetName": "agent-aks",
     "agentPools": [
       // {
-      //   "name": "Linux",
+      //   "name": "linux",
       //   "os": "Linux",
       //   "nodeCount": "[parameters('linuxNodeCount')]",
       //   "vmSize": "Standard_DS2_v2"
       // },
       {
-        "name": "Wndws",
+        "name": "wndws",
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
         "vmSize": "Standard_DS2_v2"
