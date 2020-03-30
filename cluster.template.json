@@ -14,12 +14,6 @@
         "description": "Short name of the service. Used for the name of resources created."
       }
     },
-    "virtualNetworkName": {
-      "type": "string"
-    },
-    "subnetName": {
-      "type": "string"
-    },
     "kubernetesVersion": {
       "type": "string"
     },
@@ -37,19 +31,36 @@
     }
   },
   "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
     "clusterName": "[concat(variables('resourceNamePrefix'), '-aks')]",
+    "vnetName": "[concat(variables('resourceNamePrefix'), '-vnet')]",
+    "subnetName": "agent-aks",
+    "agentPools": [
+      // {
+      //   "name": "Linux",
+      //   "os": "Linux",
+      //   "nodeCount": 2,
+      //   "vmSize": "Standard_DS2_v2"
+      // },
+      {
+        "name": "Wndws",
+        "os": "Windows",
+        "nodeCount": 1,
+        "vmSize": "Standard_DS2_v2"
+      }
+    ]
   },
   "resources": [
     {
       "apiVersion": "2019-09-01",
-      "name": "[parameters('virtualNetworkName')]",
+      "name": "[variables('vnetName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnets": [
           {
-            "name": "[parameters('subnetName')]",
+            "name": "[variables('subnetName')]",
             "properties": {
               "addressPrefix": "10.240.0.0/16"
             }
@@ -78,7 +89,7 @@
             "type": "VirtualMachineScaleSets",
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
-            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
           }
         ],
         "windowsProfile": "[parameters('windowsProfile')]",
@@ -100,8 +111,53 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[parameters('virtualNetworkName')]"
+        "[variables('vnetName')]"
       ]
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "build-agent-pool",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'aks-agent-pool.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[variables('clusterName')]"
+          },
+          "agentPoolName": {
+            "value": "[variables('agentPools')[copyIndex()].name]"
+          },
+          "agentNodeCount": {
+            "value": "[variables('agentPools')[copyIndex()].nodeCount]"
+          },
+          "agentVMSize": {
+            "value": "[variables('agentPools')[copyIndex()].vmSize]"
+          },
+          "subnetName": {
+            "value": "[variables('subnetName')]"
+          },
+          "virtualNetworkName": {
+            "value": "[variables('vnetName')]"
+          },
+          "virtualNetworkResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "kubernetesVersion": {
+            "value": "[parameters('kubernetesVersion')]"
+          },
+          "osType": {
+            "value": "[variables('agentPools')[copyIndex()].os]"
+          }
+        }
+      },
+      "copy": {
+        "name": "agentPoolCopy",
+        "count": "[length(variables('agentPools'))]"
+      }
     }
   ],
   "outputs": {
