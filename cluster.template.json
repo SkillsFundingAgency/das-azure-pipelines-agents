@@ -28,6 +28,16 @@
     },
     "nodeResourceGroup": {
       "type": "string"
+    },
+    "windowsNodeCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "minValue": 1
+    },
+    "linuxNodeCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "minValue": 1
     }
   },
   "variables": {
@@ -40,13 +50,13 @@
       // {
       //   "name": "Linux",
       //   "os": "Linux",
-      //   "nodeCount": 2,
+      //   "nodeCount": "[parameters('linuxNodeCount')]",
       //   "vmSize": "Standard_DS2_v2"
       // },
       {
         "name": "Wndws",
         "os": "Windows",
-        "nodeCount": 1,
+        "nodeCount": "[parameters('windowsNodeCount')]",
         "vmSize": "Standard_DS2_v2"
       }
     ]
@@ -116,7 +126,7 @@
     },
     {
       "apiVersion": "2017-05-10",
-      "name": "build-agent-pool",
+      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -157,7 +167,10 @@
       "copy": {
         "name": "agentPoolCopy",
         "count": "[length(variables('agentPools'))]"
-      }
+      },
+      "dependsOn": [
+        "[variables('clusterName')]"
+      ]
     }
   ],
   "outputs": {
