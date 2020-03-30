@@ -14,6 +14,12 @@
         "description": "Short name of the service. Used for the name of resources created."
       }
     },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "subnetName": {
+      "type": "string"
+    },
     "kubernetesVersion": {
       "type": "string"
     },
@@ -33,19 +39,17 @@
   "variables": {
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
     "clusterName": "[concat(variables('resourceNamePrefix'), '-aks')]",
-    "vnetName": "[concat(variables('resourceNamePrefix'), '-aks')]",
-    "subnetName": "aks"
   },
   "resources": [
     {
       "apiVersion": "2019-09-01",
-      "name": "[variables('vnetName')]",
+      "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnets": [
           {
-            "name": "[variables('subnetName')]",
+            "name": "[parameters('subnetName')]",
             "properties": {
               "addressPrefix": "10.240.0.0/16"
             }
@@ -74,7 +78,7 @@
             "type": "VirtualMachineScaleSets",
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
-            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
           }
         ],
         "windowsProfile": "[parameters('windowsProfile')]",
@@ -96,7 +100,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[variables('vnetName')]"
+        "[parameters('virtualNetworkName')]"
       ]
     }
   ],
