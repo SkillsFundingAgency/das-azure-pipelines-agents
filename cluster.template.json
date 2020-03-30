@@ -1,1 +1,105 @@
-PLACEHOLDER
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Short name of the environment. Used for the name of resources created."
+      }
+    },
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Short name of the service. Used for the name of resources created."
+      }
+    },
+    "kubernetesVersion": {
+      "type": "string"
+    },
+    "windowsProfile": {
+      "type": "secureObject",
+      "metadata": {
+        "schema": {
+          "adminUsername": "string",
+          "adminPassword": "string"
+        }
+      }
+    },
+    "nodeResourceGroup": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+    "clusterName": "[concat(variables('resourceNamePrefix'), '-aks')]",
+    "vnetName": "[concat(variables('resourceNamePrefix'), '-aks')]",
+    "subnetName": "aks"
+  },
+  "resources": [
+    {
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "10.240.0.0/16"
+            }
+          }
+        ],
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/8"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[variables('clusterName')]",
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2020-02-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "dnsPrefix": "[variables('clusterName')]",
+        "agentPoolProfiles": [
+          {
+            "name": "system",
+            "count": 2,
+            "vmSize": "Standard_B2s",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+          }
+        ],
+        "windowsProfile": "[parameters('windowsProfile')]",
+        "servicePrincipalProfile": {
+          "clientId": "msi",
+          "secret": null
+        },
+        "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
+        "enableRBAC": true,
+        "networkProfile": {
+          "networkPlugin": "azure",
+          "loadBalancerSku": "standard",
+          "serviceCidr": "10.0.0.0/16",
+          "dnsServiceIP": "10.0.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16"
+        }
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[variables('vnetName')]"
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}
