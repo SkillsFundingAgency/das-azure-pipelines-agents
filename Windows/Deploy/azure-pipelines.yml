@@ -69,7 +69,7 @@ steps:
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Container Instances/template.json
+        Windows/Deploy/manifest.yml
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
