@@ -19,9 +19,10 @@ RUN choco config set cachelocation C:\chococache \
 #   --timeout 216000 \
 #   && rmdir /S /Q C:\chococache
 
-# Install Build Tools with the Microsoft.VisualStudio.Workload.AzureBuildTools workload, excluding workloads and components with known issues.
-ADD https://aka.ms/vs/16/release/vs_buildtools.exe C:\TEMP\
-RUN (C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache \
+# Install Build Tools with workloads, excluding components with known issues.
+RUN mkdir C:\TEMP \
+  && curl -L -o C:\TEMP\vs_buildtools.exe \
+  && C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache \
   --installPath C:\BuildTools \
   --add Microsoft.VisualStudio.Workload.AzureBuildTools \
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
@@ -31,5 +32,5 @@ RUN (C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
-  && rmdir /S /Q C:\TEMP) \
+  && rmdir /S /Q C:\TEMP \
   || IF "%ERRORLEVEL%"=="3010" EXIT 0
