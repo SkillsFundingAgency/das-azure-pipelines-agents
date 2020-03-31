@@ -1,5 +1,8 @@
 FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20200331.2
 
+# Restore the default Windows shell for correct batch processing below.
+SHELL ["cmd", "/S", "/C"]
+
 ENV chocolateyUseWindowsCompression=false
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
