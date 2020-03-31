@@ -71,7 +71,7 @@ steps:
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Linux/Build/manifest.yaml
+        Linux/Build/manifest.yml
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
