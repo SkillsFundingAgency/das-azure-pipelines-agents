@@ -50,3 +50,7 @@ spec:
                   key: AZP_TOKEN
             - name: AZP_POOL
               value: DAS - Continuous Deployment
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
