@@ -1,4 +1,4 @@
-FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20200330.2
+FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20200331.1
 
 # Based on https://github.com/microsoft/vsts-agent-docker/blob/master/windows/servercore/10.0.14393/standard/VS2017/Dockerfile
 
