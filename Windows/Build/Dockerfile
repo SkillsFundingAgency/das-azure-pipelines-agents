@@ -8,15 +8,17 @@ RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object Sy
 RUN choco config set cachelocation C:\chococache \
   && choco feature disable -name showDownloadProgress
 
-RUN choco install \
-  git  \
-  powershell-core \
-  nodejs \
-  jdk8 \
-  --confirm \
-  --limit-output \
-  --timeout 216000 \
-  && rmdir /S /Q C:\chococache
+# RUN choco install \
+#   git  \
+#   powershell-core \
+#   nodejs \
+#   jdk8 \
+#   --confirm \
+#   --limit-output \
+#   --timeout 216000 \
+#   && rmdir /S /Q C:\chococache
+
+RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "choco install visualstudio2019buildtools --package-parameters \"--passive --locale en-US --includeOptional\" --confirm --debug && rmdir /S /Q C:\\chococache || Get-Content 'C:\\ProgramData\\chocolatey\\logs\\chocolatey.log'"
 
 RUN choco install \
   visualstudio2019buildtools \
