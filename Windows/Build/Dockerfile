@@ -22,7 +22,7 @@ RUN choco install \
 # Install Build Tools with workloads, excluding components with known issues.
 RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
   && setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE 1 \
-  && C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache \
+  && "%TEMP%\vs_buildtools.exe" --quiet --wait --norestart --nocache \
   --add Microsoft.VisualStudio.Workload.AzureBuildTools \
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
   --add Microsoft.VisualStudio.Workload.NetCoreBuildTools \
