@@ -51,16 +51,16 @@ spec:
             - name: AZP_POOL
               value: DAS - Continuous Integration
             - name: NUGET_PACKAGES
-              value: "D:\\nugetcache\\packages"
+              value: "C:\\d\\nugetcache\\packages"
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
           volumeMounts:
-            - mountPath: "D:\\nugetcache"
+            - mountPath: "/D/nugetcache"
               name: nuget-cache
       volumes:
         - name: nuget-cache
           hostPath:
-            path: "D:\\nugetcache"
+            path: "/D/nugetcache"
             type: DirectoryOrCreate

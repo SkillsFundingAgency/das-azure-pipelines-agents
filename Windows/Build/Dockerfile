@@ -20,10 +20,9 @@ RUN choco install \
   && rmdir /S /Q C:\chococache
 
 # Install Build Tools with workloads, excluding components with known issues.
-RUN (mkdir C:\TEMP \
-  && curl -L -o C:\TEMP\vs_buildtools.exe https://aka.ms/vs/16/release/vs_buildtools.exe \
+RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
+  && setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE 1 \
   && C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache \
-  --installPath C:\BuildTools \
   --add Microsoft.VisualStudio.Workload.AzureBuildTools \
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
   --add Microsoft.VisualStudio.Workload.NetCoreBuildTools \
@@ -32,5 +31,9 @@ RUN (mkdir C:\TEMP \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
-  && rmdir /S /Q C:\TEMP) \
-  || IF "%ERRORLEVEL%"=="3010" EXIT 0
+  # Cleanup
+  && rmdir /S /Q C:\TEMP \
+  && rmdir /S /Q "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer" \
+  && powershell Remove-Item -Force -Recurse "%TEMP%\*" \
+  && rmdir /S /Q "%ProgramData%\Package Cache"
+
