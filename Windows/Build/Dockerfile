@@ -1,6 +1,4 @@
-FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20200331.1
-
-# Based on https://github.com/microsoft/vsts-agent-docker/blob/master/windows/servercore/10.0.14393/standard/VS2017/Dockerfile
+FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20200331.2
 
 ENV chocolateyUseWindowsCompression=false
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -18,13 +16,11 @@ RUN choco config set cachelocation C:\chococache \
 #   --timeout 216000 \
 #   && rmdir /S /Q C:\chococache
 
-RUN (choco install visualstudio2019buildtools --package-parameters "--passive --locale en-US --includeOptional" --confirm --debug && rmdir /S /Q C:\chococache) || type C:\ProgramData\chocolatey\logs\chocolatey.log
-
 RUN choco install \
   visualstudio2019buildtools \
   --package-parameters "--passive --locale en-US --includeOptional" \
   --confirm \
-  --debug \
+  --limit-output \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
