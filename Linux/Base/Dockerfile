@@ -1,50 +1,25 @@
 FROM ubuntu:16.04
 
-# Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/Dockerfile
-
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
-# Trusty needs an updated backport of apt to avoid hash sum mismatch errors
-RUN [ "xenial" = "trusty" ] \
- && curl -s https://packagecloud.io/install/repositories/computology/apt-backport/script.deb.sh |  bash \
- && apt-get update \
- && apt-get install apt=1.2.10 \
- && rm -rf /var/lib/apt/lists/* \
- && rm -rf /etc/apt/sources.list.d/* \
- || echo -n
-
 RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-        software-properties-common \
- && apt-add-repository ppa:git-core/ppa \
- && apt-get update \
- && apt-get install -y --no-install-recommends \
-        apt-utils \
+&& apt-get install -y --no-install-recommends \
+        ca-certificates \
         curl \
-        git \
         jq \
+        git \
+        iputils-ping \
         libcurl3 \
         libicu55 \
         libunwind8 \
-        netcat \
- && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
- && apt-get install -y --no-install-recommends git-lfs \
- && rm -rf /var/lib/apt/lists/* \
- && rm -rf /etc/apt/sources.list.d/*
+        netcat
 
-# Accept the TEE EULA
-RUN mkdir -p "/root/.microsoft/Team Foundation/4.0/Configuration/TEE-Mementos" \
- && cd "/root/.microsoft/Team Foundation/4.0/Configuration/TEE-Mementos" \
- && echo '<ProductIdData><eula-14.0 value="true"/></ProductIdData>' > "com.microsoft.tfs.client.productid.xml"
-
-WORKDIR /vsts
+WORKDIR /azp
 
 COPY ./start.sh .
 RUN chmod +x start.sh
-
-ENV AGENT_ALLOW_RUNASROOT=1
 
 CMD ["./start.sh"]
