@@ -31,8 +31,5 @@ RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildt
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
-  # Cleanup
-  && rmdir /S /Q "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer" \
-  && powershell Remove-Item -Force -Recurse "%TEMP%\*" \
-  && rmdir /S /Q "%ProgramData%\Package Cache"
+  && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
