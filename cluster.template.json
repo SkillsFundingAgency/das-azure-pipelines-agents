@@ -59,13 +59,19 @@
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_DS2_v2"
+        "vmSize": "Standard_DS2_v2",
+        "nodeTaints": [
+          "agent-os=linux:NoSchedule"
+        ]
       },
       {
         "name": "[parameters('windowsPoolName')]",
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
-        "vmSize": "Standard_DS2_v2"
+        "vmSize": "Standard_DS2_v2",
+        "nodeTaints": [
+          "agent-os=windows:NoSchedule"
+        ]
       }
     ]
   },
@@ -169,6 +175,9 @@
           },
           "osType": {
             "value": "[variables('agentPools')[copyIndex()].os]"
+          },
+          "nodeTaints": {
+            "value": "[variables('agentPools')[copyIndex()].nodeTaints]"
           }
         }
       },
