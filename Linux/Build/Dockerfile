@@ -41,18 +41,20 @@ RUN apt-get update \
 
 # Install Java OpenJDK
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openjdk-8-jdk \
- && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends openjdk-8-jdk \
+  && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+  JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN [ "xenial" = "xenial" ] \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
   && apt-get update \
-  && apt-get install -y mssql-tools unixodbc-dev \
+  && apt-get install -y --no-install-recommends \
+  mssql-tools \
+  unixodbc-dev \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/* \
   || echo -n
@@ -74,7 +76,6 @@ RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-p
   && rm packages-microsoft-prod.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-  apt-transport-https \
   dotnet-sdk-2.2=2.2.207-1 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
@@ -109,17 +110,17 @@ ENV DOCKER_CHANNEL stable
 ENV DOCKER_VERSION 19.03.8
 
 RUN set -ex \
- && curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/`uname -m`/docker-${DOCKER_VERSION}.tgz" -o docker.tgz \
- && tar --extract --file docker.tgz --strip-components 1 --directory /usr/local/bin \
- && rm docker.tgz \
- && docker -v
+  && curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/`uname -m`/docker-${DOCKER_VERSION}.tgz" -o docker.tgz \
+  && tar --extract --file docker.tgz --strip-components 1 --directory /usr/local/bin \
+  && rm docker.tgz \
+  && docker -v
 
 ENV DOCKER_COMPOSE_VERSION 1.25.4
 
 RUN set -x \
- && curl -fSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`" -o /usr/local/bin/docker-compose \
- && chmod +x /usr/local/bin/docker-compose \
- && docker-compose -v
+  && curl -fSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`" -o /usr/local/bin/docker-compose \
+  && chmod +x /usr/local/bin/docker-compose \
+  && docker-compose -v
 
 
 # Clean system
