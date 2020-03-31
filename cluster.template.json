@@ -14,6 +14,9 @@
         "description": "Short name of the service. Used for the name of resources created."
       }
     },
+    "clusterName": {
+      "type": "string"
+    },
     "kubernetesVersion": {
       "type": "string"
     },
@@ -43,7 +46,6 @@
   "variables": {
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
-    "clusterName": "[concat(variables('resourceNamePrefix'), '-aks')]",
     "vnetName": "[concat(variables('resourceNamePrefix'), '-vnet')]",
     "subnetName": "agent-aks",
     "agentPools": [
@@ -84,13 +86,13 @@
       }
     },
     {
-      "name": "[variables('clusterName')]",
+      "name": "[parameters('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2020-02-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "kubernetesVersion": "[parameters('kubernetesVersion')]",
-        "dnsPrefix": "[variables('clusterName')]",
+        "dnsPrefix": "[parameters('clusterName')]",
         "agentPoolProfiles": [
           {
             "name": "system",
@@ -136,7 +138,7 @@
         },
         "parameters": {
           "clusterName": {
-            "value": "[variables('clusterName')]"
+            "value": "[parameters('clusterName')]"
           },
           "agentPoolName": {
             "value": "[variables('agentPools')[copyIndex()].name]"
@@ -169,14 +171,14 @@
         "count": "[length(variables('agentPools'))]"
       },
       "dependsOn": [
-        "[variables('clusterName')]"
+        "[parameters('clusterName')]"
       ]
     }
   ],
   "outputs": {
     "clusterName": {
       "type": "string",
-      "value": "[variables('clusterName')]"
+      "value": "[parameters('clusterName')]"
     }
   }
 }
