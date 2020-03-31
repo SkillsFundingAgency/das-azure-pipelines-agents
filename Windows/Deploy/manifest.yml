@@ -49,4 +49,4 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Deploymen
+              value: DAS - Continuous Deployment
