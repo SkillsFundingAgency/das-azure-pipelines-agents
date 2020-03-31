@@ -9,15 +9,15 @@ RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object Sy
 RUN choco config set cachelocation C:\chococache \
   && choco feature disable -name showDownloadProgress
 
-# RUN choco install \
-#   git  \
-#   powershell-core \
-#   nodejs \
-#   jdk8 \
-#   --confirm \
-#   --limit-output \
-#   --timeout 216000 \
-#   && rmdir /S /Q C:\chococache
+RUN choco install \
+  git  \
+  powershell-core \
+  nodejs \
+  jdk8 \
+  --confirm \
+  --limit-output \
+  --timeout 216000 \
+  && rmdir /S /Q C:\chococache
 
 # Install Build Tools with workloads, excluding components with known issues.
 RUN (mkdir C:\TEMP \
