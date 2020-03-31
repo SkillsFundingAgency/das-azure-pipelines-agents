@@ -18,7 +18,7 @@ RUN choco config set cachelocation C:\chococache \
 #   --timeout 216000 \
 #   && rmdir /S /Q C:\chococache
 
-RUN (choco install visualstudio2019buildtools --package-parameters "--passive --locale en-US --includeOptional" --confirm --debug && rmdir /S /Q C:\chococache) || Get-Content C:\ProgramData\chocolatey\logs\chocolatey.log
+RUN (choco install visualstudio2019buildtools --package-parameters "--passive --locale en-US --includeOptional" --confirm --debug && rmdir /S /Q C:\chococache) || type C:\ProgramData\chocolatey\logs\chocolatey.log
 
 RUN choco install \
   visualstudio2019buildtools \
