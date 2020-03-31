@@ -40,7 +40,6 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Java OpenJDK
-RUN apt-add-repository -y ppa:openjdk-r/ppa
 RUN apt-get update \
  && apt-get install -y --no-install-recommends openjdk-8-jdk \
  && rm -rf /var/lib/apt/lists/*
@@ -76,7 +75,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-p
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   apt-transport-https \
-  dotnet-sdk-2.2=2.2.402-1 \
+  dotnet-sdk-2.2=2.2.207-1 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
@@ -107,7 +106,7 @@ RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Pest
 
 # Install Docker
 ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 18.09.5
+ENV DOCKER_VERSION 19.03.8
 
 RUN set -ex \
  && curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/`uname -m`/docker-${DOCKER_VERSION}.tgz" -o docker.tgz \
@@ -115,7 +114,7 @@ RUN set -ex \
  && rm docker.tgz \
  && docker -v
 
-ENV DOCKER_COMPOSE_VERSION 1.24.0
+ENV DOCKER_COMPOSE_VERSION 1.25.4
 
 RUN set -x \
  && curl -fSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`" -o /usr/local/bin/docker-compose \
