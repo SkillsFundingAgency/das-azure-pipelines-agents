@@ -21,9 +21,9 @@ steps:
   - pwsh: Write-Output "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$($env:IMAGE_NAME):$($env:BUILD_BUILDNUMBER)"
     displayName: "Set image name with tag"
 
-  # - script: docker pull %IMAGE_NAME%:latest || exit 0
-  #   condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
-  #   displayName: "Pull latest docker image to cache"
+  - script: docker pull %IMAGE_NAME%:latest || exit 0
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
+    displayName: "Pull latest docker image to cache"
 
   - task: Docker@1
     displayName: Build image with cache
