@@ -27,6 +27,7 @@ RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildt
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
   --add Microsoft.VisualStudio.Workload.NetCoreBuildTools \
   --add Microsoft.VisualStudio.Workload.WebBuildTools \
+  --add Microsoft.VisualStudio.Component.SQL.SSDTBuildSku \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
