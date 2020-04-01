@@ -32,6 +32,11 @@ RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildt
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
+# Install VS Test Agent
+RUN curl -L -o "%TEMP%\vs_TestAgent.exe" https://download.visualstudio.microsoft.com/download/pr/220fe621-dd35-4fc0-a32e-10ff6f4551cd/0baf634f22467a27b6f7b2fe8d9e687dd0876864d5a0b4ee9291110ac4baaa16/vs_TestAgent.exe \
+  && start /w %TEMP%\vs_TestAgent.exe --quiet --norestart --nocache --wait \
+  && powershell Remove-Item -Force -Recurse "%TEMP%\*"
+
 #Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
   && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version '2.2.207' \
