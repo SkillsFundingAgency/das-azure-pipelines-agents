@@ -23,6 +23,10 @@ spec:
                     operator: In
                     values:
                       - linux
+                  - key: agentpool
+                    operator: NotIn
+                    values:
+                      - system
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1

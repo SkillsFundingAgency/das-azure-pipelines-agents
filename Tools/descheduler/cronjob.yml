@@ -17,6 +17,10 @@ spec:
                   operator: In
                   values:
                     - linux
+                - key: agentpool
+                  operator: In
+                  values:
+                    - system
       template:
         metadata:
           name: descheduler-pod
