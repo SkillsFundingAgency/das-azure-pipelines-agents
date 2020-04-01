@@ -44,8 +44,7 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends openjdk-8-jdk \
   && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-  JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN [ "xenial" = "xenial" ] \
