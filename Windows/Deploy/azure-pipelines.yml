@@ -5,25 +5,25 @@ trigger:
       - "*"
   paths:
     include:
-      - "Kubernetes/Continuous Integration/Linux/*"
+      - "Windows/Deploy/*"
     exclude:
       - "*"
 
 pr: none
 
 pool:
-  vmImage: "Ubuntu-16.04"
+  vmImage: "windows-2019"
 
 variables:
-  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-build-agent"
+  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-deploy-agent-win"
 
 steps:
-  - script: echo "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$IMAGE_NAME:$(Build.BuildNumber)"
+  - pwsh: Write-Output "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$($env:IMAGE_NAME):$($env:BUILD_BUILDNUMBER)"
     displayName: "Set image name with tag"
 
-  - script: docker pull $(IMAGE_NAME):latest || true
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
-    displayName: "Pull latest docker image to cache"
+  # - script: docker pull %IMAGE_NAME%:latest || exit 0
+  #   condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
+  #   displayName: "Pull latest docker image to cache"
 
   - task: Docker@1
     displayName: Build image with cache
@@ -31,7 +31,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Kubernetes/Continuous Integration/Linux/Dockerfile
+      dockerFile: Windows/Deploy/Dockerfile
       addDefaultLabels: false
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
@@ -41,21 +41,19 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Kubernetes/Continuous Integration/Linux/Dockerfile
+      dockerFile: Windows/Deploy/Dockerfile
       addDefaultLabels: false
       arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
   - task: Docker@1
     displayName: Docker Hub login
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       command: "login"
       containerregistrytype: Container Registry
       dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
 
   - task: Docker@1
-    displayName: Push tagged image if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: Push tagged image
     inputs:
       command: Push an image
       imageName: $(IMAGE_NAME_WITH_TAG)
@@ -71,7 +69,7 @@ steps:
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Kubernetes/Continuous Integration/Linux/manifest.yaml
+        Windows/Deploy/manifest.yml
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
@@ -79,4 +77,3 @@ steps:
     displayName: "Publish Artifact"
     inputs:
       PathtoPublish: "$(build.artifactstagingdirectory)/publish"
-

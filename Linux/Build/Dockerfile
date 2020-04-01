@@ -1,4 +1,4 @@
-FROM apprenticeshipsdevops/azure-pipelines-base-agent:latest
+FROM apprenticeshipsdevops/azure-pipelines-base-agent:20200331.3
 
 # Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
@@ -39,41 +39,22 @@ RUN apt-get update \
   build-essential \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
-  | tee /etc/apt/sources.list.d/azure-cli.list \
-  && curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends \
-  apt-transport-https \
-  azure-cli \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /etc/apt/sources.list.d/* \
-  && az --version
-
 # Install Java OpenJDK
-RUN apt-add-repository -y ppa:openjdk-r/ppa
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openjdk-8-jdk \
- && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends openjdk-8-jdk \
+  && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
-
-# Install Mono
-# RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-#   && echo "deb https://download.mono-project.com/repo/ubuntu stable-xenial main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
-#   && apt-get update \
-#   && apt-get install -y --no-install-recommends apt-transport-https mono-complete \
-#   && rm -rf /var/lib/apt/lists/* \
-#   && rm -rf /etc/apt/sources.list.d/*
+  JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN [ "xenial" = "xenial" ] \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
   && apt-get update \
-  && apt-get install -y mssql-tools unixodbc-dev \
+  && apt-get install -y --no-install-recommends \
+  mssql-tools \
+  unixodbc-dev \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/* \
   || echo -n
@@ -95,20 +76,11 @@ RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-p
   && rm packages-microsoft-prod.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-  apt-transport-https \
-  dotnet-sdk-2.2=2.2.402-1 \
+  dotnet-sdk-2.2=2.2.207-1 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
-
-# Install AzCopy (depends on .NET Core)
-RUN apt-key adv --keyserver packages.microsoft.com --recv-keys EB3E94ADBE1229CF \
-  && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod/ xenial main" | tee /etc/apt/sources.list.d/azure.list \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends azcopy \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /etc/apt/sources.list.d/*
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
@@ -133,33 +105,22 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 # Install Powershell Modules
 RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Pester, Az, AWSPowerShell.NetCore -Scope AllUsers -Force'
 
-# # Install Gitversion
-# RUN apt-get update \
-#   && apt-get install -y --no-install-recommends \
-#   libcurl3 \
-#   && wget https://www.nuget.org/api/v2/package/GitVersion.CommandLine/4.0.1-beta1-65 -O gitversion.nupkg \
-#   && unzip -j -o gitversion.nupkg "tools/*" -d /usr/share/gitversion \
-#   && unzip -j -o gitversion.nupkg "tools/lib/**" -d /usr/share/gitversion/lib \
-#   && rm -f gitversion.nupkg \
-#   && rm -rf /var/lib/apt/lists/*
-# ENV PATH=$PATH:/usr/share/gitversion
-
 # Install Docker
 ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 18.09.5
+ENV DOCKER_VERSION 19.03.8
 
 RUN set -ex \
- && curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/`uname -m`/docker-${DOCKER_VERSION}.tgz" -o docker.tgz \
- && tar --extract --file docker.tgz --strip-components 1 --directory /usr/local/bin \
- && rm docker.tgz \
- && docker -v
+  && curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/`uname -m`/docker-${DOCKER_VERSION}.tgz" -o docker.tgz \
+  && tar --extract --file docker.tgz --strip-components 1 --directory /usr/local/bin \
+  && rm docker.tgz \
+  && docker -v
 
-ENV DOCKER_COMPOSE_VERSION 1.24.0
+ENV DOCKER_COMPOSE_VERSION 1.25.4
 
 RUN set -x \
- && curl -fSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`" -o /usr/local/bin/docker-compose \
- && chmod +x /usr/local/bin/docker-compose \
- && docker-compose -v
+  && curl -fSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`" -o /usr/local/bin/docker-compose \
+  && chmod +x /usr/local/bin/docker-compose \
+  && docker-compose -v
 
 
 # Clean system

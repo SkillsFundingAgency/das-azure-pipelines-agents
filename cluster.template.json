@@ -1,0 +1,199 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Short name of the environment. Used for the name of resources created."
+      }
+    },
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Short name of the service. Used for the name of resources created."
+      }
+    },
+    "clusterName": {
+      "type": "string"
+    },
+    "kubernetesVersion": {
+      "type": "string"
+    },
+    "windowsProfile": {
+      "type": "secureObject",
+      "metadata": {
+        "schema": {
+          "adminUsername": "string",
+          "adminPassword": "string"
+        }
+      }
+    },
+    "nodeResourceGroup": {
+      "type": "string"
+    },
+    "windowsPoolName": {
+      "type": "string"
+    },
+    "windowsNodeCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "minValue": 1
+    },
+    "linuxPoolName": {
+      "type": "string"
+    },
+    "linuxNodeCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "minValue": 1
+    }
+  },
+  "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+    "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+    "vnetName": "[concat(variables('resourceNamePrefix'), '-vnet')]",
+    "subnetName": "agent-aks",
+    "agentPools": [
+      {
+        "name": "[parameters('linuxPoolName')]",
+        "os": "Linux",
+        "nodeCount": "[parameters('linuxNodeCount')]",
+        "vmSize": "Standard_DS2_v2",
+        "nodeTaints": [
+          "agent-os=linux:NoSchedule"
+        ]
+      },
+      {
+        "name": "[parameters('windowsPoolName')]",
+        "os": "Windows",
+        "nodeCount": "[parameters('windowsNodeCount')]",
+        "vmSize": "Standard_DS2_v2",
+        "nodeTaints": [
+          "agent-os=windows:NoSchedule"
+        ]
+      }
+    ]
+  },
+  "resources": [
+    {
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "10.1.0.0/16"
+            }
+          }
+        ],
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/15"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[parameters('clusterName')]",
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2020-02-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "dnsPrefix": "[parameters('clusterName')]",
+        "agentPoolProfiles": [
+          {
+            "name": "system",
+            "count": 2,
+            "vmSize": "Standard_B2s",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+          }
+        ],
+        "windowsProfile": "[parameters('windowsProfile')]",
+        "servicePrincipalProfile": {
+          "clientId": "msi",
+          "secret": null
+        },
+        "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
+        "enableRBAC": true,
+        "networkProfile": {
+          "networkPlugin": "azure",
+          "loadBalancerSku": "standard",
+          "serviceCidr": "10.0.0.0/16",
+          "dnsServiceIP": "10.0.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16"
+        }
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[variables('vnetName')]"
+      ]
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'aks-agent-pool.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "agentPoolName": {
+            "value": "[variables('agentPools')[copyIndex()].name]"
+          },
+          "agentNodeCount": {
+            "value": "[variables('agentPools')[copyIndex()].nodeCount]"
+          },
+          "agentVMSize": {
+            "value": "[variables('agentPools')[copyIndex()].vmSize]"
+          },
+          "subnetName": {
+            "value": "[variables('subnetName')]"
+          },
+          "virtualNetworkName": {
+            "value": "[variables('vnetName')]"
+          },
+          "virtualNetworkResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "kubernetesVersion": {
+            "value": "[parameters('kubernetesVersion')]"
+          },
+          "osType": {
+            "value": "[variables('agentPools')[copyIndex()].os]"
+          },
+          "nodeTaints": {
+            "value": "[variables('agentPools')[copyIndex()].nodeTaints]"
+          }
+        }
+      },
+      "copy": {
+        "name": "agentPoolCopy",
+        "count": "[length(variables('agentPools'))]"
+      },
+      "dependsOn": [
+        "[parameters('clusterName')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "clusterName": {
+      "type": "string",
+      "value": "[parameters('clusterName')]"
+    }
+  }
+}

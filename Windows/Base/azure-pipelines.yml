@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Container Instances/Base/Windows/*"
+      - "Windows/Base/*"
     exclude:
       - "*"
 
@@ -26,15 +26,15 @@ variables:
   IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-agent-win"
 
 steps:
-  - script: docker pull $(IMAGE_NAME):latest || true
-    displayName: "Pull latest docker image to cache"
+  # - script: docker pull $(IMAGE_NAME):latest || true
+  #   displayName: "Pull latest docker image to cache"
 
   - task: Docker@2
     displayName: Build image
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Container Instances/Base/Windows/Dockerfile"
+      Dockerfile: "Windows/Base/Dockerfile"
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2

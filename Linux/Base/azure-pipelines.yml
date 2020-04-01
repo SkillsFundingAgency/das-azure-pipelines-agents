@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Kubernetes/Base/Linux/*"
+      - "Linux/Base/*"
     exclude:
       - "*"
 
@@ -39,7 +39,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Kubernetes/Base/Linux/Dockerfile
+      dockerFile: Linux/Base/Dockerfile
       addDefaultLabels: false
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
@@ -49,21 +49,19 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Kubernetes/Base/Linux/Dockerfile
+      dockerFile: Linux/Base/Dockerfile
       addDefaultLabels: false
       arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
   - task: Docker@1
     displayName: Docker Hub login
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       command: "login"
       containerregistrytype: Container Registry
       dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
 
   - task: Docker@1
-    displayName: Push tagged image if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: Push tagged image
     inputs:
       command: Push an image
       imageName: $(IMAGE_NAME_WITH_TAG)

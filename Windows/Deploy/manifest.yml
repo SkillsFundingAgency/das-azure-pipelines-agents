@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-pipelines-deploy-agent-win
+spec:
+  replicas: __agentCount__
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: azure-pipelines-deploy-agent-win
+  template:
+    metadata:
+      labels:
+        app: azure-pipelines-deploy-agent-win
+    spec:
+      terminationGracePeriodSeconds: 300
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - windows
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - azure-pipelines-deploy-agent-win
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+      containers:
+        - name: azure-pipelines-deploy-agent-win
+          image: apprenticeshipsdevops/azure-pipelines-deploy-agent-win:__ImageVersion__
+          env:
+            - name: AZP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_URL
+            - name: AZP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_TOKEN
+            - name: AZP_POOL
+              value: DAS - Continuous Deployment
+            - name: NUGET_PACKAGES
+              value: "D:\\nugetcache\\packages"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - mountPath: "/D/nugetcache"
+              name: nuget-cache
+      tolerations:
+        - key: agent-os
+          operator: Equal
+          value: windows
+          effect: NoSchedule
+      volumes:
+        - name: nuget-cache
+          hostPath:
+            path: "/D/nugetcache"
+            type: DirectoryOrCreate
