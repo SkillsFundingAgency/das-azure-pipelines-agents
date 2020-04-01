@@ -55,6 +55,11 @@ spec:
           volumeMounts:
             - mountPath: "/D/nugetcache"
               name: nuget-cache
+      tolerations:
+        - key: agent-os
+          operator: Equal
+          value: windows
+          effect: NoSchedule
       volumes:
         - name: nuget-cache
           hostPath:

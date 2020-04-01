@@ -57,6 +57,11 @@ spec:
               name: docker-volume
             - mountPath: "/mnt/nugetcache"
               name: nuget-cache
+      tolerations:
+        - key: agent-os
+          operator: Equal
+          value: linux
+          effect: NoSchedule
       volumes:
         - name: docker-volume
           hostPath:
