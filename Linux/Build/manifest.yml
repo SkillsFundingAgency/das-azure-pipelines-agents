@@ -19,10 +19,14 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: agentpool
+                  - key: kubernetes.io/os
                     operator: In
                     values:
-                      - __agentPoolName__
+                      - linux
+                  - key: agentpool
+                    operator: NotIn
+                    values:
+                      - system
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
