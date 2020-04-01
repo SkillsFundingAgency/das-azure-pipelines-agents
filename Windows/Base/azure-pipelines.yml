@@ -26,8 +26,8 @@ variables:
   IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-agent-win"
 
 steps:
-  - script: docker pull $(IMAGE_NAME):latest || true
-    displayName: "Pull latest docker image to cache"
+  # - script: docker pull $(IMAGE_NAME):latest || true
+  #   displayName: "Pull latest docker image to cache"
 
   - task: Docker@2
     displayName: Build image

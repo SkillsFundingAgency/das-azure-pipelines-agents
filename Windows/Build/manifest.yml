@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-pipelines-deploy-agent-win
+  name: azure-pipelines-build-agent-win
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: azure-pipelines-deploy-agent-win
+      app: azure-pipelines-build-agent-win
   template:
     metadata:
       labels:
-        app: azure-pipelines-deploy-agent-win
+        app: azure-pipelines-build-agent-win
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -19,10 +19,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/os
+                  - key: agentpool
                     operator: In
                     values:
-                      - windows
+                      - __agentPoolName__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -32,11 +32,11 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - azure-pipelines-deploy-agent-win
+                        - azure-pipelines-build-agent-win
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: azure-pipelines-deploy-agent-win
-          image: apprenticeshipsdevops/azure-pipelines-deploy-agent-win:__ImageVersion__
+        - name: azure-pipelines-build-agent-win
+          image: apprenticeshipsdevops/azure-pipelines-build-agent-win:__ImageVersion__
           env:
             - name: AZP_URL
               valueFrom:
@@ -49,9 +49,9 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Deployment
+              value: DAS - Continuous Integration
             - name: NUGET_PACKAGES
-              value: "D:\\nugetcache\\packages"
+              value: "C:\\d\\nugetcache\\packages"
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -59,11 +59,6 @@ spec:
           volumeMounts:
             - mountPath: "/D/nugetcache"
               name: nuget-cache
-      tolerations:
-        - key: agent-os
-          operator: Equal
-          value: windows
-          effect: NoSchedule
       volumes:
         - name: nuget-cache
           hostPath:

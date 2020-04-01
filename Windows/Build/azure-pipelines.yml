@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Windows/Deploy/*"
+      - "Windows/Build/*"
     exclude:
       - "*"
 
@@ -15,7 +15,7 @@ pool:
   vmImage: "windows-2019"
 
 variables:
-  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-deploy-agent-win"
+  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-build-agent-win"
 
 steps:
   - pwsh: Write-Output "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$($env:IMAGE_NAME):$($env:BUILD_BUILDNUMBER)"
@@ -31,7 +31,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Windows/Deploy/Dockerfile
+      dockerFile: Windows/Build/Dockerfile
       addDefaultLabels: false
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
@@ -41,7 +41,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Windows/Deploy/Dockerfile
+      dockerFile: Windows/Build/Dockerfile
       addDefaultLabels: false
       arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
@@ -69,7 +69,7 @@ steps:
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Windows/Deploy/manifest.yml
+        Windows/Build/manifest.yml
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
