@@ -41,11 +41,17 @@ RUN curl -L -o "%TEMP%\vs_TestAgent.exe" https://download.visualstudio.microsoft
   && setx /M VSTest "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\CommonExtensions\Microsoft\TestWindow" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
-#Install dotnet sdk 2.2
+ENV DOTNET_VERSION 2.2.207
+
+#Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
-  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version '2.2.207' \
+  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
+
+#Pin dotnet version
+RUN cd C:\azp\agent\_work \
+  && dotnet new globaljson --sdk-version %DOTNET_VERSION%
 
 #Warmup dotnet sdk
 RUN mkdir C:\warmup \
