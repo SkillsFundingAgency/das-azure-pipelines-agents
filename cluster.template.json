@@ -47,6 +47,21 @@
       "type": "int",
       "defaultValue": 2,
       "minValue": 1
+    },
+    "logAnalyticsResourceGroup": {
+      "type": "string"
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string"
+    },
+    "aadClientAppId": {
+      "type": "string"
+    },
+    "aadServerAppId": {
+      "type":"string"
+    },
+    "aadServerAppSecret": {
+      "type": "securestring"
     }
   },
   "variables": {
@@ -73,7 +88,8 @@
           "agent-os=windows:NoSchedule"
         ]
       }
-    ]
+    ],
+    "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
   },
   "resources": [
     {
@@ -120,6 +136,20 @@
         "servicePrincipalProfile": {
           "clientId": "msi",
           "secret": null
+        },
+        "aadProfile": {
+          "clientAppID": "[parameters('aadClientAppId')]",
+          "serverAppID": "[parameters('aadServerAppId')]",
+          "serverAppSecret": "[parameters('aadServerAppSecret')]",
+          "tenantID": "[subscription().tenantID]"
+        },
+        "addonProfiles": {
+          "omsagent": {
+            "enabled": true,
+            "config": {
+              "logAnalyticsWorkspaceResourceID": "[variables('logAnalyticsId')]"
+            }
+          }
         },
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "enableRBAC": true,
@@ -175,9 +205,6 @@
           },
           "osType": {
             "value": "[variables('agentPools')[copyIndex()].os]"
-          },
-          "nodeTaints": {
-            "value": "[variables('agentPools')[copyIndex()].nodeTaints]"
           }
         }
       },
