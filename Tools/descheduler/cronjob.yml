@@ -9,22 +9,23 @@ spec:
   concurrencyPolicy: "Forbid"
   jobTemplate:
     spec:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/os
-                  operator: In
-                  values:
-                    - linux
-                - key: agentpool
-                  operator: In
-                  values:
-                    - system
       template:
         metadata:
           name: descheduler-pod
         spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/os
+                        operator: In
+                        values:
+                          - linux
+                      - key: agentpool
+                        operator: In
+                        values:
+                          - system
           priorityClassName: system-cluster-critical
           containers:
           - name: descheduler
