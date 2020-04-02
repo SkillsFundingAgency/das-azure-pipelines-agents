@@ -1,0 +1,37 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - "Tools/*"
+    exclude:
+      - "*"
+
+pr: none
+
+pool:
+  vmImage: "Ubuntu-16.04"
+
+steps:
+  - task: Docker@1
+    displayName: Validate manifests
+    inputs:
+      command: Run an image
+      imageName: garethr/kubeval
+      arguments:  -d /Tools
+      volumes: Tools:/Tools
+
+  - task: CopyFiles@2
+    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    inputs:
+      Contents: |
+        Tools/*
+      TargetFolder: "$(build.artifactstagingdirectory)/publish"
+      OverWrite: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact"
+    inputs:
+      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
