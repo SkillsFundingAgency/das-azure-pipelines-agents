@@ -15,12 +15,8 @@ pool:
   vmImage: "Ubuntu-16.04"
 
 steps:
-  - task: Docker@1
+  - script: docker run -t -v `pwd`/Tools:/Tools garethr/kubeval Tools/*
     displayName: Validate manifests
-    inputs:
-      command: Run an image
-      imageName: garethr/kubeval -d Tools/*
-      volumes: Tools:/Tools
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
