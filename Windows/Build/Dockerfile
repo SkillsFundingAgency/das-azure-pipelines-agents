@@ -33,7 +33,7 @@ RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildt
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
-  && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\"" \
+  && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 # Install VS Test Agent
