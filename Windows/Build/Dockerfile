@@ -50,6 +50,5 @@ RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 #Pin dotnet version
-RUN mkdir C:\azp\agent\_work \
-  && cd C:\azp\agent\_work \
+RUN cd C:\azp \
   && dotnet new globaljson --sdk-version %DOTNET_VERSION%
