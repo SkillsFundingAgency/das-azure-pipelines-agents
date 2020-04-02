@@ -20,7 +20,7 @@ steps:
     inputs:
       command: Run an image
       imageName: garethr/kubeval
-      arguments: /Tools/*
+      arguments: Tools/*
       volumes: Tools:/Tools
 
   - task: CopyFiles@2
