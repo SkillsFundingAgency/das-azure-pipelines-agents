@@ -47,6 +47,7 @@ ENV DOTNET_VERSION 2.2.207
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
   && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
+  && setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 #Pin dotnet version
