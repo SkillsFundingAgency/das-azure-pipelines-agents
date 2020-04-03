@@ -22,7 +22,7 @@ steps:
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Tools/*
+        Tools/**
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
