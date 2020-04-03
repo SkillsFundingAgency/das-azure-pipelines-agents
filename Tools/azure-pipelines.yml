@@ -15,8 +15,9 @@ pool:
   vmImage: "Ubuntu-16.04"
 
 steps:
-  - script: docker run -t -v `pwd`/Tools:/Tools garethr/kubeval Tools/*
+  - script: docker run -t -v `pwd`/Tools:/Tools garethr/kubeval -d kured, descheduler
     displayName: Validate manifests
+    workingDirectory: Tools
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
