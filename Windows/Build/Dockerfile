@@ -20,12 +20,14 @@ RUN choco install \
   && rmdir /S /Q C:\chococache
 
 # Install Build Tools with workloads, excluding components with known issues.
-RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
+RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
+  && curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
   && "%TEMP%\vs_buildtools.exe" --quiet --wait --norestart --nocache \
   --add Microsoft.VisualStudio.Workload.AzureBuildTools \
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
   --add Microsoft.VisualStudio.Workload.NetCoreBuildTools \
   --add Microsoft.VisualStudio.Workload.WebBuildTools \
+  --add Microsoft.VisualStudio.Component.TestTools.BuildTools \
   --add Microsoft.VisualStudio.Component.SQL.SSDTBuildSku \
   --add Microsoft.Net.Component.4.6.2.TargetingPack \
   --add Microsoft.VisualStudio.Component.WebDeploy \
@@ -36,13 +38,6 @@ RUN curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildt
   && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
-# Install VS Test Agent
-RUN curl -L -o "%TEMP%\vs_TestAgent.exe" https://download.visualstudio.microsoft.com/download/pr/220fe621-dd35-4fc0-a32e-10ff6f4551cd/0baf634f22467a27b6f7b2fe8d9e687dd0876864d5a0b4ee9291110ac4baaa16/vs_TestAgent.exe \
-  && start /w %TEMP%\vs_TestAgent.exe --quiet --norestart --nocache --wait \
-  && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\Extensions\TestPlatform" \
-  && setx /M VSTest "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\Extensions\TestPlatform" \
-  && setx /M VSTest_16.0 "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\Extensions\TestPlatform" \
-  && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 ENV DOTNET_VERSION 2.2.207
 
@@ -50,7 +45,6 @@ ENV DOTNET_VERSION 2.2.207
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
   && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
-  && setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 #Pin dotnet version
