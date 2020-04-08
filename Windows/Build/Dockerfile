@@ -19,7 +19,7 @@ RUN choco install \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
   
-RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
+RUN @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
 
 # Install Build Tools with workloads, excluding components with known issues.
 RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
