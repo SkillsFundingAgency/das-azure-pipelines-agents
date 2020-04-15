@@ -19,6 +19,8 @@ RUN choco install \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
+RUN  @pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer, Pester -Force"
+
 # Install Build Tools with workloads, excluding components with known issues.
 RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
