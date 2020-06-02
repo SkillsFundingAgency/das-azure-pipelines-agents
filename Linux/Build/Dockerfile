@@ -102,7 +102,8 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && rm -rf /etc/apt/sources.list.d/*
 
 # Install Powershell Modules
-RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Pester -RequiredVersion 4.10.1, Az, Az.CosmosDb, AWSPowerShell.NetCore -Scope AllUsers -Force'
+RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Az, Az.CosmosDb, AWSPowerShell.NetCore -Scope AllUsers -Force'
+RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
 
 # Install Docker
 ENV DOCKER_CHANNEL stable
