@@ -19,7 +19,8 @@ RUN choco install \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
-RUN  @pwsh -NoProfile -Command "Install-Module Az, PSScriptAnalyzer, Pester -RequiredVersion 4.10.1 -Force"
+RUN  @pwsh -NoProfile -Command "Install-Module Az, PSScriptAnalyzer -Force"
+RUN  @pwsh -NoProfile -Command "Install-Module Pester -RequiredVersion 4.10.1 -Force"
 
 # Install Build Tools with workloads, excluding components with known issues.
 RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
