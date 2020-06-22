@@ -74,7 +74,7 @@
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_DS2_v2",
+        "vmSize": "Standard_D4ds_v4",
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
         ]
