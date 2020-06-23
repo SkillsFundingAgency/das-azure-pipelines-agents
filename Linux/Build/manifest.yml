@@ -41,6 +41,9 @@ spec:
       containers:
         - name: azure-pipelines-build-agent
           image: apprenticeshipsdevops/azure-pipelines-build-agent:__ImageVersion__
+          resources:
+            requests:
+              memory: 512Mi
           env:
             - name: AZP_URL
               valueFrom:
