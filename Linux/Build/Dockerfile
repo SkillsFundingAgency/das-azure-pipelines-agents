@@ -69,13 +69,25 @@ RUN curl https://sqlpackage.blob.core.windows.net/preview/sqlpackage-linux-x64-1
   && apt-get install libicu55
 ENV PATH=$PATH:/usr/share/sqlpackage
 
-# Install .NET Core SDK and initialize package cache
+# Install 2.2 .NET Core SDK and initialize package cache
 RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
   && rm packages-microsoft-prod.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   dotnet-sdk-2.2=2.2.207-1 \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /etc/apt/sources.list.d/*
+RUN dotnet help
+ENV dotnet=/usr/bin/dotnet
+
+# Install 3.1 .NET Core SDK and initialize package cache
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
+  && dpkg -i packages-microsoft-prod.deb \
+  && rm packages-microsoft-prod.deb \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+  dotnet-sdk-3.1 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
