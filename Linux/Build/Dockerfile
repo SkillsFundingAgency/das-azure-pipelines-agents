@@ -76,6 +76,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-p
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   dotnet-sdk-2.2=2.2.207-1 \
+  dotnet-sdk-3.1 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
