@@ -42,10 +42,9 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 
-ENV DOTNET_VERSION 2.2.207
-
 #Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
-  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
+  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet'
+  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version 2.2.207 \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
