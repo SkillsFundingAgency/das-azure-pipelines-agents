@@ -40,16 +40,3 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
   && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
-
-
-ENV DOTNET_VERSION 2.2.207
-
-#Install dotnet sdk
-RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
-  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
-  && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
-  && powershell Remove-Item -Force -Recurse "%TEMP%\*"
-
-#Pin dotnet version
-RUN cd C:\azp \
-  && dotnet new globaljson --sdk-version %DOTNET_VERSION%
