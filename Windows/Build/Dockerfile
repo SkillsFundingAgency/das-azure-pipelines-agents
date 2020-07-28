@@ -49,3 +49,9 @@ RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1
   && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
+
+RUN mkdir C:\warmup \
+  && cd C:\warmup \
+  && dotnet new \
+  && cd .. \
+  && rmdir /S /Q C:\warmup

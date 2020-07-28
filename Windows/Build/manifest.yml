@@ -62,7 +62,6 @@ spec:
           volumeMounts:
             - mountPath: "/D/nugetcache"
               name: nuget-cache
-          dnsPolicy: Default
       volumes:
         - name: nuget-cache
           hostPath:
