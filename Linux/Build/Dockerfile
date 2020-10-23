@@ -39,6 +39,12 @@ RUN apt-get update \
   build-essential \
   && rm -rf /var/lib/apt/lists/*
 
+# Install add-apt-repository
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  software-properties-common \
+  && rm -rf /var/lib/apt/lists/*
+
 # Install Java OpenJDK
 RUN add-apt-repository -y ppa:openjdk-r/ppa \
   && apt-get update \
