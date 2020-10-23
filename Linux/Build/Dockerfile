@@ -40,7 +40,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Java OpenJDK
-RUN add-apt-repository ppa:openjdk-r/ppa \
+RUN add-apt-repository -y ppa:openjdk-r/ppa \
   && apt-get update \
   && apt-get install -y --no-install-recommends openjdk-11-jdk \
   && rm -rf /var/lib/apt/lists/*
