@@ -13,7 +13,7 @@ RUN choco install \
   git  \
   powershell-core \
   nodejs \
-  jdk8 \
+  openjdk \
   --confirm \
   --limit-output \
   --timeout 216000 \
