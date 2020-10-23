@@ -41,7 +41,7 @@ RUN apt-get update \
 
 # Install Java OpenJDK
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openjdk-15-jdk \
+  && apt-get install -y --no-install-recommends openjdk-11-jdk \
   && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
