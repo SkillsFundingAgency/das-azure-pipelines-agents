@@ -13,11 +13,10 @@ RUN choco install \
   git  \
   powershell-core \
   nodejs \
+  openjdk11 \
   --confirm \
   --limit-output \
-  --timeout 216000
-
-RUN choco install openjdk --version=11.0.2.01 --confirm --limit-output --timeout 216000 \
+  --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az, PSScriptAnalyzer -Force"
