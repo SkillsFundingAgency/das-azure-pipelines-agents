@@ -19,6 +19,9 @@ RUN choco install \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
+#Set Java env variable as VSTS Agent Capabilities uses that as the Java Capability
+RUN  @pwsh -NoProfile -Command "$Env:Java = $Env:JAVA_HOME"
+
 RUN  @pwsh -NoProfile -Command "Install-Module Az, PSScriptAnalyzer -Force"
 RUN  @pwsh -NoProfile -Command "Install-Module Pester -RequiredVersion 4.10.1 -Force"
 
