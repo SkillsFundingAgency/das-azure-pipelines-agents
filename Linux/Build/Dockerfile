@@ -9,6 +9,7 @@ RUN apt-get update \
   dnsutils \
   file \
   ftp \
+  gnupg \
   iproute2 \
   iputils-ping \
   locales \
@@ -39,23 +40,15 @@ RUN apt-get update \
   build-essential \
   && rm -rf /var/lib/apt/lists/*
 
-# Install add-apt-repository
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-  software-properties-common \
-  && rm -rf /var/lib/apt/lists/*
-
 # Install Java OpenJDK
-RUN add-apt-repository -y ppa:openjdk-r/ppa \
-  && apt-get update \
+RUN apt-get update \
   && apt-get install -y --no-install-recommends openjdk-11-jdk \
   && rm -rf /var/lib/apt/lists/*
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
-RUN [ "xenial" = "xenial" ] \
-  && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+  && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   mssql-tools \
@@ -72,11 +65,11 @@ RUN curl https://sqlpackage.blob.core.windows.net/preview/sqlpackage-linux-x64-1
   && chmod a+x /usr/share/sqlpackage/sqlpackage \
   && rm sqlpackage-linux-x64.zip \
   && apt-get install libunwind8 \
-  && apt-get install libicu55
+  && apt-get install libicu60
 ENV PATH=$PATH:/usr/share/sqlpackage
 
 # Install .NET Core SDK and initialize package cache
-RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
   && rm packages-microsoft-prod.deb \
   && apt-get update \
@@ -101,7 +94,7 @@ ENV grunt=/usr/local/bin/grunt
 
 # Install Powershell Core
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
+  && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   powershell \
