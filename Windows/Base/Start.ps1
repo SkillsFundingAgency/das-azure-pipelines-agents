@@ -13,6 +13,9 @@ if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
 	$Env:AZP_TOKEN | Out-File -FilePath $Env:AZP_TOKEN_FILE
 }
 
+#This is to account for a bug with agent capabilites not picking up java for OpenJDK. JAVA_HOME get sets by the chocolatey install so copy it from there.
+$Env:Java = $Env:JAVA_HOME
+
 Remove-Item Env:AZP_TOKEN
 
 if ($Env:AZP_WORK -and -not (Test-Path Env:AZP_WORK)) {
