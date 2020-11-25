@@ -42,13 +42,17 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 
-ENV DOTNET_VERSION 2.2.207
+ENV DOTNET_VERSION 3.1.10
 
 #Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
   && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Version $env:DOTNET_VERSION \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
+
+#Pin dotnet version
+RUN cd C:\azp \
+  && dotnet new globaljson --sdk-version %DOTNET_VERSION%
 
 #Warmup required to stop dotnet-install being ran on startup
 RUN mkdir C:\warmup \
