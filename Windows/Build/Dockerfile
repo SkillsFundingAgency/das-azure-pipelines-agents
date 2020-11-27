@@ -50,7 +50,7 @@ RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
-ENV PINNED_DOTNET_VERSION 3.1.10
+ENV PINNED_DOTNET_VERSION 3.1.404
 
 #Pin dotnet version
 RUN cd C:\azp \
