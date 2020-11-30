@@ -54,7 +54,7 @@ ENV PINNED_DOTNET_VERSION 3.1.404
 
 #Pin dotnet version
 RUN cd C:\azp \
-  && dotnet new globaljson --sdk-version %PINNED_DOTNET_VERSION%
+  && dotnet new globaljson --sdk-version $env:PINNED_DOTNET_VERSION
 
 #Warmup required to stop dotnet-install being ran on startup
 RUN mkdir C:\warmup \
