@@ -40,6 +40,9 @@
       "defaultValue": 2,
       "minValue": 1
     },
+    "windowsNodeKubernetesVersion": {
+      "type": "string"
+    },
     "linuxPoolName": {
       "type": "string"
     },
@@ -47,6 +50,9 @@
       "type": "int",
       "defaultValue": 2,
       "minValue": 1
+    },
+    "linuxNodeKubernetesVersion": {
+      "type": "string"
     },
     "logAnalyticsResourceGroup": {
       "type": "string"
@@ -74,19 +80,21 @@
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_D4ds_v4",
+        "vmSize": "Standard_D8as_v4",
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
-        ]
+        ],
+        "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]"
       },
       {
         "name": "[parameters('windowsPoolName')]",
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
-        "vmSize": "Standard_D4ds_v4",
+        "vmSize": "Standard_D8as_v4",
         "nodeTaints": [
           "agent-os=windows:NoSchedule"
-        ]
+        ],
+        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]"
       }
     ],
     "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
@@ -201,7 +209,7 @@
             "value": "[resourceGroup().name]"
           },
           "kubernetesVersion": {
-            "value": "[parameters('kubernetesVersion')]"
+            "value": "[variables('agentPools')[copyIndex()].kubernetesVersion]"
           },
           "osType": {
             "value": "[variables('agentPools')[copyIndex()].os]"
