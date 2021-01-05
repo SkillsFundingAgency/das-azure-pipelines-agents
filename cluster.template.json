@@ -203,7 +203,7 @@
             "value": "[resourceGroup().name]"
           },
           "kubernetesVersion": {
-            "value": "[variables('agentPools')[copyIndex()].kubernetesVersion]"
+            "value": "1.18.10"
           },
           "osType": {
             "value": "[variables('agentPools')[copyIndex()].os]"
