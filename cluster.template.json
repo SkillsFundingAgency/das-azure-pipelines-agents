@@ -145,12 +145,6 @@
           "clientId": "msi",
           "secret": null
         },
-        "aadProfile": {
-          "clientAppID": "[parameters('aadClientAppId')]",
-          "serverAppID": "[parameters('aadServerAppId')]",
-          "serverAppSecret": "[parameters('aadServerAppSecret')]",
-          "tenantID": "[subscription().tenantID]"
-        },
         "addonProfiles": {
           "omsagent": {
             "enabled": true,
