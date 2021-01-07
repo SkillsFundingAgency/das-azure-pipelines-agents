@@ -77,20 +77,20 @@
     "subnetName": "agent-aks",
     "agentPools": [
       {
-        "name": "[parameters('linuxPoolName')]",
+        "name": "linux2",
         "os": "Linux",
-        "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_D8as_v4",
+        "nodeCount": 1,
+        "vmSize": "Standard_B2s",
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
         ],
         "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]"
       },
       {
-        "name": "[parameters('windowsPoolName')]",
+        "name": "wndws2",
         "os": "Windows",
-        "nodeCount": "[parameters('windowsNodeCount')]",
-        "vmSize": "Standard_D8as_v4",
+        "nodeCount": 1,
+        "vmSize": "Standard_B2s",
         "nodeTaints": [
           "agent-os=windows:NoSchedule"
         ],
@@ -201,7 +201,7 @@
     },
     {
       "apiVersion": "2020-06-01",
-      "name": "build-agent-pool-windows-test",
+      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -238,6 +238,54 @@
             "value": "Windows"
           }
         }
+      },
+      "dependsOn": [
+        "[parameters('clusterName')]"
+      ]
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'aks-agent-pool.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "agentPoolName": {
+            "value": "[variables('agentPools')[copyIndex()].name]"
+          },
+          "agentNodeCount": {
+            "value": "[variables('agentPools')[copyIndex()].nodeCount]"
+          },
+          "agentVMSize": {
+            "value": "[variables('agentPools')[copyIndex()].vmSize]"
+          },
+          "subnetName": {
+            "value": "[variables('subnetName')]"
+          },
+          "virtualNetworkName": {
+            "value": "[variables('vnetName')]"
+          },
+          "virtualNetworkResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "kubernetesVersion": {
+            "value": "[variables('agentPools')[copyIndex()].kubernetesVersion]"
+          },
+          "osType": {
+            "value": "[variables('agentPools')[copyIndex()].os]"
+          }
+        }
+      },
+      "copy": {
+        "name": "agentPoolCopy",
+        "count": "[length(variables('agentPools'))]"
       },
       "dependsOn": [
         "[parameters('clusterName')]"
