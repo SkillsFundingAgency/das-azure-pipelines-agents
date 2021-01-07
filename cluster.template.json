@@ -217,7 +217,7 @@
             "value": "wndws1"
           },
           "agentNodeCount": {
-            "value": "1"
+            "value": 1
           },
           "agentVMSize": {
             "value": "Standard_D8as_v4"
