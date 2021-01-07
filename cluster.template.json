@@ -198,6 +198,50 @@
       "dependsOn": [
         "[variables('vnetName')]"
       ]
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'aks-agent-pool.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "agentPoolName": {
+            "value": "wndws1"
+          },
+          "agentNodeCount": {
+            "value": "1"
+          },
+          "agentVMSize": {
+            "value": "Standard_D8as_v4"
+          },
+          "subnetName": {
+            "value": "[variables('subnetName')]"
+          },
+          "virtualNetworkName": {
+            "value": "[variables('vnetName')]"
+          },
+          "virtualNetworkResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "kubernetesVersion": {
+            "value": "1.18.10"
+          },
+          "osType": {
+            "value": "Windows"
+          }
+        }
+      },
+      "dependsOn": [
+        "[parameters('clusterName')]"
+      ]
     }
   ],
   "outputs": {
