@@ -201,7 +201,7 @@
     },
     {
       "apiVersion": "2020-06-01",
-      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
+      "name": "build-agent-pool-test",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
