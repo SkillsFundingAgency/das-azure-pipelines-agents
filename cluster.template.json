@@ -77,16 +77,6 @@
     "subnetName": "agent-aks",
     "agentPools": [
       {
-        "name": "system",
-        "os": "Linux",
-        "nodeCount": 2,
-        "vmSize": "Standard_B2s",
-        "nodeTaints": [
-          "agent-os=linux:NoSchedule"
-        ],
-        "kubernetesVersion": "[parameters('kubernetesVersion')]"
-      },
-      {
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
@@ -138,10 +128,46 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "mode": "Incremental",
-        "kubernetesVersion": "[parameters('kubernetesVersion')]",
         "dnsPrefix": "[parameters('clusterName')]",
         "agentPoolProfiles": [
-
+          {
+            "name": "system",
+            "count": 2,
+            "vmSize": "Standard_B2s",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+          },
+          {
+            "name": "[parameters('linuxPoolName')]",
+            "count": "[parameters('linuxNodeCount')]",
+            "osType": "Linux",
+            "vmSize": "Standard_D8as_v4",
+            "orchestratorVersion": "1.18.10",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
+            "nodeTaints": [
+              "agent-os=linux:NoSchedule"
+            ]
+          },
+          {
+            "name": "[parameters('windowsPoolName')]",
+            "count": "[parameters('windowsNodeCount')]",
+            "osType": "Windows",
+            "vmSize": "Standard_D8as_v4",
+            "orchestratorVersion": "1.18.10",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
+            "nodeTaints": [
+              "agent-os=windows:NoSchedule"
+            ]
+          }
         ],
         "windowsProfile": "[parameters('windowsProfile')]",
         "servicePrincipalProfile": {
@@ -171,54 +197,6 @@
       },
       "dependsOn": [
         "[variables('vnetName')]"
-      ]
-    },
-    {
-      "apiVersion": "2020-06-01",
-      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'aks-agent-pool.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "clusterName": {
-            "value": "[parameters('clusterName')]"
-          },
-          "agentPoolName": {
-            "value": "[variables('agentPools')[copyIndex()].name]"
-          },
-          "agentNodeCount": {
-            "value": "[variables('agentPools')[copyIndex()].nodeCount]"
-          },
-          "agentVMSize": {
-            "value": "[variables('agentPools')[copyIndex()].vmSize]"
-          },
-          "subnetName": {
-            "value": "[variables('subnetName')]"
-          },
-          "virtualNetworkName": {
-            "value": "[variables('vnetName')]"
-          },
-          "virtualNetworkResourceGroup": {
-            "value": "[resourceGroup().name]"
-          },
-          "kubernetesVersion": {
-            "value": "[variables('agentPools')[copyIndex()].kubernetesVersion]"
-          },
-          "osType": {
-            "value": "[variables('agentPools')[copyIndex()].os]"
-          }
-        }
-      },
-      "copy": {
-        "name": "agentPoolCopy",
-        "count": "[length(variables('agentPools'))]"
-      },
-      "dependsOn": [
-        "[parameters('clusterName')]"
       ]
     }
   ],
