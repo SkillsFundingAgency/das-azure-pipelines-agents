@@ -90,7 +90,7 @@
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_D8as_v4",
+        "vmSize": "Standard_B2s",
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
         ],
@@ -100,7 +100,7 @@
         "name": "[parameters('windowsPoolName')]",
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
-        "vmSize": "Standard_D8as_v4",
+        "vmSize": "Standard_B2s",
         "nodeTaints": [
           "agent-os=windows:NoSchedule"
         ],
