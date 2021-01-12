@@ -138,7 +138,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "mode": "Incremental",
-        "kubernetesVersion": "[parameters('kubernetesVersion')]",
         "dnsPrefix": "[parameters('clusterName')]",
         "agentPoolProfiles": [
 
