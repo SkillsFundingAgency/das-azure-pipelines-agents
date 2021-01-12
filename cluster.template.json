@@ -77,7 +77,7 @@
     "subnetName": "agent-aks",
     "agentPools": [
       {
-        "name": "linux1",
+        "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
         "vmSize": "Standard_D8as_v4",
@@ -87,7 +87,7 @@
         "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]"
       },
       {
-        "name": "wndws1",
+        "name": "[parameters('windowsPoolName')]",
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
         "vmSize": "Standard_D8as_v4",
@@ -95,7 +95,8 @@
           "agent-os=windows:NoSchedule"
         ],
         "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]"
-      }
+      },
+
     ],
     "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
   },
@@ -127,6 +128,7 @@
       "apiVersion": "2020-02-01",
       "location": "[resourceGroup().location]",
       "properties": {
+        "mode": "Incremental",
         "kubernetesVersion": "[parameters('kubernetesVersion')]",
         "dnsPrefix": "[parameters('clusterName')]",
         "agentPoolProfiles": [
