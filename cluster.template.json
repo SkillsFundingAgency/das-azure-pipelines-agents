@@ -139,9 +139,6 @@
       "properties": {
         "mode": "Incremental",
         "dnsPrefix": "[parameters('clusterName')]",
-        "agentPoolProfiles": [
-
-        ],
         "windowsProfile": "[parameters('windowsProfile')]",
         "servicePrincipalProfile": {
           "clientId": "msi",
