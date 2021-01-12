@@ -95,8 +95,7 @@
           "agent-os=windows:NoSchedule"
         ],
         "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]"
-      },
-
+      }
     ],
     "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
   },
