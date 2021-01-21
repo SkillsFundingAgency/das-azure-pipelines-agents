@@ -77,17 +77,6 @@
     "subnetName": "agent-aks",
     "agentPools": [
       {
-        "name": "system",
-        "os": "Linux",
-        "nodeCount": 2,
-        "vmSize": "Standard_B2s",
-        "nodeTaints": [
-          "agent-os=linux:NoSchedule"
-        ],
-        "kubernetesVersion": "[parameters('kubernetesVersion')]",
-        "mode": "user"
-      },
-      {
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
@@ -103,17 +92,6 @@
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
         "vmSize": "Standard_D8as_v4",
-        "nodeTaints": [
-          "agent-os=windows:NoSchedule"
-        ],
-        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]",
-        "mode": "user"
-      },
-      {
-        "name": "test05",
-        "os": "Windows",
-        "nodeCount": 1,
-        "vmSize": "Standard_B2s",
         "nodeTaints": [
           "agent-os=windows:NoSchedule"
         ],
@@ -148,11 +126,33 @@
     {
       "name": "[parameters('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-02-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "mode": "Incremental",
         "dnsPrefix": "[parameters('clusterName')]",
+        "agentPoolProfiles": [
+          {
+            "name": "system",
+            "count": 2,
+            "vmSize": "Standard_B2s",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+          },
+          {
+            "name": "test05",
+            "count": 1,
+            "vmSize": "Standard_B2s",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+          }
+        ],
         "windowsProfile": "[parameters('windowsProfile')]",
         "servicePrincipalProfile": {
           "clientId": "msi",
