@@ -84,7 +84,8 @@
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
         ],
-        "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]"
+        "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]",
+        "mode": "user"
       },
       {
         "name": "[parameters('windowsPoolName')]",
@@ -94,7 +95,8 @@
         "nodeTaints": [
           "agent-os=windows:NoSchedule"
         ],
-        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]"
+        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]",
+        "mode": "user"
       }
     ],
     "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
@@ -134,6 +136,17 @@
             "name": "system",
             "count": 2,
             "vmSize": "Standard_B2s",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+          },
+          {
+            "name": "test05",
+            "count": 1,
+            "vmSize": "Standard_B2s",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
             "type": "VirtualMachineScaleSets",
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
@@ -144,12 +157,6 @@
         "servicePrincipalProfile": {
           "clientId": "msi",
           "secret": null
-        },
-        "aadProfile": {
-          "clientAppID": "[parameters('aadClientAppId')]",
-          "serverAppID": "[parameters('aadServerAppId')]",
-          "serverAppSecret": "[parameters('aadServerAppSecret')]",
-          "tenantID": "[subscription().tenantID]"
         },
         "addonProfiles": {
           "omsagent": {
@@ -177,7 +184,7 @@
       ]
     },
     {
-      "apiVersion": "2017-05-10",
+      "apiVersion": "2020-06-01",
       "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
