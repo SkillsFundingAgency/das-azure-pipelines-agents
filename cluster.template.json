@@ -148,7 +148,7 @@
     {
       "name": "[parameters('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2020-12-01",
+      "apiVersion": "2020-06-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "mode": "Incremental",
