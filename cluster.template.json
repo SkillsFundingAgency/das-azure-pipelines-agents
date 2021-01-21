@@ -84,27 +84,41 @@
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
         ],
-        "kubernetesVersion": "[parameters('kubernetesVersion')]"
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "mode": "user"
       },
       {
         "name": "[parameters('linuxPoolName')]",
         "os": "Linux",
         "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_B2s",
+        "vmSize": "Standard_D8as_v4",
         "nodeTaints": [
           "agent-os=linux:NoSchedule"
         ],
-        "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]"
+        "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]",
+        "mode": "user"
       },
       {
         "name": "[parameters('windowsPoolName')]",
         "os": "Windows",
         "nodeCount": "[parameters('windowsNodeCount')]",
+        "vmSize": "Standard_D8as_v4",
+        "nodeTaints": [
+          "agent-os=windows:NoSchedule"
+        ],
+        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]",
+        "mode": "user"
+      },
+      {
+        "name": "test05",
+        "os": "Windows",
+        "nodeCount": 1,
         "vmSize": "Standard_B2s",
         "nodeTaints": [
           "agent-os=windows:NoSchedule"
         ],
-        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]"
+        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]",
+        "mode": "user"
       }
     ],
     "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
