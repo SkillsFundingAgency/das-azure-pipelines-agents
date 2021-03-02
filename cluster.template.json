@@ -108,15 +108,15 @@
         "dnsPrefix": "[parameters('clusterName')]",
         "agentPoolProfiles": [
           {
-            "name": "system01",
+            "name": "system",
             "count": 2,
             "orchestratorVersion": "[parameters('kubernetesVersion')]",
-            "vmSize": "Standard_D2s_v3",
+            "vmSize": "Standard_B2s",
             "type": "VirtualMachineScaleSets",
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
             "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
-            "mode": "system"
+            "mode": "System"
           },
           {
             "name": "[parameters('linuxPoolName')]",
@@ -127,7 +127,7 @@
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
             "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
-            "mode": "user"
+            "mode": "User"
           },
           {
             "name": "[parameters('windowsPoolName')]",
@@ -138,7 +138,7 @@
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
             "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
-            "mode": "user"
+            "mode": "User"
           }
         ],
         "windowsProfile": "[parameters('windowsProfile')]",
