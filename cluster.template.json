@@ -147,9 +147,7 @@
           "secret": null
         },
         "aadProfile": {
-          "clientAppID": "[parameters('aadClientAppId')]",
-          "serverAppID": "[parameters('aadServerAppId')]",
-          "serverAppSecret": "[parameters('aadServerAppSecret')]",
+          "managed": true,
           "tenantID": "[subscription().tenantID]"
         },
         "addonProfiles": {
