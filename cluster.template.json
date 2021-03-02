@@ -131,13 +131,37 @@
         "dnsPrefix": "[parameters('clusterName')]",
         "agentPoolProfiles": [
           {
-            "name": "system",
+            "name": "system01",
             "count": 2,
-            "vmSize": "Standard_B2s",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
+            "vmSize": "Standard_D2s_v3",
             "type": "VirtualMachineScaleSets",
             "enableNodePublicIP": false,
             "storageProfile": "ManagedDisks",
-            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
+            "mode": "system"
+          },
+          {
+            "name": "[parameters('linuxPoolName')]",
+            "count": "[parameters('linuxNodeCount')]",
+            "orchestratorVersion": "[parameters('linuxNodeKubernetesVersion')]",
+            "vmSize": "Standard_D8as_v4",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
+            "mode": "user"
+          },
+          {
+            "name": "[parameters('windowsPoolName')]",
+            "count": "[parameters('windowsNodeCount')]",
+            "orchestratorVersion": "[parameters('windowsNodeKubernetesVersion')]",
+            "vmSize": "Standard_D8as_v4",
+            "type": "VirtualMachineScaleSets",
+            "enableNodePublicIP": false,
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]",
+            "mode": "user"
           }
         ],
         "windowsProfile": "[parameters('windowsProfile')]",
