@@ -59,7 +59,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
 # Install SqlPackage
-RUN curl https://aka.ms/sqlpackage-linux -o sqlpackage-linux-x64.zip \
+RUN curl -L https://aka.ms/sqlpackage-linux -o sqlpackage-linux-x64.zip \
   && mkdir /usr/share/sqlpackage \
   && unzip -d /usr/share/sqlpackage sqlpackage-linux-x64.zip \
   && chmod a+x /usr/share/sqlpackage/sqlpackage \
