@@ -58,16 +58,6 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   || echo -n
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
-# Install SqlPackage
-RUN curl -L https://aka.ms/sqlpackage-linux -o sqlpackage-linux-x64.zip \
-  && mkdir /usr/share/sqlpackage \
-  && unzip -d /usr/share/sqlpackage sqlpackage-linux-x64.zip \
-  && chmod a+x /usr/share/sqlpackage/sqlpackage \
-  && rm sqlpackage-linux-x64.zip \
-  && apt-get install libunwind8 \
-  && apt-get install libicu60
-ENV PATH=$PATH:/usr/share/sqlpackage
-
 # Install .NET Core SDK and initialize package cache
 RUN curl https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
