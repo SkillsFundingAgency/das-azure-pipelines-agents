@@ -71,32 +71,9 @@
     }
   },
   "variables": {
-    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
     "vnetName": "[concat(variables('resourceNamePrefix'), '-vnet')]",
     "subnetName": "agent-aks",
-    "agentPools": [
-      {
-        "name": "[parameters('linuxPoolName')]",
-        "os": "Linux",
-        "nodeCount": "[parameters('linuxNodeCount')]",
-        "vmSize": "Standard_D8as_v4",
-        "nodeTaints": [
-          "agent-os=linux:NoSchedule"
-        ],
-        "kubernetesVersion": "[parameters('linuxNodeKubernetesVersion')]"
-      },
-      {
-        "name": "[parameters('windowsPoolName')]",
-        "os": "Windows",
-        "nodeCount": "[parameters('windowsNodeCount')]",
-        "vmSize": "Standard_D8as_v4",
-        "nodeTaints": [
-          "agent-os=windows:NoSchedule"
-        ],
-        "kubernetesVersion": "[parameters('windowsNodeKubernetesVersion')]"
-      }
-    ],
     "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
   },
   "resources": [
@@ -124,7 +101,7 @@
     {
       "name": "[parameters('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2020-02-01",
+      "apiVersion": "2020-12-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "kubernetesVersion": "[parameters('kubernetesVersion')]",
@@ -198,54 +175,6 @@
       },
       "dependsOn": [
         "[variables('vnetName')]"
-      ]
-    },
-    {
-      "apiVersion": "2017-05-10",
-      "name": "[concat('build-agent-pool-', variables('agentPools')[copyIndex()].name)]",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'aks-agent-pool.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "clusterName": {
-            "value": "[parameters('clusterName')]"
-          },
-          "agentPoolName": {
-            "value": "[variables('agentPools')[copyIndex()].name]"
-          },
-          "agentNodeCount": {
-            "value": "[variables('agentPools')[copyIndex()].nodeCount]"
-          },
-          "agentVMSize": {
-            "value": "[variables('agentPools')[copyIndex()].vmSize]"
-          },
-          "subnetName": {
-            "value": "[variables('subnetName')]"
-          },
-          "virtualNetworkName": {
-            "value": "[variables('vnetName')]"
-          },
-          "virtualNetworkResourceGroup": {
-            "value": "[resourceGroup().name]"
-          },
-          "kubernetesVersion": {
-            "value": "[variables('agentPools')[copyIndex()].kubernetesVersion]"
-          },
-          "osType": {
-            "value": "[variables('agentPools')[copyIndex()].os]"
-          }
-        }
-      },
-      "copy": {
-        "name": "agentPoolCopy",
-        "count": "[length(variables('agentPools'))]"
-      },
-      "dependsOn": [
-        "[parameters('clusterName')]"
       ]
     }
   ],
