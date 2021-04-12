@@ -16,18 +16,22 @@ if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
 #This is to account for a bug with agent capabilites not picking up java for OpenJDK. JAVA_HOME get sets by the chocolatey install so copy it from there.
 $Env:Java = $Env:JAVA_HOME
 
-#This environment variable should be set in the build docker file as part of the SDK installation
-if (-not (Test-Path Env:LATEST_DOTNET_VERSION)) {
-	Write-Error "error: missing LATEST_DOTNET_VERSION environment variable"
-	exit 1
+if($Env:AZP_POOL -contains "Integration")
+{
+	#This environment variable should be set in the build docker file as part of the SDK installation
+	if (-not (Test-Path Env:LATEST_DOTNET_VERSION)) {
+		Write-Error "error: missing LATEST_DOTNET_VERSION environment variable"
+		exit 1
+	}
+	#Uses the X.X version specified during the install to dynamically fetch the latest X.X.X version so it can be pinned
+	$InstalledVersion = (dotnet --list-sdks).Split(' ') | Where-Object { $_ -like "$($Env:LATEST_DOTNET_VERSION)*" } | Sort-Object -Descending | Select-Object -First 1
+	if (!$InstalledVersion) {
+		Write-Error "DotNet $($Env:LATEST_DOTNET_VERSION) Version not found"
+		exit 1
+	}
+	dotnet new globaljson --sdk-version $InstalledVersion
 }
-#Uses the X.X version specified during the install to dynamically fetch the latest X.X.X version so it can be pinned
-$InstalledVersion = (dotnet --list-sdks).Split(' ') | Where-Object { $_ -like "$($Env:LATEST_DOTNET_VERSION)*" } | Sort-Object -Descending | Select-Object -First 1
-if(!$InstalledVersion){
-	Write-Error "DotNet $($Env:LATEST_DOTNET_VERSION) Version not found"
-	exit 1
-}
-dotnet new globaljson --sdk-version $InstalledVersion
+
 
 Remove-Item Env:AZP_TOKEN
 

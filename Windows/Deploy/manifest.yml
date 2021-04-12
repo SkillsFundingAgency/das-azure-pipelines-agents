@@ -19,10 +19,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/os
+                  - key: agentpool
                     operator: In
                     values:
-                      - windows
+                      - __agentPoolName__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -37,6 +37,9 @@ spec:
       containers:
         - name: azure-pipelines-deploy-agent-win
           image: apprenticeshipsdevops/azure-pipelines-deploy-agent-win:__ImageVersion__
+          resources:
+            requests:
+              memory: 512Mi
           env:
             - name: AZP_URL
               valueFrom:
@@ -49,7 +52,7 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Deployment
+              value: DAS - Continuous Deployment Beta
             - name: NUGET_PACKAGES
               value: "D:\\nugetcache\\packages"
             - name: POD_NAME
