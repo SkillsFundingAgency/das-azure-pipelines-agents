@@ -16,7 +16,7 @@ if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
 #This is to account for a bug with agent capabilites not picking up java for OpenJDK. JAVA_HOME get sets by the chocolatey install so copy it from there.
 $Env:Java = $Env:JAVA_HOME
 
-if($Env:AZP_POOL -contains "Integration")
+if($Env:AZP_POOL -like "*Integration*")
 {
 	#This environment variable should be set in the build docker file as part of the SDK installation
 	if (-not (Test-Path Env:LATEST_DOTNET_VERSION)) {
