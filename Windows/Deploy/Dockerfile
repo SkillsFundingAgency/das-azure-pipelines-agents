@@ -1,4 +1,4 @@
-FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20210412.1
+FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20210413.1
 
 ENV chocolateyUseWindowsCompression=false
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
