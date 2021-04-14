@@ -1,4 +1,4 @@
-FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20210413.1
+FROM apprenticeshipsdevops/azure-pipelines-base-agent-win:20210414.2
 
 # Restore the default Windows shell for correct batch processing below.
 SHELL ["cmd", "/S", "/C"]
