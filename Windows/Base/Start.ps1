@@ -23,7 +23,7 @@ if (-not (Test-Path Env:LATEST_DOTNET_VERSION)) {
 }
 #Uses the X.X version specified during the install to dynamically fetch the latest X.X.X version so it can be pinned
 $InstalledVersion = (dotnet --list-sdks).Split(' ') | Where-Object { $_ -like "$($Env:LATEST_DOTNET_VERSION)*" } | Sort-Object -Descending | Select-Object -First 1
-if (!$InstalledVersion) {
+if(!$InstalledVersion){
 	Write-Error "DotNet $($Env:LATEST_DOTNET_VERSION) Version not found"
 	exit 1
 }

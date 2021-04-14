@@ -52,7 +52,7 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Deployment Beta
+              value: DAS - Continuous Deployment Agents
             - name: NUGET_PACKAGES
               value: "D:\\nugetcache\\packages"
             - name: POD_NAME
