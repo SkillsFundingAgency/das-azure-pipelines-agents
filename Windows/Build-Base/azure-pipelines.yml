@@ -36,7 +36,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Windows/Base/Dockerfile"
+      Dockerfile: "Windows/Build-Base/Dockerfile"
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2
@@ -45,7 +45,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Windows/Base/Dockerfile"
+      Dockerfile: "Windows/Build-Base/Dockerfile"
       arguments: "-t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2
