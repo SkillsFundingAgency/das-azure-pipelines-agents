@@ -16,10 +16,7 @@ RUN choco install \
   && rmdir /S /Q C:\chococache
 
 RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
-RUN  @powershell -NoProfile -Command "Install-Module Az -AllowClobber -Force"
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
 
-RUN  @powershell -NoProfile -Command "Install-Module SqlServer, AzTable, Az.CosmosDb -Force"
-
-
+RUN  @pwsh -NoProfile -Command "Install-Module SqlServer, AzTable, Az.CosmosDb -Force"
