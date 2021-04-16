@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Windows/Base/*"
+      - "Windows/Deploy-Base/*"
     exclude:
       - "*"
 
@@ -23,7 +23,7 @@ pool:
   vmImage: "windows-2019"
 
 variables:
-  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-agent-win"
+  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-deploy-agent-win"
 
 steps:
   - script: docker pull %IMAGE_NAME%:latest || exit 0
@@ -36,7 +36,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Windows/Base/Dockerfile"
+      Dockerfile: "Windows/Deploy-Base/Dockerfile"
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2
@@ -45,7 +45,7 @@ steps:
     inputs:
       command: build
       repository: $(IMAGE_NAME)
-      Dockerfile: "Windows/Base/Dockerfile"
+      Dockerfile: "Windows/Deploy-Base/Dockerfile"
       arguments: "-t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
 
   - task: Docker@2
