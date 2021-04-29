@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: azure-pipelines-deploy-agent-win
+  namespace: windeploy
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
@@ -39,7 +40,7 @@ spec:
           image: apprenticeshipsdevops/azure-pipelines-deploy-agent-win:__ImageVersion__
           resources:
             requests:
-              memory: 512Mi
+              memory: 256Mi
           env:
             - name: AZP_URL
               valueFrom:
