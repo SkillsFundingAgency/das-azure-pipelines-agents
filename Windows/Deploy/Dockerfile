@@ -17,6 +17,8 @@ RUN choco install \
 
 RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
 
+RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi"
+
 RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
 
 RUN  @pwsh -NoProfile -Command "Install-Module SqlServer, AzTable, Az.CosmosDb -Force"
