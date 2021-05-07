@@ -21,4 +21,4 @@ RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazu
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
 
-RUN  @pwsh -NoProfile -Command "Install-Module SqlServer, AzTable, Az.CosmosDb -Force"
+RUN  @pwsh -NoProfile -Command "Install-Module SqlServer, AzTable -Force"
