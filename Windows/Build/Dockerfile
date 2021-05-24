@@ -22,6 +22,8 @@ RUN choco install \
 RUN  @pwsh -NoProfile -Command "Install-Module Az, PSScriptAnalyzer -Force"
 RUN  @pwsh -NoProfile -Command "Install-Module Pester -RequiredVersion 4.10.1 -Force"
 
+RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi"
+
 # Install Build Tools with workloads, excluding components with known issues.
 RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
