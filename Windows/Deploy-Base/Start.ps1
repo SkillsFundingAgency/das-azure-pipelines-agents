@@ -55,6 +55,7 @@ try {
 
 	Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 	
+	.\run.cmd
 }
 finally {
 	Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
