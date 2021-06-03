@@ -4,7 +4,7 @@ metadata:
   name: azure-pipelines-deploy-agent-win
   namespace: __agentNameSpace__
 spec:
-  serviceName: __agentServiceName
+  serviceName: __agentServiceName__
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
