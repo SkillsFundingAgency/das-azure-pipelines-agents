@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: azure-pipelines-deploy-agent-win
   namespace: __agentNameSpace__
 spec:
+  serviceName: __agentServiceName
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
@@ -36,32 +37,44 @@ spec:
                         - azure-pipelines-deploy-agent-win
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: azure-pipelines-deploy-agent-win
-          image: apprenticeshipsdevops/azure-pipelines-deploy-agent-win:__ImageVersion__
-          resources:
-            requests:
-              memory: 256Mi
-          env:
-            - name: AZP_URL
-              valueFrom:
-                secretKeyRef:
-                  name: azp
-                  key: AZP_URL
-            - name: AZP_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: azp
-                  key: AZP_TOKEN
-            - name: AZP_POOL
-              value: DAS - Continuous Deployment Agents
-            - name: NUGET_PACKAGES
-              value: "D:\\nugetcache\\packages"
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+      - name: azure-pipelines-deploy-agent-win
+        image: apprenticeshipsdevops/azure-pipelines-deploy-agent-win:__ImageVersion__
+        resources:
+          requests:
+            memory: 256Mi
+        env:
+          - name: AZP_URL
+            valueFrom:
+              secretKeyRef:
+                name: azp
+                key: AZP_URL
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: azp
+                key: AZP_TOKEN
+          - name: AZP_POOL
+            value: DAS - Continuous Deployment Agents
+          - name: NUGET_PACKAGES
+            value: "D:\\nugetcache\\packages"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+        volumeMounts:
+          - name: dynamic
+            mountPath: /azp/agent/_work/_tasks
       tolerations:
         - key: agent-os
           operator: Equal
           value: windows
           effect: NoSchedule
+  volumeClaimTemplates:
+  - metadata:
+      name: dynamic
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: default
+      resources:
+        requests:
+          storage: 4Gi
