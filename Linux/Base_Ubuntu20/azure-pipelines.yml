@@ -26,6 +26,12 @@ variables:
   - group : Release Management Resources
 
 steps:
+  - task: gittools.gitversion.gitversion-task.GitVersion@5
+    displayName: GitVersion
+    inputs:
+        configFilePath: GitVersion.yml
+        updateAssemblyInfo: true
+
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
       ContainerRegistryName: $(PublicAcrName)
