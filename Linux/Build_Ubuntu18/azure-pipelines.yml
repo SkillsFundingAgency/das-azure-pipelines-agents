@@ -6,6 +6,11 @@ trigger:
   paths:
     include:
       - "Linux/Build_Ubuntu18/*"
+      - manifests/*
+      - pipeline-templates/*
+      - src/*
+      - azure-pipelines.yml
+      - Dockerfile
     exclude:
       - "*"
 

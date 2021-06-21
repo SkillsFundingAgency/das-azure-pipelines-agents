@@ -5,6 +5,7 @@ trigger:
       - "*"
   paths:
     include:
+      - "Linux/Build_Ubuntu20/*"
       - manifests/*
       - pipeline-templates/*
       - src/*
