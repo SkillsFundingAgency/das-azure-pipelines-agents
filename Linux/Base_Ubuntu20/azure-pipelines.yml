@@ -23,52 +23,25 @@ pool:
   vmImage: "Ubuntu-16.04"
 
 variables:
-  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-agent"
+  - group : Release Management Resources
 
 steps:
-  - script: echo "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$IMAGE_NAME:$(Build.BuildNumber)"
-    displayName: "Set image name with tag"
+  - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
+      parameters:
+        ContainerRegistryName: $(PublicAcrName)
+        ServiceConnection: SFA-DIG-Prod-ARM
+        ImageName: das-azure-pipelines-build-agent
 
-  - script: docker pull $(IMAGE_NAME):latest || true
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
-    displayName: "Pull latest docker image to cache"
-
-  - task: Docker@1
-    displayName: Build image with cache
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
+  - task: CopyFiles@2
+    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
-      command: Build an image
-      imageName: $(IMAGE_NAME)
-      dockerFile: Linux/Base_Ubuntu20/Dockerfile
-      addDefaultLabels: false
-      arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
+      Contents: |
+        Linux/Build_Ubuntu20/manifest.yml
+      TargetFolder: "$(build.artifactstagingdirectory)/publish"
+      OverWrite: true
 
-  - task: Docker@1
-    displayName: Build image without cache
-    condition: and(succeeded(), eq(variables['Build.Reason'], 'Schedule'))
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact"
     inputs:
-      command: Build an image
-      imageName: $(IMAGE_NAME)
-      dockerFile: Linux/Base_Ubuntu20/Dockerfile
-      addDefaultLabels: false
-      arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
-
-  - task: Docker@1
-    displayName: Docker Hub login
-    inputs:
-      command: "login"
-      containerregistrytype: Container Registry
-      dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
-
-  - task: Docker@1
-    displayName: Push tagged image
-    inputs:
-      command: Push an image
-      imageName: $(IMAGE_NAME_WITH_TAG)
-
-  - task: Docker@1
-    displayName: Push tagged image (latest) if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-      command: Push an image
-      imageName: $(IMAGE_NAME):latest
+      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
+  
