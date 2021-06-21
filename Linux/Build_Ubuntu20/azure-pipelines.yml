@@ -19,10 +19,10 @@ variables:
 
 steps:
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
-      parameters:
-        ContainerRegistryName: $(PublicAcrName)
-        ServiceConnection: SFA-DIG-Prod-ARM
-        ImageName: das-azure-pipelines-build-agent
+    parameters:
+      ContainerRegistryName: $(PublicAcrName)
+      ServiceConnection: SFA-DIG-Prod-ARM
+      ImageName: das-azure-pipelines-build-agent
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
