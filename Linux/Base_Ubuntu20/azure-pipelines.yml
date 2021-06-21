@@ -25,18 +25,13 @@ pool:
 variables:
   - group : Release Management Resources
 
-steps:
-  - task: gittools.gitversion.gitversion-task.GitVersion@5
-    displayName: GitVersion
-    inputs:
-        configFilePath: GitVersion.yml
-        updateAssemblyInfo: true
 
+steps:
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
-      ContainerRegistryName: $(PublicAcrName)
-      ServiceConnection: SFA-DIG-Prod-ARM
-      ImageName: das-azure-pipelines-build-agent
+       ContainerRegistryName: $(PublicAcrName)
+       ServiceConnection: SFA-DIG-Prod-ARM
+       ImageName: das-azure-pipelines-build-agent
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
@@ -50,6 +45,3 @@ steps:
     displayName: "Publish Artifact"
     inputs:
       PathtoPublish: "$(build.artifactstagingdirectory)/publish"
-
-
-  
