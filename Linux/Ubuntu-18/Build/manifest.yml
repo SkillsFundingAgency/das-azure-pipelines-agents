@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-pipelines-build-agent
+  name: azure-pipelines-build-agent-ubuntu-18
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: azure-pipelines-build-agent
+      app: azure-pipelines-build-agent-ubuntu-18
   template:
     metadata:
       labels:
-        app: azure-pipelines-build-agent
+        app: azure-pipelines-build-agent-ubuntu-18
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -32,11 +32,11 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - azure-pipelines-build-agent
+                        - azure-pipelines-build-agent-ubuntu-18
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: azure-pipelines-build-agent
-          image: apprenticeshipsdevops/azure-pipelines-build-agent:__ImageVersion__
+        - name: azure-pipelines-build-agent-ubuntu-18
+          image: apprenticeshipsdevops/azure-pipelines-build-agent-ubuntu-18:__ImageVersion__
           resources:
             requests:
               memory: 512Mi
@@ -52,7 +52,7 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Integration
+              value: DAS - Continuous Integration Beta
             - name: NUGET_PACKAGES
               value: "/mnt/nugetcache/packages"
           volumeMounts:

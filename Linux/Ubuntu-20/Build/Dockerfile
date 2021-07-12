@@ -1,4 +1,4 @@
-FROM ubuntu-20-base:latest
+FROM apprenticeshipsdevops/azure-pipelines-base-build-agent-ubuntu-20:latest
 
 # Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
@@ -69,6 +69,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
+ENV DotNetCoreVersion=3.1
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
@@ -93,28 +94,6 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 # Install Powershell Modules
 RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Az, Az.CosmosDb, AWSPowerShell.NetCore -Scope AllUsers -Force'
 RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
-
-# Install Mono
-RUN apt install gnupg ca-certificates \
-  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-  && echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
-  && apt update \
-  && apt install mono-devel
-
-# Install NuGet
-RUN curl https://packages.microsoft.com/keys/microsoft.ascurl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe \
-  && alias nuget="mono /usr/local/bin/nuget.exe"
-
-# Reload the shell
-RUN exec bash
-
-# List aliases
-RUN alias
-
-# Install LibGit2Sharp
-RUN mono /usr/local/bin/nuget.exe install LibGit2Sharp -Version 0.26.2
-# RUN nuget install LibGit2Sharp -Version 0.26.2
-
 
 # Install Docker
 ENV DOCKER_CHANNEL stable

@@ -1,4 +1,4 @@
-FROM ubuntu-18-base:latest
+FROM apprenticeshipsdevops/azure-pipelines-base-build-agent-ubuntu-18:latest
 
 # Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
@@ -69,6 +69,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-p
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
+ENV DotNetCoreVersion=2.2
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
