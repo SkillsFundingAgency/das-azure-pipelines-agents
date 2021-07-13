@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Linux/Build/*"
+      - "Linux/Ubuntu-18/Build/*"
     exclude:
       - "*"
 
@@ -31,7 +31,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Linux/Build/Dockerfile
+      dockerFile: Linux/Ubuntu-18/Build/Dockerfile
       addDefaultLabels: false
       arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
@@ -41,7 +41,7 @@ steps:
     inputs:
       command: Build an image
       imageName: $(IMAGE_NAME)
-      dockerFile: Linux/Build/Dockerfile
+      dockerFile: Linux/Ubuntu-18/Build/Dockerfile
       addDefaultLabels: false
       arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
 
@@ -69,7 +69,7 @@ steps:
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Linux/Build/manifest.yml
+        Linux/Ubuntu-18/Build/manifest.yml
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
