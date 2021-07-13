@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-pipelines-build-agent-ubuntu-18
+  name: build-agent-ubuntu-18
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: azure-pipelines-build-agent-ubuntu-18
+      app: build-agent-ubuntu-18
   template:
     metadata:
       labels:
-        app: azure-pipelines-build-agent-ubuntu-18
+        app: build-agent-ubuntu-18
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -32,10 +32,10 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - azure-pipelines-build-agent-ubuntu-18
+                        - build-agent-ubuntu-18
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: azure-pipelines-build-agent-ubuntu-18
+        - name: build-agent-ubuntu-18
           image: apprenticeshipsdevops/azure-pipelines-build-agent-ubuntu-18:__ImageVersion__
           resources:
             requests:
