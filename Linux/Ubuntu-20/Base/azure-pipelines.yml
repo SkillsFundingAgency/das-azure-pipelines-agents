@@ -68,7 +68,7 @@ steps:
 
   - task: Docker@1
     displayName: Push tagged image (latest) if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/DASD-8851-ubuntu-18-20-build-agents'))
     inputs:
       command: Push an image
       imageName: $(IMAGE_NAME):latest
