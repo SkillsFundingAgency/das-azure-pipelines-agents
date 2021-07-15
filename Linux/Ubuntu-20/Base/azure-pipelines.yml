@@ -28,7 +28,8 @@ resources:
     endpoint: SFA
 
 pool:
-  vmImage: "ubuntu-20.04"
+  name: DAS - Continuous Integration
+  demands: Agent.OS -equals Windows_NT
 
 variables:
 - group : Release Management Resources
