@@ -32,6 +32,7 @@ steps:
       ContainerRegistryName: $(PublicAcrName)
       ServiceConnection: SFA-DIG-Prod-ARM
       ImageName: azure-pipelines-build-agent-ubuntu-18
+      WorkingDirectory: Linux/Ubuntu-18/Build
       BranchToCreateLatestTag: DASD-8851-ubuntu-18-20-build-agents
 
   - task: CopyFiles@2
