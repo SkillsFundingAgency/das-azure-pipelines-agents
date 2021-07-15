@@ -28,7 +28,7 @@ resources:
     endpoint: SFA
 
 pool:
-  vmImage: "ubuntu-20.04"
+  vmImage: windows-latest
 
 variables:
 - group : Release Management Resources
