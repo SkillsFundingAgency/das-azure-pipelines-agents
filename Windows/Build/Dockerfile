@@ -35,6 +35,7 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   --add Microsoft.VisualStudio.Component.TestTools.BuildTools \
   --add Microsoft.VisualStudio.Component.SQL.SSDTBuildSku \
   --add Microsoft.Net.Component.4.6.2.TargetingPack \
+  --add Microsoft.Net.Component.4.8.TargetingPack \
   --add Microsoft.VisualStudio.Component.WebDeploy \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
