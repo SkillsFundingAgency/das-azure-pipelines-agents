@@ -16,7 +16,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: DASD-8851-add-tokenize-template
+    ref: DASD-8851-add-tokenize-template-temp-test-default-root
     endpoint: SFA
 
 pool:
@@ -29,8 +29,7 @@ variables:
 steps:
   - template: azure-pipelines-templates/deploy/step/tokenize-files.yml@das-platform-building-blocks
     parameters:
-      sourcePath: Linux/Ubuntu-18/Build
-      targetFiles: Dockerfile
+      TargetFiles: Dockerfile
 
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
