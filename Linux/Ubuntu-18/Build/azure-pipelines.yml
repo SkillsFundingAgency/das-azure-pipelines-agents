@@ -31,7 +31,8 @@ steps:
     parameters:
       WorkingDirectory: Linux/Ubuntu-18/Build
       TargetFiles: Dockerfile
-      TokenPrefixAndSuffix: __
+      TokenPrefix: __
+      TokenSuffix: __
 
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
