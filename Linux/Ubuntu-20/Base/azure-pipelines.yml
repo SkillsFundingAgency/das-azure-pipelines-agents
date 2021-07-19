@@ -24,7 +24,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: dockerfile-build-add-latest-tag
+    ref: refs/tags/0.3.22
     endpoint: SFA
 
 pool:
@@ -41,4 +41,4 @@ steps:
       ServiceConnection: SFA-DIG-Prod-ARM
       ImageName: azure-pipelines-base-build-agent-ubuntu-20
       WorkingDirectory: Linux/Ubuntu-20/Base
-      BranchToCreateLatestTag: DASD-8851-ubuntu-18-20-build-agents
+      BranchToCreateLatestTag: DASD-8851-ubuntu-18-20-build-agents.2
