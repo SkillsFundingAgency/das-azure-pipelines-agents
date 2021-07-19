@@ -16,7 +16,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: dockerfile-build-no-format
+    ref: refs/tags/0.3.22
     endpoint: SFA
 
 pool:
