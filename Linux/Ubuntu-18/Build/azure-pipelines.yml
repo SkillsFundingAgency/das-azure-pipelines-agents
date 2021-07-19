@@ -16,7 +16,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: DASD-8851-add-tokenize-template
+    ref: refs/tags/0.3.23
     endpoint: SFA
 
 pool:
