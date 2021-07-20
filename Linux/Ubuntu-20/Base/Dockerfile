@@ -13,7 +13,6 @@ RUN apt-get update \
         git \
         iputils-ping \
         libcurl4 \
-        libicu66 \
         libunwind8 \
         netcat \
         libssl1.0
