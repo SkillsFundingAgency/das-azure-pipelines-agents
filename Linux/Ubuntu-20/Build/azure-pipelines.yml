@@ -49,7 +49,7 @@ steps:
       ServiceConnection: SFA-DIG-Prod-ARM
       ImageName: azure-pipelines-build-agent-ubuntu-20
       WorkingDirectory: Linux/Ubuntu-20/Build
-      BranchToCreateLatestTag: DASD-8851-ubuntu-18-20-build-agents.2
+      BranchToCreateLatestTag: master
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
