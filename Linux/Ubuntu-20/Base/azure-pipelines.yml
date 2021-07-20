@@ -34,6 +34,7 @@ variables:
 - group : Release Management Resources
 
 steps:
+  # Temporary scripts to update Azure CLI until ubuntu-latest vmImage is updated in order to resolve https://github.com/Azure/azure-cli/issues/18875
   - script: sudo apt-get remove azure-cli
     
   - script: curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
