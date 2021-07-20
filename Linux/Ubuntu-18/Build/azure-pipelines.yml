@@ -16,7 +16,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.3.23
+    ref: dockerfile-build-update-azure-cli
     endpoint: SFA
 
 pool:
