@@ -36,7 +36,7 @@ spec:
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
         - name: azure-pipelines-build-agent-ubuntu-20
-          image: apprenticeshipsdevops/azure-pipelines-build-agent-ubuntu-20:__ImageVersion__
+          image: __PublicAcrName__.azurecr.io/azure-pipelines-build-agent-ubuntu-20:__ImageVersion__
           resources:
             requests:
               memory: 512Mi
