@@ -1,4 +1,4 @@
-FROM apprenticeshipsdevops/azure-pipelines-base-build-agent-ubuntu-20:latest
+FROM __PublicAcrName__.azurecr.io/azure-pipelines-base-build-agent-ubuntu-20:latest
 
 # Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
