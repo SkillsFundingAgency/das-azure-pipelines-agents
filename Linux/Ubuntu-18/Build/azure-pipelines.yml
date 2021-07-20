@@ -44,6 +44,7 @@ steps:
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    condition: succeededOrFailed()
     inputs:
       Contents: |
         Linux/Ubuntu-18/Build/manifest.yml
@@ -52,6 +53,7 @@ steps:
 
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifact"
+    condition: succeededOrFailed()
     inputs:
       PathtoPublish: "$(build.artifactstagingdirectory)/publish"
 
