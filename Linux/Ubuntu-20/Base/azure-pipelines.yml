@@ -51,4 +51,4 @@ steps:
       ServiceConnection: SFA-DIG-Prod-ARM
       ImageName: azure-pipelines-base-build-agent-ubuntu-20
       WorkingDirectory: Linux/Ubuntu-20/Base
-      BranchToCreateLatestTag: master
+      BranchToCreateLatestTag: DASD-8851-ubuntu-18-20-build-agents.2
