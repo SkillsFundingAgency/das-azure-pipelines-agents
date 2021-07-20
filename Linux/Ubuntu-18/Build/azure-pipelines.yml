@@ -43,7 +43,6 @@ steps:
     sudo apt-get update
     
     sudo apt-get install azure-cli
-  displayName: 'Command Line Script'
 
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
