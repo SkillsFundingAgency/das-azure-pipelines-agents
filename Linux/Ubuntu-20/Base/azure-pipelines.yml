@@ -29,7 +29,7 @@ resources:
 
 pool:
   name: DAS - Continuous Integration
-  demands: Agent.OS -equals Windows_NT
+  demands: agent.os -equals Linux
 
 variables:
 - group : Release Management Resources

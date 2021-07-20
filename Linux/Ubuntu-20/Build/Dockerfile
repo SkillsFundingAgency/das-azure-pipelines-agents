@@ -69,7 +69,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
-ENV SupportsDotNetCore3.1=true
+ENV LATEST_DOTNET_VERSION=3.1
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \

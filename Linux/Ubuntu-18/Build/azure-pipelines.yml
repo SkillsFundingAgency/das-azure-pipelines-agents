@@ -20,7 +20,8 @@ resources:
     endpoint: SFA
 
 pool:
-  vmImage: ubuntu-latest
+  name: DAS - Continuous Integration
+  demands: agent.os -equals Linux
 
 variables:
 - group : Release Management Resources
