@@ -20,13 +20,29 @@ resources:
     endpoint: SFA
 
 pool:
-  name: DAS - Continuous Integration
-  demands: agent.os -equals Linux
+  vmImage: ubuntu-latest
 
 variables:
 - group : Release Management Resources
 
 steps:
+  - template: azure-pipelines-templates/deploy/step/tokenize-files.yml@das-platform-building-blocks
+    parameters:
+      WorkingDirectory: Linux/Ubuntu-18/Build
+      TargetFiles: Dockerfile
+      TokenPrefix: __
+      TokenSuffix: __
+      
+  - script: sudo apt-get remove azure-cli
+    
+  - script: curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+    
+  - script: echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+    
+  - script: sudo apt-get update
+    
+  - script: sudo apt-get install azure-cli
+
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
       ContainerRegistryName: $(PublicAcrName)
