@@ -52,7 +52,7 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Integration Beta
+              value: DAS - Continuous Integration Agents
             - name: NUGET_PACKAGES
               value: "/mnt/nugetcache/packages"
           volumeMounts:
