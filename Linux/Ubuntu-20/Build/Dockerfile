@@ -98,6 +98,13 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Az, Az.CosmosDb, AWSPowerShell.NetCore -Scope AllUsers -Force'
 RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
 
+# Install az cli
+RUN apt-get update \
+  && apt-get install -y lsb-release \
+  && AZ_REPO=$(lsb_release -cs) \
+  && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list \
+  && apt-get install -y azure-cli
+
 # Install Docker
 ENV DOCKER_CHANNEL stable
 ENV DOCKER_VERSION 19.03.8
