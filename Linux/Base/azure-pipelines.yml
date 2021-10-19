@@ -41,6 +41,6 @@ steps:
 - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
   parameters:
     ContainerRegistryName: $(PublicAcrName)
-    ServiceConnection: ${{ parameters.ServiceConnection }}
+    ServiceConnection: SFA-DIG-Prod-ARM
     ImageName: $(ContainerImageName)
 
