@@ -29,7 +29,7 @@ schedules:
 pr: 
   paths:
     include:
-      - "Linux/Build/*"
+      - "Linux/Base/*"
 
 pool:
   name: DAS - Continuous Integration Agents
