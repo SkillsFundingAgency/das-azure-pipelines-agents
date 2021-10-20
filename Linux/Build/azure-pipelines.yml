@@ -35,4 +35,5 @@ steps:
     ServiceConnection: SFA-DIG-Prod-ARM
     ImageName: $(ContainerImageName)
     WorkingDirectory: $(Build.SourcesDirectory)/Linux/Build
+    BranchToCreateLatestTag: master
 
