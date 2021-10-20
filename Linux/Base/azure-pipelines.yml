@@ -26,7 +26,10 @@ schedules:
     - master
   always: true
 
-pr: none
+pr: 
+  paths:
+    include:
+      - "Linux/Build/*"
 
 pool:
   name: DAS - Continuous Integration Agents
