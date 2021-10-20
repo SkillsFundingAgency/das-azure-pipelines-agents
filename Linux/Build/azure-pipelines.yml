@@ -9,7 +9,10 @@ trigger:
     exclude:
       - "*"
 
-pr: none
+pr: 
+  paths:
+    include:
+      - "Linux/Build/*"
 
 pool:
   vmImage: "Ubuntu-16.04"
