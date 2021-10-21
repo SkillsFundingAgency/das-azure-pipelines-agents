@@ -29,7 +29,7 @@ resources:
 pr: 
   paths:
     include:
-      - "Windows/Build-Base/*"
+      - "Windows/Deploy-Base/*"
 
 pool:
   name: DAS - Continuous Integration Agents
