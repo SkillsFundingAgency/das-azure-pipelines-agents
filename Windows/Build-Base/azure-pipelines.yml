@@ -17,54 +17,33 @@ schedules:
         - master
     always: true
 
-pr: none
+resources:
+  repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      ref: refs/tags/0.4.12
+      endpoint: SkillsFundingAgency
+
+pr: 
+  paths:
+    include:
+      - "Windows/Build-Base/*"
 
 pool:
-  vmImage: "windows-2019"
+  name: DAS - Continuous Integration Agents
 
 variables:
-  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-base-build-agent-win"
+- group: Release Management Resources
+- name: ContainerImageName
+  value: azure-pipelines-base-build-agent-win
 
 steps:
-  - script: docker pull %IMAGE_NAME%:latest || exit 0
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
-    displayName: "Pull latest docker image to cache"
-
-  - task: Docker@2
-    displayName: Build image with cache
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
-    inputs:
-      command: build
-      repository: $(IMAGE_NAME)
-      Dockerfile: "Windows/Build-Base/Dockerfile"
-      arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
-
-  - task: Docker@2
-    displayName: Build image without cache
-    condition: and(succeeded(), eq(variables['Build.Reason'], 'Schedule'))
-    inputs:
-      command: build
-      repository: $(IMAGE_NAME)
-      Dockerfile: "Windows/Build-Base/Dockerfile"
-      arguments: "-t $(IMAGE_NAME):$(Build.BuildNumber) -t $(IMAGE_NAME):latest"
-
-  - task: Docker@2
-    displayName: Docker Hub Login
-    inputs:
-      command: login
-      containerRegistry: "Apprenticeships DevOps Docker Hub"
-
-  - task: Docker@2
-    displayName: Push tagged image
-    inputs:
-      command: push
-      repository: $(IMAGE_NAME)
-      tags: $(Build.BuildNumber)
-
-  - task: Docker@2
-    displayName: Push tagged image (latest) if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-      command: push
-      repository: $(IMAGE_NAME)
-      tags: latest
+- template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
+  parameters:
+    ContainerRegistryName: $(PublicAcrName)
+    ServiceConnection: SFA-DIG-Prod-ARM
+    ImageName: $(ContainerImageName)
+    WorkingDirectory: $(Build.SourcesDirectory)/Windows/Build-Base
+    BranchToCreateLatestTag: master
