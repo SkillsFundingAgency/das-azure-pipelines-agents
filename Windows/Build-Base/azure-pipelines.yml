@@ -46,5 +46,7 @@ steps:
     ContainerRegistryName: $(PublicAcrName)
     ServiceConnection: SFA-DIG-Prod-ARM
     ImageName: $(ContainerImageName)
-    WorkingDirectory: $(Build.SourcesDirectory)/Windows/Build-Base
     BranchToCreateLatestTag: master
+    Platform: windows
+    WorkingDirectory: $(Build.SourcesDirectory)/Windows/Build-Base
+    
