@@ -37,7 +37,7 @@ pool:
 variables:
 - group: Release Management Resources
 - name: ContainerImageName
-  value: azure-pipelines-base-deploy-agent-win"
+  value: azure-pipelines-base-deploy-agent-win
 
 steps:
 - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
