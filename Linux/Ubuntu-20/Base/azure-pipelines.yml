@@ -9,6 +9,8 @@ trigger:
     exclude:
       - "*"
 
+pr: none
+
 schedules:
 - cron: "0 6 * * Tue"
   displayName: Weekly Tuesday morning build
@@ -16,8 +18,6 @@ schedules:
     include:
     - master
   always: true
-
-pr: none
 
 resources:
   repositories:

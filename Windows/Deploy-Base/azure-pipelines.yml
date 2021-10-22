@@ -9,6 +9,8 @@ trigger:
     exclude:
       - "*"
 
+pr: none
+
 schedules:
   - cron: "0 4 8-14 * Wed"
     displayName: Monthly updates build
@@ -25,11 +27,6 @@ resources:
       name: SkillsFundingAgency/das-platform-building-blocks
       ref: refs/tags/0.4.13
       endpoint: SkillsFundingAgency
-
-pr: 
-  paths:
-    include:
-      - "Windows/Deploy-Base/*"
 
 pool:
   name: DAS - Continuous Integration Agents

@@ -9,6 +9,8 @@ trigger:
     exclude:
       - "*"
 
+pr: none
+
 resources:
   repositories:
     - repository: self
@@ -25,11 +27,6 @@ schedules:
     include:
     - master
   always: true
-
-pr: 
-  paths:
-    include:
-      - "Linux/Base/*"
 
 pool:
   name: DAS - Continuous Integration Agents
