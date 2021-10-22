@@ -36,7 +36,7 @@ spec:
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
         - name: azure-pipelines-build-agent-win
-          image: apprenticeshipsdevops/azure-pipelines-build-agent-win:__ImageVersion__
+          image: __PublicAcrName__/__ContainerImageName__:latest
           resources:
             requests:
               memory: 512Mi
