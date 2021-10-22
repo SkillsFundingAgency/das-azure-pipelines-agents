@@ -9,71 +9,46 @@ trigger:
     exclude:
       - "*"
 
-pr: none
+pr: 
+  paths:
+    include:
+      - "Windows/Build/*"
 
 pool:
-  vmImage: "windows-2019"
+  name: DAS - Continuous Integration Agents
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.13
+    endpoint: SkillsFundingAgency
 
 variables:
-  IMAGE_NAME: "apprenticeshipsdevops/azure-pipelines-build-agent-win"
+- group: Release Management Resources
+- name: ContainerImageName
+  value: azure-pipelines-build-agent-win
 
 steps:
-  - pwsh: Write-Output "##vso[task.setvariable variable=IMAGE_NAME_WITH_TAG;]$($env:IMAGE_NAME):$($env:BUILD_BUILDNUMBER)"
-    displayName: "Set image name with tag"
+- template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
+  parameters:
+    ContainerRegistryName: $(PublicAcrName)
+    ServiceConnection: SFA-DIG-Prod-ARM
+    ImageName: $(ContainerImageName)
+    BranchToCreateLatestTag: master
+    Platform: windows
+    WorkingDirectory: $(Build.SourcesDirectory)/Windows/Build
 
-  - script: docker pull %IMAGE_NAME%:latest || exit 0
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
-    displayName: "Pull latest docker image to cache"
-
-  - task: Docker@1
-    displayName: Build image with cache
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'BuildCompletion'))
-    inputs:
-      command: Build an image
-      imageName: $(IMAGE_NAME)
-      dockerFile: Windows/Build/Dockerfile
-      addDefaultLabels: false
-      arguments: "--cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
-
-  - task: Docker@1
-    displayName: Build image without cache
-    condition: and(succeeded(), eq(variables['Build.Reason'], 'BuildCompletion'))
-    inputs:
-      command: Build an image
-      imageName: $(IMAGE_NAME)
-      dockerFile: Windows/Build/Dockerfile
-      addDefaultLabels: false
-      arguments: "-t $(IMAGE_NAME_WITH_TAG) -t $(IMAGE_NAME):latest"
-
-  - task: Docker@1
-    displayName: Docker Hub login
-    inputs:
-      command: "login"
-      containerregistrytype: Container Registry
-      dockerRegistryEndpoint: Apprenticeships DevOps Docker Hub
-
-  - task: Docker@1
-    displayName: Push tagged image
-    inputs:
-      command: Push an image
-      imageName: $(IMAGE_NAME_WITH_TAG)
-
-  - task: Docker@1
-    displayName: Push tagged image (latest) if master
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-      command: Push an image
-      imageName: $(IMAGE_NAME):latest
-
-  - task: CopyFiles@2
-    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
-    inputs:
-      Contents: |
-        Windows/Build/manifest.yml
-      TargetFolder: "$(build.artifactstagingdirectory)/publish"
-      OverWrite: true
-
-  - task: PublishBuildArtifacts@1
-    displayName: "Publish Artifact"
-    inputs:
-      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
+- task: CopyFiles@2
+  displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+  inputs:
+    Contents: |
+      Windows/Build/manifest.yml
+    TargetFolder: "$(build.artifactstagingdirectory)/publish"
+    OverWrite: true
+- task: PublishBuildArtifacts@1
+  displayName: "Publish Artifact"
+  inputs:
+    PathtoPublish: "$(build.artifactstagingdirectory)/publish"
