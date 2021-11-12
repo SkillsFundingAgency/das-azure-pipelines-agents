@@ -9,7 +9,6 @@ RUN choco config set cachelocation C:\chococache \
 RUN choco install \
   git  \
   powershell-core \
-  mongodb-cli \
   dacfx-18 \
   --confirm \
   --limit-output \
