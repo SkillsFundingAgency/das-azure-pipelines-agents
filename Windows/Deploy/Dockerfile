@@ -15,12 +15,11 @@ RUN choco install \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
-RUN  @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
+SHELL ["powershell", "-NoProfile", "-Command"]
+RUN  Install-PackageProvider -Name NuGet -Force
+RUN  Install-Module Az -Force
 
-RUN  @powershell -NoProfile -Command "Install-Module Az -Force"
-
-RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi"
-
-RUN  @pwsh -NoProfile -Command "Install-Module Az -Force"
-
-RUN  @pwsh -NoProfile -Command "Install-Module SqlServer, AzTable -Force"
+SHELL ["pwsh", "-NoProfile", "-Command"]
+RUN  Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+RUN  Install-Module Az -Force
+RUN  Install-Module SqlServer, AzTable -Force
