@@ -37,6 +37,7 @@ spec:
       containers:
         - name: azure-pipelines-build-agent-ubuntu-20
           image: __PublicAcrName__.azurecr.io/azure-pipelines-build-agent-ubuntu-20:latest
+          imagePullPolicy: Always
           resources:
             requests:
               memory: 512Mi

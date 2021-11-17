@@ -39,6 +39,7 @@ spec:
       containers:
       - name: azure-pipelines-deploy-agent-win
         image: __PublicAcrName__.azurecr.io/__ContainerImageName__:latest
+        imagePullPolicy: Always
         resources:
           requests:
             memory: 256Mi

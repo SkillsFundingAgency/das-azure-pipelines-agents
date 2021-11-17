@@ -37,6 +37,7 @@ spec:
       containers:
         - name: azure-pipelines-build-agent
           image: __PublicAcrName__.azurecr.io/__ContainerImageName__:latest
+          imagePullPolicy: Always
           resources:
             requests:
               memory: 512Mi
