@@ -17,6 +17,9 @@ RUN choco install \
   && rmdir /S /Q C:\chococache \
   && setx npm true
 
+RUN choco install mongodb --version 5.0.3  --confirm --limit-output --timeout 216000
+RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin"
+
 SHELL ["powershell", "-NoProfile", "-Command"]
 RUN Install-PackageProvider -Name NuGet -Force
 RUN Install-Module Az -Force
