@@ -1,4 +1,10 @@
-FROM dasprdpublicacr.azurecr.io/azure-pipelines-base-build-agent-win:latest
+FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
+
+WORKDIR /azp
+
+COPY start.ps1 .
+
+CMD powershell .\start.ps1
 
 # Restore the default Windows shell for correct batch processing below.
 SHELL ["cmd", "/S", "/C"]
