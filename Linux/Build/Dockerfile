@@ -5,39 +5,26 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
+# Install basic command-line utilities
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   ca-certificates \
   curl \
+  dnsutils \
+  file \
+  ftp \
   jq \
   git \
   iputils-ping \
   libcurl4 \
   libicu60 \
   libunwind8 \
-  netcat \
-  libssl1.0
-
-WORKDIR /azp
-
-COPY ./start.sh .
-RUN chmod +x start.sh
-
-CMD ["./start.sh"]
-
-# Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
-
-# Install basic command-line utilities
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-  curl \
-  dnsutils \
-  file \
-  ftp \
   gnupg \
   iproute2 \
   iputils-ping \
+  libssl1.0 \
   locales \
+  netcat \
   openssh-client \
   rsync\
   shellcheck \
@@ -49,6 +36,15 @@ RUN apt-get update \
   zip \
   tzdata \
   && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /azp
+
+COPY ./start.sh .
+RUN chmod +x start.sh
+
+CMD ["./start.sh"]
+
+# Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
 # Setup the locale
 ENV LANG en_US.UTF-8
