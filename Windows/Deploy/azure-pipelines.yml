@@ -9,7 +9,7 @@ trigger:
     exclude:
     - "*"
 
-pr: 
+pr:
   paths:
     include:
     - "Windows/Deploy/*"
@@ -25,6 +25,14 @@ resources:
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/0.4.13
     endpoint: SkillsFundingAgency
+
+schedules:
+- cron: "0 6 * * Tue"
+  displayName: Weekly Tuesday morning build
+  branches:
+    include:
+    - master
+  always: true
 
 variables:
 - group: Release Management Resources
