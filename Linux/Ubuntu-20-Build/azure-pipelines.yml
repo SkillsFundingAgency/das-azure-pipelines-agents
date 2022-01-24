@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "Linux/Ubuntu-20/Build/*"
+      - "Linux/Ubuntu-20-Build/*"
     exclude:
       - "*"
 
@@ -36,7 +36,7 @@ variables:
 steps:
   - template: azure-pipelines-templates/deploy/step/tokenize-files.yml@das-platform-building-blocks
     parameters:
-      WorkingDirectory: Linux/Ubuntu-20/Build
+      WorkingDirectory: Linux/Ubuntu-20-Build
       TargetFiles: Dockerfile
       TokenPrefix: __
       TokenSuffix: __
@@ -46,14 +46,14 @@ steps:
       ContainerRegistryName: $(PublicAcrName)
       ServiceConnection: SFA-DIG-Prod-ARM
       ImageName: azure-pipelines-build-agent-ubuntu-20
-      WorkingDirectory: Linux/Ubuntu-20/Build
+      WorkingDirectory: Linux/Ubuntu-20-Build
       BranchToCreateLatestTag: master
 
   - task: CopyFiles@2
     displayName: "Copy Files to: $(build.artifactstagingdirectory)"
     inputs:
       Contents: |
-        Linux/Ubuntu-20/Build/manifest.yml
+        Linux/Ubuntu-20-Build/manifest.yml
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
