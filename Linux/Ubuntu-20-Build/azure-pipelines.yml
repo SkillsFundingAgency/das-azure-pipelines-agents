@@ -19,6 +19,14 @@ resources:
     ref: refs/tags/0.3.24
     endpoint: SFA
 
+schedules:
+- cron: "0 6 * * Tue"
+  displayName: Weekly Tuesday morning build
+  branches:
+    include:
+    - master
+  always: true
+
 pool:
   vmImage: ubuntu-latest
 
@@ -32,7 +40,7 @@ steps:
       TargetFiles: Dockerfile
       TokenPrefix: __
       TokenSuffix: __
-      
+
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
     parameters:
       ContainerRegistryName: $(PublicAcrName)

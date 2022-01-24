@@ -1,4 +1,10 @@
-FROM dasprdpublicacr.azurecr.io/azure-pipelines-base-deploy-agent-win:latest
+FROM mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2019
+
+WORKDIR /azp
+
+COPY start.ps1 .
+
+CMD powershell .\start.ps1
 
 ENV chocolateyUseWindowsCompression=false
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"

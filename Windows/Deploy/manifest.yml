@@ -1,10 +1,9 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: azure-pipelines-deploy-agent-win
   namespace: __agentNameSpace__
 spec:
-  serviceName: __agentServiceName__
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
@@ -21,10 +20,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: agentpool
+                  - key: nodepool
                     operator: In
                     values:
-                      - __agentPoolName__
+                      - __nodePoolLabel__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -56,26 +55,20 @@ spec:
                 key: AZP_TOKEN
           - name: AZP_POOL
             value: DAS - Continuous Deployment Agents
-          - name: NUGET_PACKAGES
-            value: "D:\\nugetcache\\packages"
           - name: POD_NAME
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
         volumeMounts:
-          - name: dynamic
+          - name: task-cache
             mountPath: /azp/agent/_work/_tasks
       tolerations:
         - key: agent-os
           operator: Equal
           value: windows
           effect: NoSchedule
-  volumeClaimTemplates:
-  - metadata:
-      name: dynamic
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: default
-      resources:
-        requests:
-          storage: 4Gi
+      volumes:
+        - name: task-cache
+          hostPath:
+            path: /azp/agent/_work/_tasks
+            type: DirectoryOrCreate
