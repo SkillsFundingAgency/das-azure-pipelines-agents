@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: azure-pipelines-build-agent-win
+  namespace: __agentNameSpace__
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
