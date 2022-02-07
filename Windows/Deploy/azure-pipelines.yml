@@ -2,17 +2,17 @@ trigger:
   batch: true
   branches:
     include:
-    - "*"
+      - master
   paths:
     include:
-    - "Windows/Deploy/*"
+      - "Windows/Deploy/*"
     exclude:
-    - "*"
+      - "*"
 
 pr:
   paths:
     include:
-    - "Windows/Deploy/*"
+      - "Windows/Deploy/*"
 
 pool:
   name: DAS - Continuous Integration Agents

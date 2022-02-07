@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: azure-pipelines-build-agent-win
+  namespace: __agentNameSpace__
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
@@ -19,10 +20,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: agentpool
+                  - key: nodepool
                     operator: In
                     values:
-                      - __agentPoolName__
+                      - __nodePoolLabel__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -40,7 +41,11 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              memory: 512Mi
+              cpu: 640m
+              memory: 512mi
+            limits:
+              cpu: 1280m
+              memory: 1536Mi
           env:
             - name: AZP_URL
               valueFrom:
