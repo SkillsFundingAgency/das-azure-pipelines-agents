@@ -45,7 +45,6 @@ spec:
               memory: 512Mi
             limits:
               cpu: 1280m
-              memory: 1536Mi
           env:
             - name: AZP_URL
               valueFrom:
