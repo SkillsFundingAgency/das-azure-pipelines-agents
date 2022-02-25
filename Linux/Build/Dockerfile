@@ -85,14 +85,17 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   dotnet-sdk-3.1 \
+  dotnet-sdk-6.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
+
+# TODO: Delete this when no longer referenced by pipelines
 ENV LATEST_DOTNET_VERSION=3.1
 
 #Manually install .NET Core 2.2 SDK
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 2.2.207 --install-dir /usr/share/dotnet
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.2 --install-dir /usr/share/dotnet
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
@@ -115,7 +118,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && rm -rf /etc/apt/sources.list.d/*
 
 # Install Powershell Modules
-RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Az, Az.CosmosDb, AWSPowerShell.NetCore -Scope AllUsers -Force'
+RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer -Scope AllUsers -Force'
 RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
 
 # Install az cli
