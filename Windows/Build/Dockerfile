@@ -24,6 +24,8 @@ RUN choco install \
   --limit-output \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
+  
+RUN @powershell -NoProfile -Command "Install-PackageProvider -Name NuGet -Force"
 
 RUN  @pwsh -NoProfile -Command "Install-Module Az, PSScriptAnalyzer -Force"
 RUN  @pwsh -NoProfile -Command "Install-Module Pester -RequiredVersion 4.10.1 -Force"
