@@ -9,22 +9,15 @@ trigger:
     exclude:
       - "*"
 
-pr:
-  paths:
-    include:
-      - "Linux/Build/*"
-
-pool:
-  name: DAS - Continuous Integration Agents
+pr: none
 
 resources:
   repositories:
-    - repository: self
-    - repository: das-platform-building-blocks
-      type: github
-      name: SkillsFundingAgency/das-platform-building-blocks
-      ref: refs/tags/0.4.12
-      endpoint: SkillsFundingAgency
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.3.24
+    endpoint: SFA
 
 schedules:
 - cron: "0 6 * * Tue"
@@ -34,28 +27,38 @@ schedules:
     - master
   always: true
 
+pool:
+  vmImage: ubuntu-latest
+
 variables:
-- group: Release Management Resources
-- name: ContainerImageName
-  value: azure-pipelines-build-agent
+- group : Release Management Resources
 
 steps:
-- template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
-  parameters:
-    ContainerRegistryName: $(PublicAcrName)
-    ServiceConnection: SFA-DIG-Prod-ARM
-    ImageName: $(ContainerImageName)
-    WorkingDirectory: $(Build.SourcesDirectory)/Linux/Build
-    BranchToCreateLatestTag: master
-- task: CopyFiles@2
-  displayName: "Copy Files to: $(build.artifactstagingdirectory)"
-  inputs:
-    Contents: |
-      Linux/Build/manifest.yml
-    TargetFolder: "$(build.artifactstagingdirectory)/publish"
-    OverWrite: true
-- task: PublishBuildArtifacts@1
-  displayName: "Publish Artifact"
-  inputs:
-    PathtoPublish: "$(build.artifactstagingdirectory)/publish"
+  - template: azure-pipelines-templates/deploy/step/tokenize-files.yml@das-platform-building-blocks
+    parameters:
+      WorkingDirectory: Linux/Build
+      TargetFiles: Dockerfile
+      TokenPrefix: __
+      TokenSuffix: __
+
+  - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
+    parameters:
+      ContainerRegistryName: $(PublicAcrName)
+      ServiceConnection: SFA-DIG-Prod-ARM
+      ImageName: azure-pipelines-build-agent-ubuntu-20
+      WorkingDirectory: Linux/Build
+      BranchToCreateLatestTag: master
+
+  - task: CopyFiles@2
+    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    inputs:
+      Contents: |
+        Linux/Build/manifest.yml
+      TargetFolder: "$(build.artifactstagingdirectory)/publish"
+      OverWrite: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact"
+    inputs:
+      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
 

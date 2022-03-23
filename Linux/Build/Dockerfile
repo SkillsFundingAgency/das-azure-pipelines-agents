@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
@@ -15,17 +15,16 @@ RUN apt-get update \
   ftp \
   jq \
   git \
-  iputils-ping \
-  libcurl4 \
-  libicu60 \
-  libunwind8 \
   gnupg \
   iproute2 \
   iputils-ping \
+  libcurl4 \
+  libicu66 \
+  libunwind8 \
   libssl1.0 \
   locales \
-  netcat \
   openssh-client \
+  netcat \
   rsync\
   shellcheck \
   sudo \
@@ -69,7 +68,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
+  && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   mssql-tools \
@@ -80,17 +79,20 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
 # Install .NET Core SDK and initialize package cache
-RUN curl https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
+RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
   && rm packages-microsoft-prod.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-  dotnet-sdk-2.2=2.2.207-1 \
   dotnet-sdk-3.1 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
+ENV LATEST_DOTNET_VERSION=3.1
+
+#Manually install .NET Core 2.2 SDK
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 2.2.207 --install-dir /usr/share/dotnet
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
@@ -105,7 +107,7 @@ ENV grunt=/usr/local/bin/grunt
 
 # Install Powershell Core
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
+  && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   powershell \
@@ -115,6 +117,13 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 # Install Powershell Modules
 RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Az, Az.CosmosDb, AWSPowerShell.NetCore -Scope AllUsers -Force'
 RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
+
+# Install az cli
+RUN apt-get update \
+  && apt-get install -y lsb-release \
+  && AZ_REPO=$(lsb_release -cs) \
+  && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list \
+  && apt-get install -y azure-cli
 
 # Clean system
 RUN apt-get clean \

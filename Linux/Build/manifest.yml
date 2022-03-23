@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-pipelines-build-agent
+  name: azure-pipelines-build-agent-ubuntu-20
 spec:
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: azure-pipelines-build-agent
+      app: azure-pipelines-build-agent-ubuntu-20
   template:
     metadata:
       labels:
-        app: azure-pipelines-build-agent
+        app: azure-pipelines-build-agent-ubuntu-20
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -19,10 +19,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: agentpool
+                  - key: nodepool
                     operator: In
                     values:
-                      - __agentPoolName__
+                      - __nodePoolLabel__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -32,15 +32,19 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - azure-pipelines-build-agent
+                        - azure-pipelines-build-agent-ubuntu-20
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: azure-pipelines-build-agent
-          image: __PublicAcrName__.azurecr.io/__ContainerImageName__:latest
+        - name: azure-pipelines-build-agent-ubuntu-20
+          image: __PublicAcrName__.azurecr.io/azure-pipelines-build-agent-ubuntu-20:latest
           imagePullPolicy: Always
           resources:
             requests:
+              cpu: 900m
               memory: 512Mi
+            limits:
+              cpu: 1800m
+              memory: 1536Mi
           env:
             - name: AZP_URL
               valueFrom:
@@ -53,7 +57,7 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Integration
+              value: DAS - Continuous Integration Agents
             - name: NUGET_PACKAGES
               value: "/mnt/nugetcache/packages"
           volumeMounts:
