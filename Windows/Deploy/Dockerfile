@@ -15,7 +15,6 @@ RUN choco config set cachelocation C:\chococache \
 RUN choco install \
   git  \
   powershell-core \
-  dacfx-18 \
   nodejs-lts \
   --confirm \
   --limit-output \
@@ -32,5 +31,6 @@ RUN Install-Module Az -Force
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
 RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; rm .\dacfx.msi
 RUN Install-Module Az -Force
 RUN Install-Module SqlServer, AzTable -Force
