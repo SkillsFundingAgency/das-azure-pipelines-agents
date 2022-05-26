@@ -33,4 +33,4 @@ SHELL ["pwsh", "-NoProfile", "-Command"]
 RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
 RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; rm .\dacfx.msi
 RUN Install-Module Az -Force
-RUN Install-Module SqlServer, AzTable -Force
+RUN Install-Module SqlServer, Az, AzTable, AWSPowerShell.NetCore -Force
