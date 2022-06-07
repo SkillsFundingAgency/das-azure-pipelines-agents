@@ -118,11 +118,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && rm -rf /etc/apt/sources.list.d/*
 
 # Install Powershell Modules
-<<<<<<< HEAD
-RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer -Scope AllUsers -Force'
-=======
-RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, Az, Az.CosmosDb, AWSPowerShell.NetCore, powershell-yaml -Scope AllUsers -Force'
->>>>>>> 6f8cb7f72ba15599ec5f77a4c67c556608141e87
+RUN pwsh -NonInteractive -Command '$null = Install-Module PSScriptAnalyzer, powershell-yaml -Scope AllUsers -Force'
 RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
 
 # Install az cli
