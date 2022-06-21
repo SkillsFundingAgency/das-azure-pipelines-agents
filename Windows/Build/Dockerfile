@@ -33,7 +33,7 @@ RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazu
 # Install Build Tools with workloads, excluding components with known issues.
 RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   && curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
-  && "%TEMP%\vs_buildtools.exe" --quiet --wait --norestart --nocache \
+  && "%TEMP%\vs_buildtools.exe" --wait --norestart --nocache \
   --add Microsoft.VisualStudio.Workload.AzureBuildTools \
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
   --add Microsoft.VisualStudio.Workload.NetCoreBuildTools \
@@ -42,7 +42,6 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   --add Microsoft.VisualStudio.Component.SQL.SSDTBuildSku \
   --add Microsoft.Net.Component.4.6.2.TargetingPack \
   --add Microsoft.Net.Component.4.8.TargetingPack \
-  --add Microsoft.VisualStudio.Component.WebDeploy \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
