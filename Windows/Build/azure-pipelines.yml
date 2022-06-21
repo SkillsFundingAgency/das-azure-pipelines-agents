@@ -15,7 +15,7 @@ pr:
       - "Windows/Build/*"
 
 pool:
-  name: DAS - Continuous Integration Agents
+  name: DAS - Continuous Integration
 
 resources:
   repositories:
