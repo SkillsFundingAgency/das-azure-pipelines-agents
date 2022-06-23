@@ -5,14 +5,14 @@ trigger:
       - master
   paths:
     include:
-      - "Windows/Build/*"
+      - "Windows/Deploy/Image"
     exclude:
       - "*"
 
 pr:
   paths:
     include:
-      - "Windows/Build/*"
+      - "Windows/Deploy/Image"
 
 pool:
   name: DAS - Continuous Integration Agents
@@ -23,7 +23,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.13
+    ref: refs/heads/DASD-9551_Verify_K8_Manifest_Apply
     endpoint: SkillsFundingAgency
 
 schedules:
@@ -37,9 +37,10 @@ schedules:
 variables:
 - group: Release Management Resources
 - name: ContainerImageName
-  value: azure-pipelines-build-agent-win
+  value: azure-pipelines-deploy-agent-win
 
 steps:
+- template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
   parameters:
     ContainerRegistryName: $(PublicAcrName)
@@ -47,16 +48,4 @@ steps:
     ImageName: $(ContainerImageName)
     BranchToCreateLatestTag: master
     Platform: windows
-    WorkingDirectory: $(Build.SourcesDirectory)/Windows/Build
-
-- task: CopyFiles@2
-  displayName: "Copy Files to: $(build.artifactstagingdirectory)"
-  inputs:
-    Contents: |
-      Windows/Build/manifest.yml
-    TargetFolder: "$(build.artifactstagingdirectory)/publish"
-    OverWrite: true
-- task: PublishBuildArtifacts@1
-  displayName: "Publish Artifact"
-  inputs:
-    PathtoPublish: "$(build.artifactstagingdirectory)/publish"
+    WorkingDirectory: Windows/Deploy/Image

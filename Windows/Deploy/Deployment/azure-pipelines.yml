@@ -1,0 +1,79 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - "Windows/Deploy/Deployment"
+    exclude:
+      - "*"
+
+pr:
+  paths:
+    include:
+      - "Windows/Deploy/Deployment"
+
+pool:
+  name: DAS - Continuous Integration Agents
+
+resources:
+  repositories:
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/heads/DASD-9551_Verify_K8_Manifest_Apply
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: build
+    source: das-azure-pipelines-agents-win-deploy (Image Build)
+    branch: DASD-9551_Test_Agents
+    trigger:
+      branches:
+        - master
+
+variables:
+- group: RELEASE das-azure-pipelines-agent
+- group: Release Management Resources
+- name: ContainerImageName
+  value: azure-pipelines-deploy-agent-win
+- name: ImageTag
+  value: $(resources.pipeline.build.runName)
+
+stages:
+  - stage: DeployDev
+    variables:
+    - group: DEV Windows Deploy Agent
+    - group: Dev Management Resources
+    jobs:
+    - job: DeployManifest
+      displayName: DeployManifest
+      steps:
+        - template: /pipeline-templates/step/deploy.yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AzureServiceConnection: SFA-DAS-DevTest-ARM
+  - stage: DeployProd
+    dependsOn: DeployDev
+    condition: eq(variables['resources.pipeline.build.sourceBranch'], 'refs/heads/master')
+    variables:
+    - group: PROD Windows Build Agent
+    - group: PROD Management Resources
+    jobs:
+    - job: DeployManifest
+      displayName: DeployManifest
+      steps:
+        - template: /pipeline-templates/step/deploy.yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AzureServiceConnection: SFA-DIG-Prod-ARM
+
+
+
+
+
+
+
+

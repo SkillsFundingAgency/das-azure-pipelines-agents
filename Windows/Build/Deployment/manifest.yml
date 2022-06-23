@@ -1,18 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-pipelines-build-agent-win
+  name: __deploymentName__
   namespace: __agentNameSpace__
 spec:
+  progressDeadlineSeconds: 1200
   replicas: __agentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: azure-pipelines-build-agent-win
+      app: __deploymentName__
   template:
     metadata:
       labels:
-        app: azure-pipelines-build-agent-win
+        app: __deploymentName__
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -23,7 +24,7 @@ spec:
                   - key: nodepool
                     operator: In
                     values:
-                      - __nodePoolLabel__
+                      - __WindowsBuildAgentsNodePoolLabel__
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -33,11 +34,11 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - azure-pipelines-build-agent-win
+                        - __deploymentName__
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: azure-pipelines-build-agent-win
-          image: __PublicAcrName__.azurecr.io/__ContainerImageName__:latest
+        - name: __deploymentName__
+          image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__imageTag__
           imagePullPolicy: Always
           resources:
             requests:
@@ -57,7 +58,7 @@ spec:
                   name: azp
                   key: AZP_TOKEN
             - name: AZP_POOL
-              value: DAS - Continuous Integration
+              value: __AzureDevopsAgentPool__
             - name: NUGET_PACKAGES
               value: "C:\\d\\nugetcache\\packages"
             - name: POD_NAME

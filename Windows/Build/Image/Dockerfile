@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
 
 WORKDIR /azp
 
-COPY start.ps1 .
+COPY Start.ps1 .
 
 CMD powershell .\start.ps1
 
@@ -49,7 +49,6 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
   && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
-
 
 ENV DOTNET_VERSION 2.2.207
 
