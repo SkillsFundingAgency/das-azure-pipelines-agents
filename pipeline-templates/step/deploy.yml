@@ -1,5 +1,5 @@
 parameters:
-  VerifyDeployment: false
+  VerifyDeployment:
   Directory:
   AzureServiceConnection:
 
