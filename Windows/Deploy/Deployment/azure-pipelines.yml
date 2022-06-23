@@ -56,7 +56,7 @@ stages:
             AzureServiceConnection: SFA-DAS-DevTest-ARM
   - stage: DeployProd
     dependsOn: DeployDev
-    condition: eq(variables['resources.pipeline.build.sourceBranch'], 'refs/heads/master')
+    condition: eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master')
     variables:
     - group: PROD Windows Build Agent
     - group: PROD Management Resources

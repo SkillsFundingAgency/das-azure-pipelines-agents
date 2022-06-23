@@ -1,0 +1,14 @@
+parameters:
+  FrameworkVersion:
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: dotnet new webapi
+    inputs:
+      command: custom
+      custom: 'new'
+      arguments: 'webapi --framework ${{parameters.FrameworkVersion}}'
+  - task: DotNetCoreCLI@2
+    displayName: dotnet build
+    inputs:
+      command: build

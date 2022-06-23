@@ -22,7 +22,7 @@ resources:
     ref: refs/heads/DASD-9551_Verify_K8_Manifest_Apply
     endpoint: SFA
   pipelines:
-  - pipeline: build
+  - pipeline: image-build
     source: das-azure-pipelines-agents-linux-build (Image Build)
     branch: DASD-9551_Test_Agents
     trigger:
@@ -38,7 +38,7 @@ variables:
 - name: ContainerImageName
   value: azure-pipelines-build-agent-ubuntu-20
 - name: ImageTag
-  value: $(resources.pipeline.build.runName)
+  value: $(resources.pipeline.image-build.runName)
 
 stages:
   - stage: DeployDev
@@ -73,16 +73,9 @@ stages:
           DotNet6:
             FrameworkVersion: net6.0
       steps:
-        - task: DotNetCoreCLI@2
-          displayName: dotnet new webapi
-          inputs:
-            command: custom
-            custom: 'new'
-            arguments: 'webapi --framework $(FrameworkVersion)'
-        - task: DotNetCoreCLI@2
-          displayName: dotnet build
-          inputs:
-            command: build
+        - template: /pipeline-templates/step/dotnet-acceptance-tests.yml
+          parameters:
+            FrameworkVersion: $(FrameworkVersion)
   - stage: DeployProd
     dependsOn: AcceptanceTests
     condition: eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master')
