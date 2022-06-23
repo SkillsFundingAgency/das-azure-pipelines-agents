@@ -25,7 +25,7 @@ resources:
     ref: refs/heads/DASD-9551_Verify_K8_Manifest_Apply
     endpoint: SkillsFundingAgency
   pipelines:
-  - pipeline: build
+  - pipeline: image-build
     source: das-azure-pipelines-agents-win-deploy (Image Build)
     branch: DASD-9551_Test_Agents
     trigger:
@@ -38,7 +38,7 @@ variables:
 - name: ContainerImageName
   value: azure-pipelines-deploy-agent-win
 - name: ImageTag
-  value: $(resources.pipeline.build.runName)
+  value: $(resources.pipeline.image-build.runName)
 
 stages:
   - stage: DeployDev
