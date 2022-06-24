@@ -21,6 +21,5 @@ steps:
       projectKey: TestKey
   - task: DotNetCoreCLI@2
     displayName: Assert dotnet builds
-    description:
     inputs:
       command: build
