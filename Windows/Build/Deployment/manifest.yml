@@ -38,7 +38,7 @@ spec:
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
         - name: __deploymentName__
-          image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__imageTag__
+          image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
           imagePullPolicy: Always
           resources:
             requests:

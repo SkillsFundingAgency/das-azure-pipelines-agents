@@ -90,5 +90,5 @@ stages:
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
-            AzureServiceConnection: SFA-DAS-DevTest-ARM
+            AzureServiceConnection: SFA-DIG-Prod-ARM
 
