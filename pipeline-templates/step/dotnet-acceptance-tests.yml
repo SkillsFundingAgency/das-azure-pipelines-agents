@@ -11,7 +11,17 @@ steps:
       command: custom
       custom: 'new'
       arguments: 'webapi --framework ${{parameters.FrameworkVersion}}'
+  - task: SonarCloudPrepare@1
+    displayName: Prepare SonarCloud analysis configuration
+    inputs:
+      SonarCloud: ESFA - SonarCloud
+      organization: educationandskillsfundingagency
+      scannerMode: MSBuild
+      projectName: "$(Build.DefinitionName)"
+      projectKey: das-sonarcloud-integration-tests
   - task: DotNetCoreCLI@2
     displayName: Assert dotnet builds
     inputs:
       command: build
+  - task: SonarCloudAnalyze@1
+    displayName: Run SonarCloud analysis
