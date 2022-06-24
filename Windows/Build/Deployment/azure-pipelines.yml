@@ -55,8 +55,10 @@ stages:
             Directory: $(System.DefaultWorkingDirectory)/Windows/Build/Deployment
             AzureServiceConnection: SFA-DAS-DevTest-ARM
         - pwsh: |
-            Start-Sleep -Seconds 120 # Do Better. This giv            Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
-  dependsOn: DeployDev
+            Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
+
+  - stage: AcceptanceTests
+    dependsOn: DeployDev
     jobs:
     - job: DotNetAcceptanceTests
       pool:
