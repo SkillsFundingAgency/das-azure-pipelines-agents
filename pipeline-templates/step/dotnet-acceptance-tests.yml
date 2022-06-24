@@ -15,6 +15,6 @@ steps:
     displayName: Assert dotnet builds
     inputs:
       command: build
-  - pwsh: '$env:SONARQUBE_SCANNER_MODE = MSBuild'
+  - pwsh: "$env:SONARQUBE_SCANNER_MODE = MSBuild"
   - task: SonarCloudAnalyze@1
     displayName: Run SonarCloud analysis
