@@ -11,15 +11,10 @@ steps:
       command: custom
       custom: 'new'
       arguments: 'webapi --framework ${{parameters.FrameworkVersion}}'
-  - task: SonarCloudPrepare@1
-    displayName: Prepare SonarCloud analysis configuration
-    inputs:
-      SonarCloud: TestEndpoint
-      organization: TestOrg
-      scannerMode: MSBuild
-      projectName: "$(Build.DefinitionName)"
-      projectKey: TestKey
   - task: DotNetCoreCLI@2
     displayName: Assert dotnet builds
     inputs:
       command: build
+  - pwsh: '$env:SONARQUBE_SCANNER_MODE = MSBuild'
+  - task: SonarCloudAnalyze@1
+    displayName: Run SonarCloud analysis
