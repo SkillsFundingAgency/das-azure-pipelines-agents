@@ -15,14 +15,14 @@ steps:
     displayName: Prepare SonarCloud analysis configuration
     inputs:
       SonarCloud: ESFA - SonarCloud
-      organization: TestOrg
+      organization: educationandskillsfundingagency
       scannerMode: MSBuild
       projectName: "$(Build.DefinitionName)"
-      projectKey: TestKey
+      projectKey: das-sonarcloud-integration-tests
   - task: DotNetCoreCLI@2
     displayName: Assert dotnet builds
     inputs:
       command: build
-  - pwsh: Write-Output "##vso[task.setvariable variable=SONARQUBE_SCANNER_MODE]MSBuild"
+  #- pwsh: Write-Output "##vso[task.setvariable variable=SONARQUBE_SCANNER_MODE]MSBuild"
   - task: SonarCloudAnalyze@1
     displayName: Run SonarCloud analysis
