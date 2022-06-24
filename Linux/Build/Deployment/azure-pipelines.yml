@@ -1,0 +1,94 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - "Linux/Build/Deployment"
+    exclude:
+      - "*"
+
+pr:
+  paths:
+    include:
+      - "Linux/Build/Deployment"
+
+resources:
+  repositories:
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.63
+    endpoint: SFA
+  pipelines:
+  - pipeline: image-build
+    source: das-azure-pipelines-agents-linux-build (Image Build)
+    branch: master
+    trigger:
+      branches:
+        - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: RELEASE das-azure-pipelines-agent
+- group: Release Management Resources
+- name: ContainerImageName
+  value: azure-pipelines-build-agent-ubuntu-20
+- name: ImageTag
+  value: $(resources.pipeline.image-build.runName)
+
+stages:
+  - stage: DeployDev
+    variables:
+    - group: DEV Linux Build Agent
+    - group: Dev Management Resources
+    jobs:
+    - job: DeployManifest
+      displayName: DeployManifest
+      steps:
+        - template: /pipeline-templates/step/deploy.yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
+            AzureServiceConnection: SFA-DAS-DevTest-ARM
+        - pwsh: |
+            Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
+          displayName: Sleep
+  - stage: AcceptanceTests
+    dependsOn: DeployDev
+    jobs:
+    - job: DotNetAcceptanceTests
+      pool:
+        name: DAS - Continuous Integration Beta
+        demands:
+          - Agent.OS -equals Linux
+      displayName: RunTests
+      strategy:
+        matrix:
+          DotNet3.1:
+            FrameworkVersion: netcoreapp3.1
+          DotNet6:
+            FrameworkVersion: net6.0
+      steps:
+        - template: /pipeline-templates/step/dotnet-acceptance-tests.yml
+          parameters:
+            FrameworkVersion: $(FrameworkVersion)
+  - stage: DeployProd
+    dependsOn: AcceptanceTests
+    condition: eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master')
+    variables:
+    - group: PROD Linux Build Agent
+    - group: PROD Management Resources
+    jobs:
+    - job: DeployManifest
+      displayName: DeployManifest
+      steps:
+        - template: /pipeline-templates/step/deploy.yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
+            AzureServiceConnection: SFA-DIG-Prod-ARM
+

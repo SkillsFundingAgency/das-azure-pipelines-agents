@@ -1,0 +1,27 @@
+#Context: The agent should be able to create a sample project and build it with sonarcloud analyze with the provided FrameworkVersion
+#Example FrameworkVersions - 'netcoreapp3.1' 'net6.0'
+parameters:
+  FrameworkVersion:
+
+#It should build and sonar scan without error
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: dotnet new webapi
+    inputs:
+      command: custom
+      custom: 'new'
+      arguments: 'webapi --framework ${{parameters.FrameworkVersion}}'
+  - task: SonarCloudPrepare@1
+    displayName: Prepare SonarCloud analysis configuration
+    inputs:
+      SonarCloud: ESFA - SonarCloud
+      organization: educationandskillsfundingagency
+      scannerMode: MSBuild
+      projectName: "$(Build.DefinitionName)"
+      projectKey: das-sonarcloud-integration-tests
+  - task: DotNetCoreCLI@2
+    displayName: Assert dotnet builds
+    inputs:
+      command: build
+  - task: SonarCloudAnalyze@1
+    displayName: Run SonarCloud analysis
