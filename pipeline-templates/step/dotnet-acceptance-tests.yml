@@ -1,6 +1,9 @@
+#Context: The agent should be able to create a sample project and build it with the provided FrameworkVersion
+#Example FrameworkVersions - 'netcoreapp3.1' 'net6.0'
 parameters:
   FrameworkVersion:
 
+#It should build without error
 steps:
   - task: DotNetCoreCLI@2
     displayName: dotnet new webapi
@@ -9,6 +12,7 @@ steps:
       custom: 'new'
       arguments: 'webapi --framework ${{parameters.FrameworkVersion}}'
   - task: DotNetCoreCLI@2
-    displayName: dotnet build
+    displayName: Assert dotnet builds
+    description:
     inputs:
       command: build
