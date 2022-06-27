@@ -58,7 +58,7 @@ stages:
     dependsOn: DeployDev
     condition: eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master')
     variables:
-    - group: PROD Windows Build Agent
+    - group: PROD Windows Deploy Agent
     - group: PROD Management Resources
     jobs:
     - job: DeployManifest
