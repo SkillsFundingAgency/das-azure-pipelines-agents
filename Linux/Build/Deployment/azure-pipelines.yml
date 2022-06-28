@@ -43,8 +43,13 @@ variables:
 stages:
   - stage: DeployDev
     variables:
-    - group: DEV Linux Build Agent
     - group: Dev Management Resources
+    - name: AgentCount
+      value: 2
+    - name: AzureDevopsAgentPool
+      value: DAS - Continuous Integration Beta
+    - name: DeploymentName
+      value: beta-azure-pipelines-build-agent-linux
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
@@ -78,10 +83,15 @@ stages:
             FrameworkVersion: $(FrameworkVersion)
   - stage: DeployProd
     dependsOn: AcceptanceTests
-    condition: eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master')
+    condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
-    - group: PROD Linux Build Agent
     - group: PROD Management Resources
+    - name: AgentCount
+      value: 10
+    - name: AzureDevopsAgentPool
+      value: DAS - Continuous Integration Agents
+    - name: DeploymentName
+      value: azure-pipelines-build-agent-linux
     jobs:
     - job: DeployManifest
       displayName: DeployManifest

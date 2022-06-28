@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: __deploymentName__
-  namespace: __agentNameSpace__
+  name: __DeploymentName__
+  namespace: __AgentNameSpace__
 spec:
   progressDeadlineSeconds: 1200
-  replicas: __agentCount__
+  replicas: __AgentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: __deploymentName__
+      app: __DeploymentName__
   template:
     metadata:
       labels:
-        app: __deploymentName__
+        app: __DeploymentName__
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -34,10 +34,10 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - __deploymentName__
+                        - __DeploymentName__
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-        - name: __deploymentName__
+        - name: __DeploymentName__
           image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
           imagePullPolicy: Always
           resources:
