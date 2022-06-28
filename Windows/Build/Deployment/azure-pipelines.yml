@@ -43,8 +43,13 @@ variables:
 stages:
   - stage: DeployDev
     variables:
-    - group: DEV Windows Build Agent
     - group: Dev Management Resources
+    - name: AgentCount
+      value: 2
+    - name: AzureDevopsAgentPool
+      value: DAS - Continuous Integration Beta
+    - name: DeploymentName
+      value: beta-azure-pipelines-build-agent-win
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
@@ -78,8 +83,13 @@ stages:
     dependsOn: AcceptanceTests
     condition: eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master')
     variables:
-    - group: PROD Windows Build Agent
     - group: PROD Management Resources
+    - name: AgentCount
+      value: 10
+    - name: AzureDevopsAgentPool
+      value: DAS - Continuous Integration
+    - name: DeploymentName
+      value: azure-pipelines-build-agent-win
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
