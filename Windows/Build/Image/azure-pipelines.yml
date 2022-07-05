@@ -26,7 +26,7 @@ resources:
     endpoint: SkillsFundingAgency
 
 schedules:
-- cron: "0 6 * * Wed"
+- cron: "0 3 * * Wed"
   displayName: Weekly Wednesday morning run
   branches:
     include:
