@@ -5,8 +5,8 @@ metadata:
   namespace: __AgentNameSpace__
 spec:
   progressDeadlineSeconds: 1200
-  replicas: __AgentCount__
-  revisionHistoryLimit: 6
+  replicas: 6
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: __DeploymentName__
