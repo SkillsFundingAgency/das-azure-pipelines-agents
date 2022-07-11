@@ -6,7 +6,7 @@ metadata:
 spec:
   progressDeadlineSeconds: 1200
   replicas: __AgentCount__
-  revisionHistoryLimit: 2
+  revisionHistoryLimit: 6
   selector:
     matchLabels:
       app: __DeploymentName__
@@ -43,6 +43,8 @@ spec:
         resources:
           requests:
             memory: 256Mi
+          limits:
+            memory: 2048Mi
         env:
           - name: AZP_URL
             valueFrom:
