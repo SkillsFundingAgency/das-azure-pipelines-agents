@@ -16,7 +16,6 @@ RUN choco install \
   git  \
   powershell-core \
   nodejs-lts \
-  pulumi \
   --confirm \
   --limit-output \
   --timeout 216000 \
