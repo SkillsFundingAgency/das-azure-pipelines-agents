@@ -44,7 +44,7 @@ spec:
           requests:
             memory: 256Mi
           limits:
-            memory: 2048Mi
+            memory: 2560Mi
         env:
           - name: AZP_URL
             valueFrom:
