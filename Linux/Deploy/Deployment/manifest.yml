@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __DeploymentName__
+  namespace: __AgentNameSpace__
+spec:
+  replicas: __AgentCount__
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: __DeploymentName__
+  template:
+    metadata:
+      labels:
+        app: __DeploymentName__
+    spec:
+      terminationGracePeriodSeconds: 300
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: nodepool
+                    operator: In
+                    values:
+                      - __LinuxDeployAgentsNodePoolLabel__
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - __DeploymentName__
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+      containers:
+        - name: __DeploymentName__
+          image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 2048Mi
+          env:
+            - name: AZP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_URL
+            - name: AZP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_TOKEN
+            - name: AZP_POOL
+              value: __AzureDevopsAgentPool__
+      tolerations:
+        - key: agent-os
+          operator: Equal
+          value: linux
+          effect: NoSchedule
+
