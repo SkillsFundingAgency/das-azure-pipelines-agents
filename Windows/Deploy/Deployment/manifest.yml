@@ -39,6 +39,8 @@ spec:
       containers:
       - name: __DeploymentName__
         image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
+        command: ["powershell"]
+        args: ['./start.ps1']
         imagePullPolicy: Always
         resources:
           requests:
