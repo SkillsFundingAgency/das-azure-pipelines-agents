@@ -21,6 +21,11 @@ resources:
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/0.4.63
     endpoint: SFA
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/5.0.6
+    endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: image-build
     source: das-azure-pipelines-agents-linux-build (Image Build)
@@ -30,7 +35,7 @@ resources:
         - master
 
 pool:
-  vmImage: ubuntu-latest
+  name: DAS - Continuous Integration Agents
 
 variables:
 - group: RELEASE das-azure-pipelines-agent
@@ -57,7 +62,7 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
+            Directory: Linux/Build/Deployment
             AzureServiceConnection: SFA-DAS-DevTest-ARM
         - pwsh: |
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
@@ -99,6 +104,6 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
+            Directory: Linux/Build/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
 

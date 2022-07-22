@@ -4,9 +4,11 @@ parameters:
   AzureServiceConnection:
 
 steps:
+- checkout: self
+- checkout: das-platform-automation
 - template:  azure-pipelines-templates/deploy/step/tokenize-files.yml@das-platform-building-blocks
   parameters:
-    WorkingDirectory: ${{parameters.Directory}}
+    WorkingDirectory: $(System.DefaultWorkingDirectory)/das-azure-pipelines-agents/${{parameters.Directory}}
     TargetFiles: manifest.yml
     TokenPrefix: __
     TokenSuffix: __
@@ -25,7 +27,7 @@ steps:
     AksResourceGroupName: $(AKSResourceGroupName)
     AzureServiceConnection: ${{parameters.AzureServiceConnection}}
     KubectlVersion: $(KubectlVersion)
-    ManifestFile: ${{parameters.Directory}}/manifest.yml
+    ManifestFile: $(System.DefaultWorkingDirectory)/das-azure-pipelines-agents/${{parameters.Directory}}/manifest.yml
     Namespace: $(AgentNameSpace)
     VerifyDeployment: ${{parameters.VerifyDeployment}}
     DeploymentName: $(DeploymentName)

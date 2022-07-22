@@ -24,6 +24,11 @@ resources:
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/0.4.63
     endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/5.0.6
+    endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: image-build
     source: das-azure-pipelines-agents-win-deploy (Image Build)
@@ -57,7 +62,7 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            Directory: Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DAS-DevTest-ARM
   - stage: DeployProd
     dependsOn: DeployDev
@@ -77,7 +82,7 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            Directory: Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
 
 
