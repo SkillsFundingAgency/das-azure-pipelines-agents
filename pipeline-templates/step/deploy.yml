@@ -10,6 +10,24 @@ steps:
     TargetFiles: manifest.yml
     TokenPrefix: __
     TokenSuffix: __
+- task: PowerShell@2
+  displayName: Get Agent's IP Address
+  inputs:
+    TargetType: filePath
+    FilePath: '$(System.DefaultWorkingDirectory)/das-platform-automation/Infrastructure-Scripts/Get-MyIpAddress.ps1'
+    Arguments: '-WhatsMyIpUrl  "https://ifconfig.me/ip"'
+    Pwsh: true
+- task: AzurePowerShell@5
+  displayName: Whitelist agent's IP address
+  inputs:
+    AzureSubscription: ${{ parameters.ServiceConnection }}
+    Inline: |
+      Write-Host "Our Ip is $IPAddress"
+      $ExistingIps = (Get-AzAksCluster -ResourceGroupName $(AKSResourceGroupName) -Name $(AKSSharedClusterName)).ApiServerAccessProfile.AuthorizedIPRanges
+      $ExistingIps.Add($IPAddress)
+      Write-Host "IPs to add would be... $ExistingIps"
+    ScriptArguments: '-Name $(WhitelistRuleName) -IPAddress  $(IPAddress) -ResourceNamePattern ${{ parameters.SharedSQLServerName }}'
+    AzurePowerShellVersion: LatestVersion
 - template:  azure-pipelines-templates/deploy/step/kubernetes-create-secret.yml@das-platform-building-blocks
   parameters:
     AksClusterName: $(AKSSharedClusterName)
