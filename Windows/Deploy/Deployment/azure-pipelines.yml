@@ -62,7 +62,7 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: Windows/Deploy/Deployment
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DAS-DevTest-ARM
   - stage: DeployProd
     dependsOn: DeployDev
@@ -82,7 +82,7 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: Windows/Deploy/Deployment
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
 
 

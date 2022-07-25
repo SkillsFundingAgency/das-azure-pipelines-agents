@@ -62,7 +62,7 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: Windows/Build/Deployment
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Build/Deployment
             AzureServiceConnection: SFA-DAS-DevTest-ARM
         - pwsh: |
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
@@ -102,6 +102,6 @@ stages:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
             VerifyDeployment: true
-            Directory: Windows/Build/Deployment
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Build/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
 
