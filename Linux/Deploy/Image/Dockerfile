@@ -77,6 +77,14 @@ RUN curl https://aka.ms/sqlpackage-linux -4 -sL -o '/tmp/sqlpackage.zip' \
   && sudo ln -sf $HOME/sqlpackage/sqlpackage /usr/local/bin
 ENV SqlPackage=/root/sqlpackage/sqlpackage
 
+RUN mkdir -p $HOME/azcopy \
+  && wget -q -O azcopy_v10.tar.gz https://aka.ms/downloadazcopy-v10-linux \
+  && tar -xvf azcopy_v10.tar.gz -C $HOME/azcopy --strip-components=1 \
+  && rm azcopy_v10.tar.gz \
+  && chmod +x $HOME/azcopy/azcopy \
+  && sudo ln -sf $HOME/azcopy/azcopy /usr/local/bin
+ENV AzCopy=/root/azcopy/azcopy
+
 # Install Powershell Modules
 RUN pwsh -NonInteractive -Command '$null = Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Scope AllUsers -Force'
 RUN pwsh -NonInteractive -Command '$null = Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force'
