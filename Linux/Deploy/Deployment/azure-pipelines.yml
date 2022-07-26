@@ -30,7 +30,7 @@ resources:
         - master
 
 pool:
-  vmImage: ubuntu-latest
+  name: DAS - Continuous Integration Agents
 
 variables:
 - group: RELEASE das-azure-pipelines-agent
