@@ -30,7 +30,7 @@ resources:
         - master
 
 pool:
-  name: DAS - Continuous Integration Agents
+  name: DAS - Continuous Deployment Agents
 
 variables:
 - group: RELEASE das-azure-pipelines-agent
