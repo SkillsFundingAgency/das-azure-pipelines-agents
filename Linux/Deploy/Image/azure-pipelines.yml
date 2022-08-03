@@ -23,7 +23,7 @@ resources:
     endpoint: SFA
 
 schedules:
-- cron: "0 6 * * Wed"
+- cron: "0 5 * * Wed"
   displayName: Weekly Wednesday morning run
   branches:
     include:
