@@ -22,7 +22,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.63
+    ref: refs/tags/0.4.73
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: image-build
@@ -41,9 +41,9 @@ variables:
   value: $(resources.pipeline.image-build.runName)
 
 stages:
-  - stage: DeployDev
+  - stage: DeployPreProd
     variables:
-    - group: Dev Management Resources
+    - group: PreProd Management Resources
     - name: AgentCount
       value: 2
     - name: AzureDevopsAgentPool
@@ -58,12 +58,12 @@ stages:
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Windows/Build/Deployment
-            AzureServiceConnection: SFA-DAS-DevTest-ARM
+            AzureServiceConnection: SFA-DIG-PreProd-ARM
         - pwsh: |
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
 
   - stage: AcceptanceTests
-    dependsOn: DeployDev
+    dependsOn: PreProd
     jobs:
     - job: DotNetAcceptanceTests
       pool:
