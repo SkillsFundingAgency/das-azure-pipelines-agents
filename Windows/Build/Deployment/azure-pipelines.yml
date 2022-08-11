@@ -63,7 +63,7 @@ stages:
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
 
   - stage: AcceptanceTests
-    dependsOn: PreProd
+    dependsOn: DeployPreProd
     jobs:
     - job: DotNetAcceptanceTests
       pool:
