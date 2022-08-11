@@ -41,9 +41,9 @@ variables:
   value: $(resources.pipeline.image-build.runName)
 
 stages:
-  - stage: DeployDev
+  - stage: DeployPreProd
     variables:
-    - group: Dev Management Resources
+    - group: PreProd Management Resources
     - name: AgentCount
       value: 2
     - name: AzureDevopsAgentPool
@@ -58,12 +58,12 @@ stages:
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
-            AzureServiceConnection: SFA-DAS-DevTest-ARM
+            AzureServiceConnection: SFA-DIG-PreProd-ARM
         - pwsh: |
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
           displayName: Sleep
   - stage: AcceptanceTests
-    dependsOn: DeployDev
+    dependsOn: DeployPreProd
     jobs:
     - job: DotNetAcceptanceTests
       pool:
