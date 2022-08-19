@@ -39,6 +39,7 @@ variables:
   value: azure-pipelines-deploy-agent-win
 jobs:
 - job: ImageBuild
+  timeoutInMinutes: 120
   steps:
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
