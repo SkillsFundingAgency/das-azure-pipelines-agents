@@ -19,7 +19,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.73
+    ref: refs/tags/1.0.2
     endpoint: SFA
 
 schedules:
@@ -38,7 +38,6 @@ variables:
 
 jobs:
 - job: ImageBuild
-  timeoutInMinutes: 120
   steps:
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
   - template: azure-pipelines-templates/build/step/dockerfile-build.yml@das-platform-building-blocks
