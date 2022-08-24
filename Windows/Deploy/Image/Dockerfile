@@ -28,7 +28,8 @@ RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin"
 SHELL ["powershell", "-NoProfile", "-Command"]
 RUN Install-PackageProvider -Name NuGet -Force
 RUN Install-Module Az -Force
-RUN Install-Module AWSPowerShell, PSScriptAnalyzer -Force
+RUN Install-Module PSScriptAnalyzer -Force
+RUN Install-Module AWSPowerShell -AllowClobber -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
 
