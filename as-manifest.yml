@@ -1,0 +1,15 @@
+schema: https://github.com/SkillsFundingAgency/das-technical-guidance/blob/master/collections/_development_standards/as-manifest.schema.yaml
+
+team: DASD
+
+businessApplication: Platform Tooling
+
+features:
+- Linux Build Azure Pipelines Agent
+- Linux Deploy Azure Pipelines Agent
+- Windows Build Azure Pipelines Agent
+- Windows Deploy Azure Pipelines Agent
+
+
+kind:
+- tooling
