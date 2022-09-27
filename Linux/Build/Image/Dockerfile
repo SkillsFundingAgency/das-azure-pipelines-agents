@@ -66,15 +66,6 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-# Install Pulumi CLI
-RUN VERSION=$(curl --retry 3 --fail --silent -L "https://www.pulumi.com/latest-version") \
-  && mkdir -p $HOME/pulumi \
-  && curl https://get.pulumi.com/releases/sdk/pulumi-v${VERSION}-linux-x64.tar.gz -4 -o '/tmp/pulumicli.tar.gz' \
-  && tar -xvf /tmp/pulumicli.tar.gz -C $HOME/pulumi \
-  && mv $HOME/pulumi/pulumi $HOME/pulumi/bin \
-  && rm '/tmp/pulumicli.tar.gz'
-ENV PATH=$PATH:/root/pulumi/bin
-
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
