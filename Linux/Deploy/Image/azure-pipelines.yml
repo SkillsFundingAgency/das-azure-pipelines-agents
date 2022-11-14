@@ -20,7 +20,7 @@ resources:
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/1.0.2
-    endpoint: SFA
+    endpoint: SkillsFundingAgency
 
 schedules:
 - cron: "0 5 * * Wed"
