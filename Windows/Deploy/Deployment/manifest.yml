@@ -44,6 +44,7 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
+            cpu: 270m
             memory: 256Mi
         env:
           - name: AZP_URL

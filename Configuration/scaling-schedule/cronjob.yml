@@ -1,0 +1,104 @@
+##
+##  NOTE:
+##  This sets up the permissions and cronjob to scale up and scaledown agent deployments
+##  Cache needs improving before implementing this to be more reliable with constant spin down and spin up
+##
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: agents
+  name: agent-scaler
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["patch", "get"]
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: agent-scaler
+  namespace: agents
+subjects:
+- kind: ServiceAccount
+  name: sa-agent-scaler
+  namespace: agents
+roleRef:
+  kind: Role
+  name: agent-scaler
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-agent-scaler
+  namespace: agents
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: agent-scale-down-job
+  namespace: agents
+spec:
+  schedule: "0 20 * * *" # Run everyday at 8pm
+  successfulJobsHistoryLimit: 0 # Remove after successful completion
+  failedJobsHistoryLimit: 1 # Retain failed so that we see it
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                    - linux
+          serviceAccountName: sa-agent-scaler
+          containers:
+          - name: agent-scale-down-job
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/sh
+            - -c
+            - kubectl patch deployment beta-azure-pipelines-deploy-agent-win --patch '{"spec":{"replicas":4}}'
+          restartPolicy: OnFailure
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: agent-scale-up-job
+  namespace: agents
+spec:
+  schedule: "0 6 * * *" # Run everyday at 6am
+  successfulJobsHistoryLimit: 0 # Remove after successful completion
+  failedJobsHistoryLimit: 1 # Retain failed so that we see it
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                    - linux
+          serviceAccountName: sa-agent-scaler
+          containers:
+          - name: agent-scale-up-job
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/sh
+            - -c
+            - kubectl patch deployment beta-azure-pipelines-deploy-agent-win --patch '{"spec":{"replicas":20}}'
+          restartPolicy: OnFailure
