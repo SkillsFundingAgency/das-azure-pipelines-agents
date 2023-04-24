@@ -30,7 +30,7 @@ resources:
         - master
 
 pool:
-  name: DAS - Continuous Deployment Agents
+    vmImage: 'windows-latest'
 
 variables:
 - group: RELEASE das-azure-pipelines-agent
