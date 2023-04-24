@@ -15,7 +15,7 @@ pr:
       - "Windows/Build/Deployment"
 
 pool:
-  name: DAS - Continuous Integration Agents
+    vmImage: 'ubuntu-latest'
 
 resources:
   repositories:
