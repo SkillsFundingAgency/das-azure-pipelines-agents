@@ -62,9 +62,9 @@ RUN apt-get update \
 
 # Install Java OpenJDK
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openjdk-11-jdk \
+  && apt-get install -y --no-install-recommends openjdk-17-jdk \
   && rm -rf /var/lib/apt/lists/*
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
