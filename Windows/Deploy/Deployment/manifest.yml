@@ -63,16 +63,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-        volumeMounts:
-          - name: task-cache
-            mountPath: /azp/agent/_work/_tasks
       tolerations:
         - key: agent-os
           operator: Equal
           value: windows
           effect: NoSchedule
-      volumes:
-        - name: task-cache
-          hostPath:
-            path: /azp/agent/_work/_tasks
-            type: DirectoryOrCreate
