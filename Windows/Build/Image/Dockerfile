@@ -19,7 +19,14 @@ RUN choco install \
   git  \
   powershell-core \
   nodejs \
-  openjdk11 \
+  --confirm \
+  --limit-output \
+  --timeout 216000 \
+  && rmdir /S /Q C:\chococache
+
+RUN choco install \
+  openjdk \
+  --version=17.0.2 \
   --confirm \
   --limit-output \
   --timeout 216000 \

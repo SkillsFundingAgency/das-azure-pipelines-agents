@@ -101,4 +101,3 @@ stages:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
-
