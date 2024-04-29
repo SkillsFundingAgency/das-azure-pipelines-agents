@@ -30,8 +30,12 @@ RUN Install-PackageProvider -Name NuGet -Force
 RUN Install-Module Az -Force
 RUN Install-Module PSScriptAnalyzer -Force
 RUN Install-Module AWSPowerShell -AllowClobber -Force
-# This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
+
+# Download and install Microsoft Access Database Engine 64-bit
+RUN Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/5/C/35C84C36-661A-44E6-9324-8786B8DBE231/accessdatabaseengine_X64.exe" -OutFile "AccessDatabaseEngine_X64.exe" ; \
+    Start-Process -FilePath .\AccessDatabaseEngine_X64.exe -ArgumentList '/quiet', '/norestart' -Wait ; \
+    Remove-Item -Path .\AccessDatabaseEngine_X64.exe -Force
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
 RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
