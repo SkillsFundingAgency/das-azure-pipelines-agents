@@ -33,8 +33,9 @@ RUN Install-Module AWSPowerShell -AllowClobber -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
 
 # Download and install Microsoft Access Database Engine 64-bit
-RUN Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/5/C/35C84C36-661A-44E6-9324-8786B8DBE231/accessdatabaseengine_X64.exe" -OutFile "AccessDatabaseEngine_X64.exe" ; \
-    Start-Process -FilePath .\AccessDatabaseEngine_X64.exe -ArgumentList '/quiet', '/norestart' -Wait ; \
+RUN choco install curl -y; \
+    curl -o AccessDatabaseEngine_X64.exe https://download.microsoft.com/download/3/5/C/35C84C36-661A-44E6-9324-8786B8DBE231/accessdatabaseengine_X64.exe; \
+    Start-Process -FilePath .\AccessDatabaseEngine_X64.exe -ArgumentList '/quiet', '/norestart' -Wait; \
     Remove-Item -Path .\AccessDatabaseEngine_X64.exe -Force
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
