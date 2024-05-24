@@ -27,7 +27,7 @@ resources:
   pipelines:
   - pipeline: image-build
     source: das-azure-pipelines-agents-win-deploy (Image Build)
-    branch: master
+    branch: DASD-10790
     trigger:
       branches:
         - master
@@ -79,11 +79,3 @@ stages:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
-
-
-
-
-
-
-
-
