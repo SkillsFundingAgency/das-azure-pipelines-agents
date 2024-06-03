@@ -30,7 +30,7 @@ resources:
     branch: master
     trigger:
       branches:
-        - master
+        - DASD-10790-2
 
 variables:
 - group: RELEASE das-azure-pipelines-agent
@@ -79,11 +79,3 @@ stages:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
-
-
-
-
-
-
-
-
