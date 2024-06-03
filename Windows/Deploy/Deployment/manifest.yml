@@ -63,8 +63,15 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+        volumeMounts:
+        - mountPath: /azptmp
+          name: azp-tmp-volume
       tolerations:
         - key: agent-os
           operator: Equal
           value: windows
           effect: NoSchedule
+      volumes:
+      - name: azp-tmp-volume
+        emptyDir:
+          sizeLimit: 30Gi

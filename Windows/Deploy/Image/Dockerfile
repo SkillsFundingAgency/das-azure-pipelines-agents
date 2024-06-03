@@ -7,6 +7,7 @@ COPY Start.ps1 .
 CMD powershell .\start.ps1
 
 ENV chocolateyUseWindowsCompression=false
+ENV chocolateyVersion=1.4.0
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
 RUN choco config set cachelocation C:\chococache \
@@ -22,8 +23,9 @@ RUN choco install \
   && rmdir /S /Q C:\chococache \
   && setx npm true
 
-RUN choco install mongodb --version 5.0.3  --confirm --limit-output --timeout 216000
-RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin"
+RUN choco install mongodb --version 5.0.3 --confirm --limit-output --timeout 216000
+# Add mongodb, sqlpackage and azcopy to the system path
+RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sqlpackage;%ProgramFiles%\azcopy"
 
 SHELL ["powershell", "-NoProfile", "-Command"]
 RUN Install-PackageProvider -Name NuGet -Force
@@ -34,6 +36,8 @@ RUN Install-Module AWSPowerShell -AllowClobber -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
+RUN Invoke-WebRequest -Uri https://aka.ms/sqlpackage-windows -OutFile .\sqlpackage.zip -UseBasicParsing; Expand-Archive -Path .\sqlpackage.zip -DestinationPath 'C:\Program Files\sqlpackage'; rm .\sqlpackage.zip
+RUN Invoke-WebRequest -Uri https://aka.ms/downloadazcopy-v10-windows -OutFile .\azcopy.zip -UseBasicParsing; Expand-Archive -Path .\azcopy.zip -DestinationPath 'C:\Program Files\azcopy'; rm .\azcopy.zip; mv 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' 'C:\Program Files\azcopy\azcopy.exe'; rm -r 'C:\Program Files\azcopy\azcopy_windows_amd64_*'
 RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
 RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; rm .\dacfx.msi
 RUN Install-Module Az -Force
