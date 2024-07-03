@@ -42,7 +42,7 @@ spec:
           resources:
             requests:
               cpu: 600m
-              memory: 512Mi
+              memory: 3Gi
           env:
             - name: AZP_URL
               valueFrom:
