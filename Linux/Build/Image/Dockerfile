@@ -34,6 +34,7 @@ RUN apt-get update \
   wget \
   zip \
   tzdata \
+  mono-complete \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /azp
