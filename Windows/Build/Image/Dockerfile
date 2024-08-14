@@ -66,7 +66,7 @@ RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 #Used in Start.ps1 in the base image to dynamically get the latest X.X.X version installed
-ENV LATEST_DOTNET_VERSION 3.1
+ENV LATEST_DOTNET_VERSION 8.0
 
 #Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
