@@ -39,7 +39,7 @@ RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazu
 
 # Install Build Tools with workloads, excluding components with known issues.
 RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
-  && curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/16/release/vs_buildtools.exe \
+  && curl -L -o "%TEMP%\vs_buildtools.exe" https://aka.ms/vs/17/release/vs_buildtools.exe \
   && "%TEMP%\vs_buildtools.exe" --quiet --wait --norestart --nocache \
   --add Microsoft.VisualStudio.Workload.AzureBuildTools \
   --add Microsoft.VisualStudio.Workload.DataBuildTools \
@@ -54,10 +54,10 @@ RUN setx /M DOTNET_SKIP_FIRST_TIME_EXPERIENCE true \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 \
   --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 \
   --remove Microsoft.VisualStudio.Component.Windows81SDK \
-  && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin" \
+  && setx /M PATH "%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
-ENV DOTNET_VERSION 2.2.207
+ENV DOTNET_VERSION=2.2.207
 
 #Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
