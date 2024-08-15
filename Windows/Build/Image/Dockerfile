@@ -66,13 +66,23 @@ RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
 
 #Used in Start.ps1 in the base image to dynamically get the latest X.X.X version installed
-ENV LATEST_DOTNET_VERSION 8.0
+ENV LATEST_DOTNET_VERSION 3.1
 
 #Install dotnet sdk
 RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
   && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Channel $env:LATEST_DOTNET_VERSION \
   && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
   && powershell Remove-Item -Force -Recurse "%TEMP%\*"
+
+#Install dotnet sdk
+RUN curl -L -o "%TEMP%\dotnet-install.ps1" https://dot.net/v1/dotnet-install.ps1 \
+  && powershell "%TEMP%\dotnet-install.ps1" -InstallDir '%ProgramFiles%\dotnet' -Channel 8.0 \
+  && setx /M PATH "%PATH%;%ProgramFiles%\dotnet" \
+  && powershell Remove-Item -Force -Recurse "%TEMP%\*"
+
+# Install NuGet CLI
+RUN powershell -Command \
+    Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile nuget.exe
 
 #Warmup required to stop dotnet-install being ran on startup
 RUN mkdir C:\warmup \
