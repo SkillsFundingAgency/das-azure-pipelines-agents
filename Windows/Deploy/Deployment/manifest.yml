@@ -46,6 +46,9 @@ spec:
           requests:
             cpu: 270m
             memory: 256Mi
+          limits: 
+            cpu: 2500m
+            memory: 2560Mi
         env:
           - name: AZP_URL
             valueFrom:
