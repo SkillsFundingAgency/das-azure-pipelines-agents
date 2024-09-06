@@ -29,6 +29,9 @@ steps:
     Namespace: $(AgentNameSpace)
     VerifyDeployment: ${{parameters.VerifyDeployment}}
     DeploymentName: $(DeploymentName)
+- pwsh: |
+    Get-Content "$(System.DefaultWorkingDirectory)/Linux/Build/Deployment/hpa.yml"
+  displayName: "Print HPA Manifest"
 - template: azure-pipelines-templates/deploy/step/kubernetes-apply-manifest.yml@das-platform-building-blocks
   parameters:
     AksClusterName: $(AKSSharedClusterName)
