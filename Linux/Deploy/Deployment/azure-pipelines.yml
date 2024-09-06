@@ -66,8 +66,6 @@ stages:
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: PROD Management Resources
-    - name: AgentCount
-      value: 6
     - name: MinAgentCount
       value: 2
     - name: MaxAgentCount
