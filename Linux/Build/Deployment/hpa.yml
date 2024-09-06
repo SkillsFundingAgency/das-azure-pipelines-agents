@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: __DeploymentName__
-  namespace: __AgentNameSpace__
+  namespace: agents
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
