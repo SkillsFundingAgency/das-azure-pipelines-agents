@@ -4,7 +4,6 @@ metadata:
   name: __DeploymentName__
   namespace: __AgentNameSpace__
 spec:
-  replicas: __AgentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:

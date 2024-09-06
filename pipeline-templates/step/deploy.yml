@@ -29,3 +29,14 @@ steps:
     Namespace: $(AgentNameSpace)
     VerifyDeployment: ${{parameters.VerifyDeployment}}
     DeploymentName: $(DeploymentName)
+- template: azure-pipelines-templates/deploy/step/kubernetes-apply-manifest.yml@das-platform-building-blocks
+  parameters:
+    AksClusterName: ${{ parameters.AksClusterName }}
+    AksResourceGroupName: ${{ parameters.AksResourceGroupName }}
+    AzureServiceConnection: ${{ parameters.AzureServiceConnection }}
+    KubectlVersion: ${{ parameters.KubectlVersion }}
+    ManifestFile: ${{parameters.Directory}}/hpa.yml
+    Namespace: $(AgentNameSpace)
+    VerifyDeployment: ${{parameters.VerifyDeployment}}
+    DeploymentName: $(DeploymentName)
+
