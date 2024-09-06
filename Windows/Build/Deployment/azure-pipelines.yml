@@ -44,7 +44,9 @@ stages:
   - stage: DeployPreProd
     variables:
     - group: PreProd Management Resources
-    - name: AgentCount
+    - name: MinAgentCount
+      value: 1
+    - name: MaxAgentCount
       value: 2
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Integration Beta
@@ -84,8 +86,10 @@ stages:
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: PROD Management Resources
-    - name: AgentCount
-      value: 10
+    - name: MinAgentCount
+      value: 2
+    - name: MaxAgentCount
+      value: 10 
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Integration
     - name: DeploymentName
