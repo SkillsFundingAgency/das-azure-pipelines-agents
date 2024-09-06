@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: __DeploymentName__
-  minReplicas: __MinAgentCount__
-  maxReplicas: __MaxAgentCount__
+  minReplicas: $(MinAgentCount)
+  maxReplicas: $(MaxAgentCount)
   metrics:
   - type: Resource
     resource:
