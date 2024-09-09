@@ -60,7 +60,7 @@ stages:
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
-            AzureServiceConnection: SFA-DIG-PreProd-ARM
+            AzureServiceConnection: SFA-DIG-PreProd-ARM          
         - pwsh: |
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
           displayName: Sleep
