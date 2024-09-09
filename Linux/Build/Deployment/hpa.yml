@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: __DeploymentName__
+  name: $(DeploymentName)
   namespace: agents
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: __DeploymentName__
+    name: $(DeploymentName)
   minReplicas: 2
   maxReplicas: 10
   metrics:
