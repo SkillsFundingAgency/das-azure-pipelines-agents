@@ -47,7 +47,7 @@ stages:
     - name: MinAgentCount
       value: 1
     - name: MaxAgentCount
-      value: 3
+      value: 2
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Integration Beta
     - name: DeploymentName
