@@ -7,7 +7,7 @@ steps:
 - template:  azure-pipelines-templates/deploy/step/tokenize-files.yml@das-platform-building-blocks
   parameters:
     WorkingDirectory: ${{parameters.Directory}}
-    TargetFiles: manifest.yml, hpa.yml
+    TargetFiles: manifest.yml, keda.yml
     TokenPrefix: __
     TokenSuffix: __
 - template:  azure-pipelines-templates/deploy/step/kubernetes-create-secret.yml@das-platform-building-blocks
@@ -35,7 +35,7 @@ steps:
     AksResourceGroupName: $(AKSResourceGroupName)
     AzureServiceConnection: ${{parameters.AzureServiceConnection}}
     KubectlVersion: $(KubectlVersion)
-    ManifestFile: ${{parameters.Directory}}/hpa.yml
+    ManifestFile: ${{parameters.Directory}}/keda.yml
     Namespace: $(AgentNameSpace)
     VerifyDeployment: ${{parameters.VerifyDeployment}}
     DeploymentName: $(DeploymentName)
