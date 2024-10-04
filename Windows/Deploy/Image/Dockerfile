@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+FROM mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2022
 
 WORKDIR /azp
 
