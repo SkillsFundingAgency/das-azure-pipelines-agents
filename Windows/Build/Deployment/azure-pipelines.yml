@@ -45,7 +45,7 @@ stages:
     variables:
     - group: PreProd Management Resources
     - name: MinAgentCount
-      value: 1
+      value: 0
     - name: MaxAgentCount
       value: 3
     - name: AzureDevopsAgentPool
@@ -87,7 +87,7 @@ stages:
     variables:
     - group: PROD Management Resources
     - name: MinAgentCount
-      value: 0
+      value: 2
     - name: MaxAgentCount
       value: 10 
     - name: AzureDevopsAgentPool
