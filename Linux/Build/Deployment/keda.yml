@@ -2,6 +2,7 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledJob
 metadata:
   name: linux-build-azure-pipelines-scaledjob
+  namespace: __AgentNameSpace__
 spec:
   jobTargetRef:
     template:
@@ -34,6 +35,7 @@ spec:
   pollingInterval: 30  # Poll every 30 seconds for new jobs
   successfulJobsHistoryLimit: 5  # Retain last 5 successful jobs for history
   failedJobsHistoryLimit: 5  # Retain last 5 failed jobs for troubleshooting
+  minReplicaCount: __MinAgentCount__
   maxReplicaCount: __MaxAgentCount__  # Maximum number of agent jobs that can run concurrently
   scalingStrategy:
     strategy: "default"  # Options: accurate (for batch processing), fast (if you need more frequent scaling)
