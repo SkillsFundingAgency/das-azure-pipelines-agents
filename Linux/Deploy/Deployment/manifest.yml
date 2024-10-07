@@ -4,7 +4,6 @@ metadata:
   name: __DeploymentName__
   namespace: __AgentNameSpace__
 spec:
-  replicas: __AgentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -41,8 +40,10 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             requests:
+              cpu: 120m
               memory: 512Mi
             limits:
+              cpu: 1900m
               memory: 3051Mi
           env:
             - name: AZP_URL
