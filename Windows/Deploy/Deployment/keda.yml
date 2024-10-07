@@ -8,7 +8,7 @@ spec:
     template:
       spec:
         containers:
-          - name: azure-pipeline-agent
+          - name: __DeploymentName__
             image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
             imagePullPolicy: Always
             env:
@@ -27,10 +27,8 @@ spec:
               - name: NUGET_PACKAGES
                 value: "/mnt/nugetcache/packages"
             volumeMounts:
-              - mountPath: /var/run/docker.sock
-                name: docker-volume
-              - mountPath: "/mnt/nugetcache"
-                name: nuget-cache
+            - mountPath: /azptmp
+              name: azp-tmp-volume
         restartPolicy: Never  # Ensure agents are not restarted after completion
   pollingInterval: 30  # Poll every 30 seconds for new jobs
   successfulJobsHistoryLimit: 5  # Retain last 5 successful jobs for history
