@@ -1,20 +1,7 @@
 apiVersion: keda.sh/v1alpha1
-kind: TriggerAuthentication
-metadata:
-  name: pipeline-trigger-auth
-  namespace: __AgentNameSpace__
-spec:
-  secretTargetRef:
-    - parameter: personalAccessToken
-      name: azp
-      key: AZP_TOKEN
-      
----
-apiVersion: keda.sh/v1alpha1
 kind: ScaledJob
 metadata:
-  name: azure-pipelines-scaledjob
-  namespace: __AgentNameSpace__
+  name: linux-build-azure-pipelines-scaledjob
 spec:
   jobTargetRef:
     template:
@@ -55,6 +42,4 @@ spec:
       metadata:
         poolID: "109" # Replace with your Azure DevOps Agent Pool ID
         organizationURLFromEnv: "AZP_URL"
-        personalAccessTokenFromSecret: personalAccessToken
-      authenticationRef:
-        name: pipeline-trigger-auth
+        personalAccessTokenFromEnv: "AZP_TOKEN"
