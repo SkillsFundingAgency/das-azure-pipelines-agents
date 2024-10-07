@@ -38,10 +38,10 @@ spec:
   minReplicaCount: __MinAgentCount__
   maxReplicaCount: __MaxAgentCount__  # Maximum number of agent jobs that can run concurrently
   scalingStrategy:
-    strategy: "default"  # Options: accurate (for batch processing), fast (if you need more frequent scaling)
+    strategy: "default"
   triggers:
     - type: azure-pipelines
       metadata:
-        poolID: "109" # Replace with your Azure DevOps Agent Pool ID
+        poolID: "109"
         organizationURLFromEnv: "AZP_URL"
         personalAccessTokenFromEnv: "AZP_TOKEN"
