@@ -4,8 +4,6 @@ WORKDIR /azp
 
 COPY Start.ps1 .
 
-CMD powershell .\start.ps1
-
 ENV chocolateyUseWindowsCompression=false
 ENV chocolateyVersion=1.4.0
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -43,3 +41,12 @@ RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-
 RUN Install-Module Az -Force
 RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
+
+#Download and install Azure Pipelines Agent
+RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/2.193.1/vsts-agent-win-x64-2.193.1.zip \
+    && mkdir C:\azp-agent \
+    && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp-agent" \
+    && Remove-Item -Force agent.zip
+
+#Set the default command to run the PowerShell script
+CMD powershell .\Start.ps1

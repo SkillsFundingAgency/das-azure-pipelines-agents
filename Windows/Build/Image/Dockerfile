@@ -80,11 +80,3 @@ RUN mkdir C:\warmup \
   && dotnet new \
   && cd .. \
   && rmdir /S /Q C:\warmup
-
-# --- Azure Pipelines agent installation ---
-
-RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/2.193.1/vsts-agent-win-x64-2.193.1.zip \
-    && mkdir C:\azp-agent \
-    && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp-agent" \
-    && Remove-Item -Force agent.zip
-
