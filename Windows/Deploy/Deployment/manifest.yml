@@ -5,7 +5,6 @@ metadata:
   namespace: __AgentNameSpace__
 spec:
   progressDeadlineSeconds: 1200
-  replicas: __AgentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -44,8 +43,11 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            cpu: 270m
-            memory: 256Mi
+            cpu: 320m
+            memory: 512Mi
+          limits: 
+            cpu: 2500m
+            memory: 2256Mi
         env:
           - name: AZP_URL
             valueFrom:
