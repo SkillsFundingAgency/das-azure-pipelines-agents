@@ -45,11 +45,10 @@ RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
 
 #Download and extract the Azure Pipelines agent to C:\azp\agent
-RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/2.193.1/vsts-agent-win-x64-2.193.1.zip \
-    && mkdir C:\azp\agent \
-    && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
-    && Remove-Item -Force agent.zip
+RUN $packageUrl = (Invoke-RestMethod -Uri 'https://dev.azure.com/_apis/distributedtask/packages/agent?platform=win-x64&$top=1').value[0].downloadUrl; \
+    Invoke-WebRequest -Uri $packageUrl -OutFile agent.zip; \
+    Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
+    Remove-Item -Force agent.zip
 
-# Verify that the agent files are present in the correct location
-RUN dir C:\azp\agent
-
+# Verify installation of the Azure Pipelines agent
+RUN if (Test-Path "C:\azp\agent\config.cmd") { Write-Host "Agent installed successfully." } else { Write-Error "Agent installation failed."; exit 1 }
