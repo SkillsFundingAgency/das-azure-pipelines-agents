@@ -27,7 +27,7 @@ resources:
   pipelines:
   - pipeline: image-build
     source: das-azure-pipelines-agents-win-deploy (Image Build)
-    branch: DASD-11212-Set-CPU/memory
+    branch: master
     trigger:
       branches:
         - master
