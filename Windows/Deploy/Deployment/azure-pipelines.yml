@@ -27,7 +27,7 @@ resources:
   pipelines:
   - pipeline: image-build
     source: das-azure-pipelines-agents-win-deploy (Image Build)
-    branch: master
+    branch: DASD-11212-Set-CPU/memory
     trigger:
       branches:
         - master
@@ -47,7 +47,7 @@ stages:
     - name: MinAgentCount
       value: 0
     - name: MaxAgentCount
-      value: 3
+      value: 8
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Beta
     - name: DeploymentName
