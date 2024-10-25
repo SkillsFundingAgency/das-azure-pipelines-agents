@@ -45,9 +45,9 @@ stages:
     variables:
     - group: PreProd Management Resources
     - name: MinAgentCount
-      value: 0
+      value: 12
     - name: MaxAgentCount
-      value: 8
+      value: 15
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Beta
     - name: DeploymentName
