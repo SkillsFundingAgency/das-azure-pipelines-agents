@@ -4,7 +4,7 @@ WORKDIR /azp
 
 COPY Start.ps1 .
 
-CMD powershell .\Start.ps1
+CMD powershell .\start.ps1
 
 ENV chocolateyUseWindowsCompression=false
 ENV chocolateyVersion=1.4.0
@@ -43,12 +43,3 @@ RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-
 RUN Install-Module Az -Force
 RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
-
-#Download and extract the Azure Pipelines agent to C:\azp\agent
-RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/3.246.0/vsts-agent-win-x64-3.246.0.zip \
-    && mkdir C:\azp\agent \
-    && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
-    && Remove-Item -Force agent.zip
-
-# Verify that the agent files are present in the correct location
-RUN dir C:\azp\agent
