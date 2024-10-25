@@ -49,7 +49,7 @@ ENV AGENT_DOWNLOAD_URL "https://vstsagentpackage.azureedge.net/agent"
 
 RUN $ProgressPreference = 'SilentlyContinue'; \
     $latestVersion = (Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest").tag_name; \
-    $downloadUrl = "${env:AGENT_DOWNLOAD_URL}/${latestVersion}/vsts-agent-win-x64-${latestVersion}.zip"; \
+    $downloadUrl = "$env:AGENT_DOWNLOAD_URL/$latestVersion/vsts-agent-win-x64-$latestVersion.zip"; \
     Invoke-WebRequest -Uri $downloadUrl -OutFile agent.zip -UseBasicParsing; \
     New-Item -ItemType Directory -Path C:\azp\agent | Out-Null; \
     Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
