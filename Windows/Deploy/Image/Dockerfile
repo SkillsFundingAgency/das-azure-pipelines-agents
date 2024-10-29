@@ -50,14 +50,24 @@ RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
 #     && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
 #     && Remove-Item -Force agent.zip
 
+# RUN $ProgressPreference = 'SilentlyContinue'; \
+#     $latestVersion = (Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest").tag_name -replace '^v', ''; \
+#     $downloadUrl = "https://vstsagentpackage.azureedge.net/agent/$latestVersion/vsts-agent-win-x64-$latestVersion.zip"; \
+#     Write-Host $downloadUrl \
+#     curl -L -o agent.zip $downloadUrl \
+#     && mkdir C:\azp\agent \
+#     && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
+#     && Remove-Item -Force agent.zip
+
 RUN $ProgressPreference = 'SilentlyContinue'; \
     $latestVersion = (Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest").tag_name -replace '^v', ''; \
     $downloadUrl = "https://vstsagentpackage.azureedge.net/agent/$latestVersion/vsts-agent-win-x64-$latestVersion.zip"; \
-    Write-Host $downloadUrl \
-    curl -L -o agent.zip $downloadUrl \
-    && mkdir C:\azp\agent \
-    && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
-    && Remove-Item -Force agent.zip
+    Write-Host "Downloading from URL: $downloadUrl"; \
+    Invoke-WebRequest -Uri $downloadUrl -OutFile agent.zip -UseBasicParsing; \
+    mkdir C:\azp\agent; \
+    Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
+    Remove-Item -Force agent.zip
+
     
 #    Invoke-WebRequest -Uri $downloadUrl -OutFile agent.zip -UseBasicParsing; \
 #    Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
