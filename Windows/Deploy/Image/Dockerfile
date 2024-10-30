@@ -54,3 +54,5 @@ RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$env:AGENT
     && mkdir C:\azp\agent \
     && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
     && Remove-Item -Force agent.zip
+
+RUN dir C:\azp\agent
