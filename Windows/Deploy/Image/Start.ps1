@@ -19,6 +19,8 @@ if ($Env:AZP_WORK -and -not (Test-Path Env:AZP_WORK)) {
 	New-Item $Env:AZP_WORK -ItemType directory | Out-Null
 }
 
+# This will error due to directory already existing because of the volume mount. Script still continues and successfully starts up the agent.
+New-Item "\azp\agent" -ItemType directory | Out-Null
 
 # Let the agent ignore the token env variables
 $Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE"
