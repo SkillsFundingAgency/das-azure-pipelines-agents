@@ -45,19 +45,15 @@ RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
 
 # Download and extract the Azure Pipelines agent
-RUN $ProgressPreference = 'SilentlyContinue'; \
-    $latestVersion = (Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest").tag_name -replace '^v', ''; \
-    if ($latestVersion) { \
-        $downloadUrl = "https://vstsagentpackage.azureedge.net/agent/$latestVersion/vsts-agent-win-x64-$latestVersion.zip"; \
-        Write-Host "Downloading from URL: $downloadUrl"; \
-        Invoke-WebRequest -Uri $downloadUrl -OutFile agent.zip -UseBasicParsing; \
-        mkdir C:\azp\agent; \
-        Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
-        Remove-Item -Force agent.zip; \
-    } else { \
-        Write-Host "Failed to retrieve the latest version"; \
-        exit 1; \
-    }
+RUN $Env:AZP_TOKEN_FILE = "\azp\.token"; \
+    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$(Get-Content ${Env:AZP_TOKEN_FILE})")); \
+    $package = Invoke-RestMethod -Headers @{Authorization = ("Basic $base64AuthInfo")} "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"; \
+    $packageUrl = $package[0].Value.downloadUrl; \
+    Write-Host $packageUrl; \
+    $wc = New-Object System.Net.WebClient; \
+    $wc.DownloadFile($packageUrl, "$(Get-Location)\agent.zip"); \
+    Expand-Archive -Path "agent.zip" -DestinationPath "\azp\agent"; \
+    Remove-Item -Force "agent.zip"
 
 # Verify that the agent files are present in the correct location
 RUN dir C:\azp\agent
