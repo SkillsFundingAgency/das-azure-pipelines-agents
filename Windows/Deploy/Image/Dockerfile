@@ -44,33 +44,10 @@ RUN Install-Module Az -Force
 RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
 
-#Download and configure latest Azure Pipelines Agent
-# RUN $latestVersion = (Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest").tag_name -replace '^v', ''; \
-#     [Environment]::SetEnvironmentVariable('AGENT_VERSION', $latestVersion, 'Process')
-
-# ENV AGENT_VERSION=$env:AGENT_VERSION
-
-# RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$env:AGENT_VERSION/vsts-agent-win-x64-$env:AGENT_VERSION.zip \
-#     && mkdir C:\azp\agent \
-#     && powershell -Command "Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent" \
-#     && Remove-Item -Force agent.zip
-
-# Set the latest version of the Azure Pipelines Agent
-# RUN $latestVersion = (Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest').tag_name -replace '^v', ''; \
-#     Write-Host "Latest Version: $latestVersion"; \
-#     [Environment]::SetEnvironmentVariable('AGENT_VERSION', $latestVersion, 'Machine')
-
-# ARG AGENT_VERSION
-# ENV AGENT_VERSION=$latestVersion
-
-# RUN curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$env:AGENT_VERSION/vsts-agent-win-x64-$env:AGENT_VERSION.zip \
-#     && mkdir C:\azp\agent \
-#     && Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent \
-#     && Remove-Item -Force agent.zip
-
-RUN $latestVersion = (Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest').tag_name -replace '^v', ''; \
-    Write-Host "Latest Version: $latestVersion"; \
-    curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$latestVersion/vsts-agent-win-x64-$latestVersion.zip; \
+# Download and configure latest Azure Pipelines Agent
+RUN $agentVersion = (Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest').tag_name -replace '^v', ''; \
+    Write-Host "Latest Agent Version: $agentVersion"; \
+    curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$agentVersion/vsts-agent-win-x64-$agentVersion.zip; \
     mkdir C:\azp\agent; \
     Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
     Remove-Item -Force agent.zip

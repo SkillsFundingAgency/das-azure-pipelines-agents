@@ -47,7 +47,9 @@ stages:
     - name: MinAgentCount
       value: 0
     - name: MaxAgentCount
-      value: 3
+      value: 6
+    - name: AgentPoolId
+      value: "108"
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Beta
     - name: DeploymentName
@@ -67,9 +69,11 @@ stages:
     variables:
     - group: PROD Management Resources
     - name: MinAgentCount
-      value: 2
+      value: 1
     - name: MaxAgentCount
-      value: 6     
+      value: 6
+    - name: AgentPoolId
+      value: "120"  
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Linux
     - name: DeploymentName

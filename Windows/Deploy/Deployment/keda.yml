@@ -25,53 +25,7 @@ spec:
   triggers:
     - type: azure-pipelines
       metadata:
-        poolID: "108" # Replace with your Azure DevOps Agent Pool ID
+        poolID: __AgentPoolId__ # Replace with your Azure DevOps Agent Pool ID
         organizationURLFromEnv: "AZP_URL"
       authenticationRef:
         name: pipeline-trigger-auth
-        
-# apiVersion: keda.sh/v1alpha1
-# kind: ScaledJob
-# metadata:
-#   name: windows-deploy-azure-pipelines-scaledjob
-#   namespace: __AgentNameSpace__
-# spec:
-#   jobTargetRef:
-#     template:
-#       spec:
-#         containers:
-#           - name: __DeploymentName__
-#             image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
-#             imagePullPolicy: Always
-#             env:
-#               - name: AZP_URL
-#                 valueFrom:
-#                   secretKeyRef:
-#                     name: azp
-#                     key: AZP_URL
-#               - name: AZP_TOKEN
-#                 valueFrom:
-#                   secretKeyRef:
-#                     name: azp
-#                     key: AZP_TOKEN
-#               - name: AZP_POOL
-#                 value: __AzureDevopsAgentPool__
-#               - name: NUGET_PACKAGES
-#                 value: "/mnt/nugetcache/packages"
-#             volumeMounts:
-#             - mountPath: /azptmp
-#               name: azp-tmp-volume
-#         restartPolicy: Never  # Ensure agents are not restarted after completion
-#   pollingInterval: 30  # Poll every 30 seconds for new jobs
-#   successfulJobsHistoryLimit: 5  # Retain last 5 successful jobs for history
-#   failedJobsHistoryLimit: 5  # Retain last 5 failed jobs for troubleshooting
-#   minReplicaCount: __MinAgentCount__
-#   maxReplicaCount: __MaxAgentCount__  # Maximum number of agent jobs that can run concurrently
-#   scalingStrategy:
-#     strategy: "default"
-#   triggers:
-#     - type: azure-pipelines
-#       metadata:
-#         poolID: "108"
-#         organizationURLFromEnv: "AZP_URL"
-#         personalAccessTokenFromEnv: "AZP_TOKEN"
