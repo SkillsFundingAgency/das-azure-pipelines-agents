@@ -73,7 +73,7 @@ stages:
     - name: MaxAgentCount
       value: 6
     - name: AgentPoolId
-      value: "120"  
+      value: 120  
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Linux
     - name: DeploymentName
