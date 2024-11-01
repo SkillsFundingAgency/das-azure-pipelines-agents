@@ -25,7 +25,7 @@ spec:
   triggers:
     - type: azure-pipelines
       metadata:
-        poolID: "__AgentPoolId__" # Replace with your Azure DevOps Agent Pool ID
+        poolID: __AgentPoolId__
         organizationURLFromEnv: "AZP_URL"
       authenticationRef:
         name: pipeline-trigger-auth

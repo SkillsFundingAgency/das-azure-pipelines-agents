@@ -49,7 +49,7 @@ stages:
     - name: MaxAgentCount
       value: 10
     - name: AgentPoolId
-      value: "109"
+      value: 109
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Integration Beta
     - name: DeploymentName
@@ -95,7 +95,7 @@ stages:
     - name: MaxAgentCount
       value: 10
     - name: AgentPoolId
-      value: "112"
+      value: 112
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Integration Agents
     - name: DeploymentName

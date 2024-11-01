@@ -49,7 +49,7 @@ stages:
     - name: MaxAgentCount
       value: 6
     - name: AgentPoolId
-      value: "108"
+      value: 108
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Beta
     - name: DeploymentName
