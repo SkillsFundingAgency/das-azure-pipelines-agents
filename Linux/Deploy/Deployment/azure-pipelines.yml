@@ -69,7 +69,7 @@ stages:
     variables:
     - group: PROD Management Resources
     - name: MinAgentCount
-      value: 1
+      value: 0
     - name: MaxAgentCount
       value: 6
     - name: AgentPoolId
