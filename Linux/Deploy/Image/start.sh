@@ -28,15 +28,15 @@ cd /azp/agent
 
 export AGENT_ALLOW_RUNASROOT="1"
 
-cleanup() {
-  if [ -e config.sh ]; then
-    print_header "Cleanup. Removing Azure Pipelines agent..."
+# cleanup() {
+#   if [ -e config.sh ]; then
+#     print_header "Cleanup. Removing Azure Pipelines agent..."
 
-    ./config.sh remove --unattended \
-      --auth PAT \
-      --token $(cat "$AZP_TOKEN_FILE")
-  fi
-}
+#     ./config.sh remove --unattended \
+#       --auth PAT \
+#       --token $(cat "$AZP_TOKEN_FILE")
+#   fi
+# }
 
 print_header() {
   lightcyan='\033[1;36m'
@@ -70,8 +70,8 @@ curl -LsS $AZP_AGENTPACKAGE_URL | tar -xz & wait $!
 
 source ./env.sh
 
-trap 'cleanup; exit 130' INT
-trap 'cleanup; exit 143' TERM
+#trap 'cleanup; exit 130' INT
+#trap 'cleanup; exit 143' TERM
 
 print_header "3. Configuring Azure Pipelines agent..."
 
@@ -91,4 +91,4 @@ print_header "4. Running Azure Pipelines agent..."
 # AgentService.js understands how to handle agent self-update and restart
 exec ./externals/node/bin/node ./bin/AgentService.js interactive --once & wait $!
 
-cleanup
+#cleanup
