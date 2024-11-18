@@ -21,7 +21,7 @@ spec:
   minReplicaCount: __MinAgentCount__
   maxReplicaCount: __MaxAgentCount__
   pollingInterval: 30  # How often (in seconds) to poll the Azure Pipelines queue
-  cooldownPeriod: 1200  # How long (in seconds) to wait before scaling down
+  cooldownPeriod: 300  # How long (in seconds) to wait before scaling down
   triggers:
     - type: azure-pipelines
       metadata:
