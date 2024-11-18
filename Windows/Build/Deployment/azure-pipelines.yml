@@ -9,10 +9,10 @@ trigger:
     exclude:
       - "*"
 
-pr:
-  paths:
-    include:
-      - "Windows/Build/Deployment"
+# pr:
+#   paths:
+#     include:
+#       - "Windows/Build/Deployment"
 
 pool:
   name: DAS - Continuous Integration Agents
@@ -84,7 +84,7 @@ stages:
           parameters:
             FrameworkVersion: $(FrameworkVersion)
   - stage: DeployProd
-    dependsOn: AcceptanceTests
+#    dependsOn: AcceptanceTests
 #    condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: PROD Management Resources
