@@ -13,7 +13,7 @@ spec:
       labels:
         app: __DeploymentName__
     spec:
-      terminationGracePeriodSeconds: 300
+      terminationGracePeriodSeconds: 600
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
