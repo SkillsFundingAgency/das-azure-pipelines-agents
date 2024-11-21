@@ -40,11 +40,11 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 1600m
-              memory: 2824Mi
+              cpu: 600m
+              memory: 952Mi
             limits:
-              cpu: 3200m
-              memory: 5648Mi
+              cpu: 1600m
+              memory: 3648Mi
           env:
             - name: AZP_URL
               valueFrom:

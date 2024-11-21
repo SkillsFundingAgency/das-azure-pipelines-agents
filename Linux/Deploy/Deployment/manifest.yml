@@ -40,10 +40,10 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              cpu: 1000m
-              memory: 1528Mi
+              cpu: 600m
+              memory: 832Mi
             limits:
-              cpu: 2000m
+              cpu: 1800m
               memory: 3056Mi
           env:
             - name: AZP_URL
