@@ -86,8 +86,8 @@ stages:
           parameters:
             FrameworkVersion: $(FrameworkVersion)
   - stage: DeployProd
-#    dependsOn: AcceptanceTests
-#    condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    dependsOn: AcceptanceTests
+    condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: PROD Management Resources
     - name: MinAgentCount
