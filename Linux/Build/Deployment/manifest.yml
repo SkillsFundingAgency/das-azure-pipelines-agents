@@ -4,7 +4,6 @@ metadata:
   name: __DeploymentName__
   namespace: __AgentNameSpace__
 spec:
-  replicas: __AgentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -14,7 +13,7 @@ spec:
       labels:
         app: __DeploymentName__
     spec:
-      terminationGracePeriodSeconds: 300
+      terminationGracePeriodSeconds: 2400
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -43,6 +42,9 @@ spec:
             requests:
               cpu: 600m
               memory: 512Mi
+            limits:
+              cpu: 1600m
+              memory: 3648Mi
           env:
             - name: AZP_URL
               valueFrom:
