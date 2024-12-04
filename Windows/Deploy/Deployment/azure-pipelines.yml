@@ -9,10 +9,10 @@ trigger:
     exclude:
       - "*"
 
-# pr:
-#   paths:
-#     include:
-#       - "Windows/Deploy/Deployment"
+pr:
+  paths:
+    include:
+      - "Windows/Deploy/Deployment"
 
 pool:
   name: DAS - Continuous Integration Agents
@@ -44,12 +44,8 @@ stages:
   - stage: DeployPreProd
     variables:
     - group: PreProd Management Resources
-    - name: MinAgentCount
-      value: 1
-    - name: MaxAgentCount
-      value: 20
-    - name: AgentPoolId
-      value: 108
+    - name: AgentCount
+      value: 2
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Beta
     - name: DeploymentName
@@ -68,12 +64,8 @@ stages:
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: PROD Management Resources
-    - name: MinAgentCount
-      value: 16
-    - name: MaxAgentCount
-      value: 16
-    - name: AgentPoolId
-      value: 110
+    - name: AgentCount
+      value: 20
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Agents
     - name: DeploymentName
@@ -87,11 +79,3 @@ stages:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
-
-
-
-
-
-
-
-
