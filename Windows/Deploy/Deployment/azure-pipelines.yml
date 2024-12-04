@@ -74,7 +74,7 @@ stages:
     - job: DeployManifest
       displayName: DeployManifest
       steps:
-        - template: /pipeline-templates/step/deploy.yml
+        - template: /Windows/Deploy/Deployment/deploy.yml
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
