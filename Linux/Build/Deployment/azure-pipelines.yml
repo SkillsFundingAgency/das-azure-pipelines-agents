@@ -9,10 +9,10 @@ trigger:
     exclude:
       - "*"
 
-# pr:
-#   paths:
-#     include:
-#       - "Linux/Build/Deployment"
+pr:
+  paths:
+    include:
+      - "Linux/Build/Deployment"
 
 resources:
   repositories:

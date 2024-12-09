@@ -80,13 +80,3 @@ RUN mkdir C:\warmup \
   && dotnet new \
   && cd .. \
   && rmdir /S /Q C:\warmup
-
-# Download and configure latest Azure Pipelines Agent
-RUN pwsh -Command $agentVersion = (Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest').tag_name -replace '^v', ''; \
-    Write-Host "Latest Agent Version: $agentVersion"; \
-    curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$agentVersion/vsts-agent-win-x64-$agentVersion.zip; \
-    mkdir C:\azp\agent; \
-    Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
-    Remove-Item -Force agent.zip
-
-RUN dir C:\azp\agent

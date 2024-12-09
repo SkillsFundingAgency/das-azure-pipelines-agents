@@ -9,10 +9,10 @@ trigger:
     exclude:
       - "*"
 
-# pr:
-#   paths:
-#     include:
-#       - "Windows/Build/Deployment"
+pr:
+  paths:
+    include:
+      - "Windows/Build/Deployment"
 
 pool:
   name: DAS - Continuous Integration Agents
