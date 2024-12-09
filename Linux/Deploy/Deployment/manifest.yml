@@ -62,4 +62,3 @@ spec:
           operator: Equal
           value: linux
           effect: NoSchedule
-

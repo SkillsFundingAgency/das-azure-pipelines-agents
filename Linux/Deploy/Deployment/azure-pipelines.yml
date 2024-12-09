@@ -54,7 +54,7 @@ stages:
     - job: DeployManifest
       displayName: DeployManifest
       steps:
-        - template: /pipeline-templates/step/deploy.yml
+        - template: /pipeline-templates/step/deploy(no-keda).yml
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
@@ -74,9 +74,8 @@ stages:
     - job: DeployManifest
       displayName: DeployManifest
       steps:
-        - template: /pipeline-templates/step/deploy.yml
+        - template: /pipeline-templates/step/deploy(no-keda).yml
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
-

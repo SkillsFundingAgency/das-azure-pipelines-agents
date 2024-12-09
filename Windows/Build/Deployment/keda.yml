@@ -1,0 +1,31 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: pipeline-trigger-auth
+  namespace: __AgentNameSpace__
+spec:
+  secretTargetRef:
+    - parameter: personalAccessToken
+      name: azp
+      key: AZP_TOKEN
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: windows-build-azure-pipelines-scaledobject
+  namespace: __AgentNameSpace__
+spec:
+  scaleTargetRef:
+    name: __DeploymentName__
+  minReplicaCount: __MinAgentCount__
+  maxReplicaCount: __MaxAgentCount__
+  pollingInterval: 10  # How often (in seconds) to poll the Azure Pipelines queue
+  cooldownPeriod: 1800  # How long (in seconds) to wait before scaling down
+  triggers:
+    - type: azure-pipelines
+      metadata:
+        poolID: "__AgentPoolId__"
+        organizationURLFromEnv: "AZP_URL"
+      authenticationRef:
+        name: pipeline-trigger-auth
