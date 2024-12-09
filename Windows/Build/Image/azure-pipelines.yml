@@ -25,13 +25,13 @@ resources:
     ref: refs/tags/1.0.2
     endpoint: SkillsFundingAgency
 
-# schedules:
-# - cron: "0 3 * * Wed"
-#   displayName: Weekly Wednesday morning run
-#   branches:
-#     include:
-#     - master
-#   always: true
+schedules:
+- cron: "0 3 * * Wed"
+  displayName: Weekly Wednesday morning run
+  branches:
+    include:
+    - master
+  always: true
 
 variables:
 - group: Release Management Resources
