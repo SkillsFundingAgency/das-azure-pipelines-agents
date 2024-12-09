@@ -43,13 +43,3 @@ RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-
 RUN Install-Module Az -Force
 RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
-
-# Download and configure latest Azure Pipelines Agent
-RUN $agentVersion = (Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest').tag_name -replace '^v', ''; \
-    Write-Host "Latest Agent Version: $agentVersion"; \
-    curl -L -o agent.zip https://vstsagentpackage.azureedge.net/agent/$agentVersion/vsts-agent-win-x64-$agentVersion.zip; \
-    mkdir C:\azp\agent; \
-    Expand-Archive -Path agent.zip -DestinationPath C:\azp\agent; \
-    Remove-Item -Force agent.zip
-
-RUN dir C:\azp\agent
