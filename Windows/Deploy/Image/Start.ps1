@@ -19,28 +19,49 @@ if ($Env:AZP_WORK -and -not (Test-Path Env:AZP_WORK)) {
 	New-Item $Env:AZP_WORK -ItemType directory | Out-Null
 }
 
+# This will error due to directory already existing because of the volume mount. Script still continues and successfully starts up the agent.
+New-Item "\azp\agent" -ItemType directory | Out-Null
 
 # Let the agent ignore the token env variables
 $Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE"
 
-Set-Location C:\azp\agent
+Set-Location agent
 
-Write-Host "1. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
+Write-Host "1. Determining matching Azure Pipelines agent..." -ForegroundColor Cyan
 
-.\config.cmd --unattended `
-	--agent "$(if (Test-Path Env:AZP_AGENT) { ${Env:AZP_AGENT} } else { ${Env:POD_NAME} })" `
-	--url "$(${Env:AZP_URL})" `
-	--auth PAT `
-	--token "$(Get-Content ${Env:AZP_TOKEN_FILE})" `
-	--pool "$(if (Test-Path Env:AZP_POOL) { ${Env:AZP_POOL} } else { 'Default' })" `
-	--work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
-	--replace
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$(Get-Content ${Env:AZP_TOKEN_FILE})"))
+$package = Invoke-RestMethod -Headers @{Authorization = ("Basic $base64AuthInfo")} "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"
+$packageUrl = $package[0].Value.downloadUrl
 
-Write-Host "2. Running Azure Pipelines agent..." -ForegroundColor Cyan
+Write-Host $packageUrl
 
-.\run.cmd --once
+Write-Host "2. Downloading and installing Azure Pipelines agent..." -ForegroundColor Cyan
 
-# Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
-# .\config.cmd remove --unattended `
-# 	--auth PAT `
-# 	--token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
+$wc = New-Object System.Net.WebClient
+$wc.DownloadFile($packageUrl, "$(Get-Location)\agent.zip")
+
+Expand-Archive -Path "agent.zip" -DestinationPath "\azp\agent"
+
+try {
+	Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
+
+	.\config.cmd --unattended `
+		--agent "$(if (Test-Path Env:AZP_AGENT) { ${Env:AZP_AGENT} } else { ${Env:POD_NAME} })" `
+		--url "$(${Env:AZP_URL})" `
+		--auth PAT `
+		--token "$(Get-Content ${Env:AZP_TOKEN_FILE})" `
+		--pool "$(if (Test-Path Env:AZP_POOL) { ${Env:AZP_POOL} } else { 'Default' })" `
+		--work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
+		--replace
+
+	Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
+
+	.\run.cmd --once
+}
+finally {
+	Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
+
+	.\config.cmd remove --unattended `
+		--auth PAT `
+		--token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
+}
