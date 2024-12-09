@@ -22,13 +22,13 @@ resources:
     ref: refs/tags/1.0.2
     endpoint: SkillsFundingAgency
 
-# schedules:
-# - cron: "0 6 * * Wed"
-#   displayName: Weekly Wednesday morning run
-#   branches:
-#     include:
-#     - master
-#   always: true
+schedules:
+- cron: "0 6 * * Wed"
+  displayName: Weekly Wednesday morning run
+  branches:
+    include:
+    - master
+  always: true
 
 pool:
   vmImage: ubuntu-latest
