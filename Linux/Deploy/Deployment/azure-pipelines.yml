@@ -9,10 +9,10 @@ trigger:
     exclude:
       - "*"
 
-# pr:
-#   paths:
-#     include:
-#       - "Linux/Deploy/Deployment"
+pr:
+  paths:
+    include:
+      - "Linux/Deploy/Deployment"
 
 resources:
   repositories:
@@ -44,12 +44,8 @@ stages:
   - stage: DeployPreProd
     variables:
     - group: PreProd Management Resources
-    - name: MinAgentCount
-      value: 0
-    - name: MaxAgentCount
+    - name: AgentCount
       value: 6
-    - name: AgentPoolId
-      value: 108
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Beta
     - name: DeploymentName
@@ -68,12 +64,8 @@ stages:
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: PROD Management Resources
-    - name: MinAgentCount
-      value: 2
-    - name: MaxAgentCount
+    - name: AgentCount
       value: 6
-    - name: AgentPoolId
-      value: 120  
     - name: AzureDevopsAgentPool
       value: DAS - Continuous Deployment Linux
     - name: DeploymentName
@@ -82,9 +74,8 @@ stages:
     - job: DeployManifest
       displayName: DeployManifest
       steps:
-        - template: /pipeline-templates/step/deploy.yml
+        - template: /pipeline-templates/step/deploy(no-keda).yml
           parameters:
             VerifyDeployment: true
             Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
-

@@ -4,6 +4,7 @@ metadata:
   name: __DeploymentName__
   namespace: __AgentNameSpace__
 spec:
+  replicas: __AgentCount__
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -13,7 +14,7 @@ spec:
       labels:
         app: __DeploymentName__
     spec:
-      terminationGracePeriodSeconds: 2400
+      terminationGracePeriodSeconds: 300
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -40,11 +41,9 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              cpu: 600m
               memory: 512Mi
             limits:
-              cpu: 1800m
-              memory: 3056Mi
+              memory: 3051Mi
           env:
             - name: AZP_URL
               valueFrom:
@@ -63,4 +62,3 @@ spec:
           operator: Equal
           value: linux
           effect: NoSchedule
-
