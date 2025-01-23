@@ -45,7 +45,7 @@ stages:
     variables:
     - group: PreProd Management Resources
     - name: MinAgentCount
-      value: 0
+      value: 4
     - name: MaxAgentCount
       value: 10
     - name: AgentPoolId
