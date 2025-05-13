@@ -146,6 +146,8 @@ stages:
         value: DAS - APIM Continuous Integration Agents
       - name: DeploymentName
         value: azure-pipelines-apim-build-agent-linux
+      - name: LinuxBuildAgentsNodePoolLabel
+        value: $(ApimBuildAgentsNodePoolLabel)
       steps:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
