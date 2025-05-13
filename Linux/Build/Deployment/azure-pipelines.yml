@@ -66,8 +66,8 @@ stages:
         - pwsh: |
             Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
           displayName: Sleep
-    - job: DeployManifest
-      displayName: DeployManifest
+    - job: DeployApimManifest
+      displayName: DeployApimManifest
       variables:
       - group: PreProd Management Resources
       - name: MinAgentCount
