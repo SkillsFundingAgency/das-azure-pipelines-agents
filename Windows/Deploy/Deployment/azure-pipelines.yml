@@ -60,6 +60,7 @@ stages:
             Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-PreProd-ARM
     - job: DeployApimManifest
+      dependsOn: DeployManifest
       displayName: DeployApimManifest
       variables:
       - group: PreProd Management Resources
@@ -98,6 +99,7 @@ stages:
             Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
             AzureServiceConnection: SFA-DIG-Prod-ARM
     - job: DeployApimManifest
+      dependsOn: DeployManifest
       displayName: DeployApimManifest
       variables:
       - group: PROD Management Resources
