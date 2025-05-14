@@ -42,21 +42,46 @@ variables:
 
 stages:
   - stage: DeployPreProd
-    variables:
-    - group: PreProd Management Resources
-    - name: MinAgentCount
-      value: 1
-    - name: MaxAgentCount
-      value: 10
-    - name: AgentPoolId
-      value: 109
-    - name: AzureDevopsAgentPool
-      value: DAS - Continuous Integration Beta
-    - name: DeploymentName
-      value: beta-azure-pipelines-build-agent-linux
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
+      variables:
+      - group: PreProd Management Resources
+      - name: MinAgentCount
+        value: 1
+      - name: MaxAgentCount
+        value: 10
+      - name: AgentPoolId
+        value: 109
+      - name: AzureDevopsAgentPool
+        value: DAS - Continuous Integration Beta
+      - name: DeploymentName
+        value: beta-azure-pipelines-build-agent-linux
+      steps:
+        - template: /pipeline-templates/step/deploy.yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
+            AzureServiceConnection: SFA-DIG-PreProd-ARM
+        - pwsh: |
+            Start-Sleep -Seconds 120 # Do Better. This gives time for the old pods to remove themselves from the pool before AcceptanceTests.
+          displayName: Sleep
+    - job: DeployApimManifest
+      displayName: DeployApimManifest
+      variables:
+      - group: PreProd Management Resources
+      - name: MinAgentCount
+        value: 1
+      - name: MaxAgentCount
+        value: 10
+      - name: AgentPoolId
+        value: 151
+      - name: AzureDevopsAgentPool
+        value: DAS - APIM Continuous Integration Beta
+      - name: DeploymentName
+        value: beta-azure-pipelines-apim-build-agent-linux
+      - name: LinuxBuildAgentsNodePoolLabel
+        value: $(ApimBuildAgentsNodePoolLabel)
       steps:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
@@ -88,21 +113,43 @@ stages:
   - stage: DeployProd
     dependsOn: AcceptanceTests
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    variables:
-    - group: PROD Management Resources
-    - name: MinAgentCount
-      value: 4
-    - name: MaxAgentCount
-      value: 10
-    - name: AgentPoolId
-      value: 112
-    - name: AzureDevopsAgentPool
-      value: DAS - Continuous Integration Agents
-    - name: DeploymentName
-      value: azure-pipelines-build-agent-linux
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
+      variables:
+      - group: PROD Management Resources
+      - name: MinAgentCount
+        value: 4
+      - name: MaxAgentCount
+        value: 10
+      - name: AgentPoolId
+        value: 112
+      - name: AzureDevopsAgentPool
+        value: DAS - Continuous Integration Agents
+      - name: DeploymentName
+        value: azure-pipelines-build-agent-linux
+      steps:
+        - template: /pipeline-templates/step/deploy.yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Linux/Build/Deployment
+            AzureServiceConnection: SFA-DIG-Prod-ARM
+    - job: DeployApimManifest
+      displayName: DeployApimManifest
+      variables:
+      - group: PROD Management Resources
+      - name: MinAgentCount
+        value: 4
+      - name: MaxAgentCount
+        value: 10
+      - name: AgentPoolId
+        value: 150
+      - name: AzureDevopsAgentPool
+        value: DAS - APIM Continuous Integration Agents
+      - name: DeploymentName
+        value: azure-pipelines-apim-build-agent-linux
+      - name: LinuxBuildAgentsNodePoolLabel
+        value: $(ApimBuildAgentsNodePoolLabel)
       steps:
         - template: /pipeline-templates/step/deploy.yml
           parameters:
