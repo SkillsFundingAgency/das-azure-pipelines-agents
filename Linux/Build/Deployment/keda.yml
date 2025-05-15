@@ -13,7 +13,7 @@ spec:
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: linux-build-azure-pipelines-scaledobject
+  name: __LinuxBuildScaledObjectName__
   namespace: __AgentNameSpace__
 spec:
   scaleTargetRef:

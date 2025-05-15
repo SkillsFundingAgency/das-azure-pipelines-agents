@@ -42,17 +42,36 @@ variables:
 
 stages:
   - stage: DeployPreProd
-    variables:
-    - group: PreProd Management Resources
-    - name: AgentCount
-      value: 2
-    - name: AzureDevopsAgentPool
-      value: DAS - Continuous Deployment Beta
-    - name: DeploymentName
-      value: beta-azure-pipelines-deploy-agent-win
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
+      variables:
+      - group: PreProd Management Resources
+      - name: AgentCount
+        value: 2
+      - name: AzureDevopsAgentPool
+        value: DAS - Continuous Deployment Beta
+      - name: DeploymentName
+        value: beta-azure-pipelines-deploy-agent-win
+      steps:
+        - template: /pipeline-templates/step/deploy(no-keda).yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AzureServiceConnection: SFA-DIG-PreProd-ARM
+    - job: DeployApimManifest
+      dependsOn: DeployManifest
+      displayName: DeployApimManifest
+      variables:
+      - group: PreProd Management Resources
+      - name: AgentCount
+        value: 2
+      - name: AzureDevopsAgentPool
+        value: DAS - APIM Continuous Deployment Beta
+      - name: DeploymentName
+        value: beta-azure-pipelines-apim-deploy-agent-win
+      - name: WindowsDeployAgentsNodePoolLabel
+        value: $(ApimDeployAgentsNodePoolLabel)
       steps:
         - template: /pipeline-templates/step/deploy(no-keda).yml
           parameters:
@@ -62,17 +81,36 @@ stages:
   - stage: DeployProd
     dependsOn: DeployPreProd
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    variables:
-    - group: PROD Management Resources
-    - name: AgentCount
-      value: 20
-    - name: AzureDevopsAgentPool
-      value: DAS - Continuous Deployment Agents
-    - name: DeploymentName
-      value: azure-pipelines-deploy-agent-win
     jobs:
     - job: DeployManifest
       displayName: DeployManifest
+      variables:
+      - group: PROD Management Resources
+      - name: AgentCount
+        value: 20
+      - name: AzureDevopsAgentPool
+        value: DAS - Continuous Deployment Agents
+      - name: DeploymentName
+        value: azure-pipelines-deploy-agent-win
+      steps:
+        - template: /pipeline-templates/step/deploy(no-keda).yml
+          parameters:
+            VerifyDeployment: true
+            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AzureServiceConnection: SFA-DIG-Prod-ARM
+    - job: DeployApimManifest
+      dependsOn: DeployManifest
+      displayName: DeployApimManifest
+      variables:
+      - group: PROD Management Resources
+      - name: AgentCount
+        value: 20
+      - name: AzureDevopsAgentPool
+        value: DAS - APIM Continuous Deployment Agents
+      - name: DeploymentName
+        value: azure-pipelines-apim-deploy-agent-win
+      - name: WindowsDeployAgentsNodePoolLabel
+        value: $(ApimDeployAgentsNodePoolLabel)
       steps:
         - template: /pipeline-templates/step/deploy(no-keda).yml
           parameters:
