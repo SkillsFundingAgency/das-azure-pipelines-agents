@@ -87,7 +87,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   dotnet-sdk-3.1 \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
-  dotnet-sdk-10.0 \
+  dotnet10 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
