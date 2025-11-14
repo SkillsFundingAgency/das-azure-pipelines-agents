@@ -94,8 +94,10 @@ RUN wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh \
     && ./dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet10 \
     && ln -s /usr/share/dotnet10/dotnet /usr/bin/dotnet10 \
     && rm dotnet-install.sh
-RUN dotnet help
-ENV dotnet=/usr/bin/dotnet
+ENV DOTNET_ROOT=/usr/share/dotnet10
+ENV PATH="/usr/share/dotnet10:${PATH}"
+RUN dotnet --info
+RUN /usr/bin/dotnet10 --info
 
 # TODO: Delete this when no longer referenced by pipelines
 ENV LATEST_DOTNET_VERSION=3.1
