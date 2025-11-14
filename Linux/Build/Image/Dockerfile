@@ -89,7 +89,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   dotnet-sdk-8.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
-ENV DOTNET10_VERSION=10.0.100-rc.2
+ENV DOTNET10_VERSION=10.0.100
 RUN curl -sSL https://dotnet.microsoft.com/download/dotnet/10.0/dotnet-sdk-$DOTNET10_VERSION-linux-x64.tar.gz -o dotnet10.tar.gz \
     && mkdir -p /usr/share/dotnet10 \
     && tar -xzf dotnet10.tar.gz -C /usr/share/dotnet10 \
