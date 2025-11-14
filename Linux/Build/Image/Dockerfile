@@ -87,13 +87,14 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   dotnet-sdk-3.1 \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
-  software-properties-common \
-  && add-apt-repository -y ppa:dotnet/previews \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends \
-  dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
+RUN DOTNET10_VERSION=10.0.100-rc.1 \
+    && curl -sSL https://dotnet.microsoft.com/download/dotnet/10.0/dotnet-sdk-$DOTNET10_VERSION-linux-x64.tar.gz -o dotnet10.tar.gz \
+    && mkdir -p /usr/share/dotnet10 \
+    && tar -xzf dotnet10.tar.gz -C /usr/share/dotnet10 \
+    && rm dotnet10.tar.gz \
+    && ln -s /usr/share/dotnet10/dotnet /usr/bin/dotnet10
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
 
