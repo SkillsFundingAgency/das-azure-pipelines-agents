@@ -87,15 +87,9 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   dotnet-sdk-3.1 \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
+  dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
-RUN wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh \
-    && chmod +x dotnet-install.sh \
-    && ./dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet10 \
-    && ln -s /usr/share/dotnet10/dotnet /usr/bin/dotnet10 \
-    && rm dotnet-install.sh
-ENV DOTNET_ROOT=/usr/share/dotnet10
-ENV PATH="/usr/share/dotnet10:${PATH}"
 RUN dotnet --info
 RUN /usr/bin/dotnet10 --info
 
