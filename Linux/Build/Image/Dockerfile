@@ -90,8 +90,8 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
-RUN dotnet --info
-RUN /usr/bin/dotnet10 --info
+RUN dotnet help
+ENV dotnet=/usr/bin/dotnet
 
 # TODO: Delete this when no longer referenced by pipelines
 ENV LATEST_DOTNET_VERSION=3.1
