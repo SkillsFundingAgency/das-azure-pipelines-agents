@@ -87,6 +87,7 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
   dotnet-sdk-3.1 \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
+  dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
@@ -98,7 +99,11 @@ ENV LATEST_DOTNET_VERSION=3.1
 #Manually install .NET Core 2.2 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.2 --install-dir /usr/share/dotnet
 
+#Manually install .NET 10 SDK (fallback until apt package is available for Ubuntu 20.04)
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 10.0 --install-dir /usr/share/dotnet
+
 # Install LTS Node.js and related tools
+
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
   && ~/n/bin/n lts \
   && npm install -g grunt \
