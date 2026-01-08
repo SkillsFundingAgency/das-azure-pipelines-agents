@@ -16,66 +16,66 @@ pr:
 
 resources:
   repositories:
-  - repository: das-platform-building-blocks
-    type: github
-    name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.73
-    endpoint: SkillsFundingAgency
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      ref: refs/tags/0.4.73
+      endpoint: SkillsFundingAgency
   pipelines:
-  - pipeline: image-build
-    source: das-azure-pipelines-agents-linux-deploy (Image Build)
-    branch: master
-    trigger:
-      branches:
-        - master
+    - pipeline: image-build
+      source: das-azure-pipelines-agents-linux-deploy (Image Build)
+      branch: DASD-14158
+      trigger:
+        branches:
+          - DASD-14158
 
 pool:
   name: DAS - Continuous Integration Agents
 
 variables:
-- group: RELEASE das-azure-pipelines-agent
-- group: Release Management Resources
-- name: ContainerImageName
-  value: azure-pipelines-deploy-agent-linux
-- name: ImageTag
-  value: $(resources.pipeline.image-build.runName)
+  - group: RELEASE das-azure-pipelines-agent
+  - group: Release Management Resources
+  - name: ContainerImageName
+    value: azure-pipelines-deploy-agent-linux
+  - name: ImageTag
+    value: $(resources.pipeline.image-build.runName)
 
 stages:
   - stage: DeployPreProd
     variables:
-    - group: PreProd Management Resources
-    - name: AgentCount
-      value: 6
-    - name: AzureDevopsAgentPool
-      value: DAS - Continuous Deployment Beta
-    - name: DeploymentName
-      value: beta-azure-pipelines-deploy-agent-linux
+      - group: PreProd Management Resources
+      - name: AgentCount
+        value: 6
+      - name: AzureDevopsAgentPool
+        value: DAS - Continuous Deployment Beta
+      - name: DeploymentName
+        value: beta-azure-pipelines-deploy-agent-linux
     jobs:
-    - job: DeployManifest
-      displayName: DeployManifest
-      steps:
-        - template: /pipeline-templates/step/deploy(no-keda).yml
-          parameters:
-            VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
-            AzureServiceConnection: SFA-DIG-PreProd-ARM
+      - job: DeployManifest
+        displayName: DeployManifest
+        steps:
+          - template: /pipeline-templates/step/deploy(no-keda).yml
+            parameters:
+              VerifyDeployment: true
+              Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
+              AzureServiceConnection: SFA-DIG-PreProd-ARM
   - stage: DeployProd
     dependsOn: DeployPreProd
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
-    - group: PROD Management Resources
-    - name: AgentCount
-      value: 6
-    - name: AzureDevopsAgentPool
-      value: DAS - Continuous Deployment Linux
-    - name: DeploymentName
-      value: azure-pipelines-deploy-agent-linux
+      - group: PROD Management Resources
+      - name: AgentCount
+        value: 6
+      - name: AzureDevopsAgentPool
+        value: DAS - Continuous Deployment Linux
+      - name: DeploymentName
+        value: azure-pipelines-deploy-agent-linux
     jobs:
-    - job: DeployManifest
-      displayName: DeployManifest
-      steps:
-        - template: /pipeline-templates/step/deploy(no-keda).yml
-          parameters:
-            VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
-            AzureServiceConnection: SFA-DIG-Prod-ARM
+      - job: DeployManifest
+        displayName: DeployManifest
+        steps:
+          - template: /pipeline-templates/step/deploy(no-keda).yml
+            parameters:
+              VerifyDeployment: true
+              Directory: $(System.DefaultWorkingDirectory)/Linux/Deploy/Deployment
+              AzureServiceConnection: SFA-DIG-Prod-ARM
