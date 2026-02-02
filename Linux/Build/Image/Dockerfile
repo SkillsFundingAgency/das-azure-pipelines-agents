@@ -79,14 +79,16 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
 # Install .NET Core SDK and initialize package cache
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
+RUN curl https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
   && rm packages-microsoft-prod.deb \
+  && add-apt-repository ppa:dotnet/backports \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   dotnet-sdk-3.1 \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
+  dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
