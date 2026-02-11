@@ -77,16 +77,16 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   || echo -n
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
-# Install .NET Core SDK and initialize package cache
-RUN curl https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
-  && dpkg -i packages-microsoft-prod.deb \
-  && rm packages-microsoft-prod.deb \
+# Install .NET SDKs from Ubuntu .NET Backports PPA
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends software-properties-common \
+  && add-apt-repository -y ppa:dotnet/backports \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /etc/apt/sources.list.d/*
+  dotnet-sdk-10.0 \
+  && rm -rf /var/lib/apt/lists/*
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
 
@@ -98,9 +98,6 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2
 
 #Manually install .NET Core 3.1 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 3.1 --install-dir /usr/share/dotnet
-
-#Manually install .NET 10 SDK
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 10.0 --install-dir /usr/share/dotnet
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
