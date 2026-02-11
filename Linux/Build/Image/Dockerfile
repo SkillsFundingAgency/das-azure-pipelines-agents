@@ -101,6 +101,9 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2
 # Manually install .NET Core 10 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 10.0 --install-dir /usr/share/dotnet
 
+# List installed SDKs
+RUN dotnet --list-sdks
+
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
   && ~/n/bin/n lts \
