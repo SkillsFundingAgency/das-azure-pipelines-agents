@@ -93,10 +93,10 @@ ENV dotnet=/usr/bin/dotnet
 # TODO: Delete this when no longer referenced by pipelines
 ENV LATEST_DOTNET_VERSION=3.1
 
-#Manually install .NET Core 2.2 SDK
+# Manually install .NET Core 2.2 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.2 --install-dir /usr/share/dotnet
 
-#Manually install .NET Core 3.1 SDK
+# Manually install .NET Core 3.1 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 3.1 --install-dir /usr/share/dotnet
 
 # Install LTS Node.js and related tools
