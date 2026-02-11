@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
@@ -79,14 +79,14 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
 # Install .NET Core SDK and initialize package cache
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
+RUN curl https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
   && rm packages-microsoft-prod.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-  dotnet-sdk-3.1 \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
+  dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
@@ -97,6 +97,9 @@ ENV LATEST_DOTNET_VERSION=3.1
 
 #Manually install .NET Core 2.2 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.2 --install-dir /usr/share/dotnet
+
+#Manually install .NET Core 3.1 SDK
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 3.1 --install-dir /usr/share/dotnet
 
 # Install LTS Node.js and related tools
 RUN curl -sL https://git.io/n-install | bash -s -- -ny - \
