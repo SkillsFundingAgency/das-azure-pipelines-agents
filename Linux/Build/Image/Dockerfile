@@ -84,7 +84,8 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
   && bash dotnet-install.sh --channel 6.0 --install-dir /usr/share/dotnet \
   && bash dotnet-install.sh --channel 8.0 --install-dir /usr/share/dotnet \
   && bash dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet \
-  && rm dotnet-install.sh
+  && rm dotnet-install.sh \
+  && ln -sf /usr/share/dotnet/dotnet /usr/bin/dotnet
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
 
