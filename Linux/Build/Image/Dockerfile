@@ -19,9 +19,8 @@ RUN apt-get update \
   iproute2 \
   iputils-ping \
   libcurl4 \
-  libicu66 \
+  libicu70 \
   libunwind8 \
-  libssl1.0 \
   locales \
   openssh-client \
   netcat \
@@ -68,7 +67,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
+  && curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   mssql-tools \
@@ -86,7 +85,6 @@ RUN curl https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-p
   && apt-get install -y --no-install-recommends \
   dotnet-sdk-6.0 \
   dotnet-sdk-8.0 \
-  dotnet-sdk-10.0 \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /etc/apt/sources.list.d/*
 RUN dotnet help
@@ -114,7 +112,7 @@ ENV grunt=/usr/local/bin/grunt
 
 # Install Powershell Core
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
+  && curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   powershell \
