@@ -78,11 +78,13 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 ENV PATH=$PATH:/opt/mssql-tools/bin
 
 # Install .NET SDKs via dotnet-install.sh
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.2 --install-dir /usr/share/dotnet
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 3.1 --install-dir /usr/share/dotnet
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 6.0 --install-dir /usr/share/dotnet
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --install-dir /usr/share/dotnet
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 10.0 --install-dir /usr/share/dotnet
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
+  && bash dotnet-install.sh --channel 2.2 --install-dir /usr/share/dotnet \
+  && bash dotnet-install.sh --channel 3.1 --install-dir /usr/share/dotnet \
+  && bash dotnet-install.sh --channel 6.0 --install-dir /usr/share/dotnet \
+  && bash dotnet-install.sh --channel 8.0 --install-dir /usr/share/dotnet \
+  && bash dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet \
+  && rm dotnet-install.sh
 RUN dotnet help
 ENV dotnet=/usr/bin/dotnet
 
