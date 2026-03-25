@@ -43,6 +43,9 @@ spec:
         args: ["./start.ps1"]
         imagePullPolicy: Always
         resources:
+          limits:
+            cpu: 700m
+            memory: 3Gi
           requests:
             cpu: 270m
             memory: 256Mi
@@ -66,6 +69,8 @@ spec:
         volumeMounts:
         - mountPath: /azptmp
           name: azp-tmp-volume
+        - mountPath: /azp/agent/_cache
+          name: agent-cache
       tolerations:
         - key: agent-os
           operator: Equal
@@ -75,3 +80,19 @@ spec:
       - name: azp-tmp-volume
         emptyDir:
           sizeLimit: 30Gi
+      - name: agent-cache
+        PersistentVolumeClaim:
+          claimName: agent-cache
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: agent-cache
+  namespace: __AgentNameSpace__
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClass: azurefile-csi-premium
+  resources:
+    requests:
+      storage: 20Gi
