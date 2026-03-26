@@ -69,7 +69,7 @@ spec:
         volumeMounts:
         - mountPath: /azptmp
           name: azp-tmp-volume
-        - mountPath: /azp/agent/_cache
+        - mountPath: /azp/agent/_work/_tasks
           name: agent-cache
       tolerations:
         - key: agent-os
