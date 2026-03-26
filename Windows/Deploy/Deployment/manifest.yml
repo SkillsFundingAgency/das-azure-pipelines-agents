@@ -81,7 +81,7 @@ spec:
         emptyDir:
           sizeLimit: 30Gi
       - name: agent-cache
-        PersistentVolumeClaim:
+        persistentVolumeClaim:
           claimName: agent-cache
 ---
 apiVersion: v1
