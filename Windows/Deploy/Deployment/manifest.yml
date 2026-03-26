@@ -92,7 +92,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClass: azurefile-csi-premium
+  storageClass: azurefile-csi
   resources:
     requests:
       storage: 20Gi
