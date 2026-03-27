@@ -53,6 +53,8 @@ stages:
         value: DAS - Continuous Deployment Beta
       - name: DeploymentName
         value: beta-azure-pipelines-deploy-agent-win
+      - name: Type
+        value: standard
       steps:
         - template: /pipeline-templates/step/deploy(no-keda).yml
           parameters:
@@ -70,6 +72,8 @@ stages:
         value: DAS - APIM Continuous Deployment Beta
       - name: DeploymentName
         value: beta-azure-pipelines-apim-deploy-agent-win
+      - name: Type
+        value: apim
       - name: WindowsDeployAgentsNodePoolLabel
         value: $(ApimDeployAgentsNodePoolLabel)
       steps:
