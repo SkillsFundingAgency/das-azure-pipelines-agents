@@ -70,7 +70,9 @@ spec:
         - mountPath: /azptmp
           name: azp-tmp-volume
         - mountPath: /azp/agent/_work/_tasks
-          name: agent-cache-__Type__
+          name: agent-cache-file-prem
+        - mountPath: /azp/agent/_work/_tool
+          name: agent-cache-file-prem
       tolerations:
         - key: agent-os
           operator: Equal
@@ -80,19 +82,19 @@ spec:
       - name: azp-tmp-volume
         emptyDir:
           sizeLimit: 30Gi
-      - name: agent-cache-__Type__
+      - name: agent-cache-file-prem
         persistentVolumeClaim:
-          claimName: agent-cache-__Type__
+          claimName: agent-cache-file-prem
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: agent-cache-__Type__
+  name: agent-cache-file-prem
   namespace: __AgentNameSpace__
 spec:
   accessModes:
-    - ReadWriteOnce
-  storageClassName: managed-csi-premium
+    - ReadWriteMany
+  storageClassName: azurefile-csi-premium
   resources:
     requests:
       storage: 64Gi
