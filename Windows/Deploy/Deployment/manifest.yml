@@ -91,8 +91,8 @@ metadata:
   namespace: __AgentNameSpace__
 spec:
   accessModes:
-    - ReadWriteMany
-  storageClassName: azurefile-csi
+    - ReadWriteOnce
+  storageClassName: managed-csi-premium
   resources:
     requests:
-      storage: 20Gi
+      storage: 64Gi
