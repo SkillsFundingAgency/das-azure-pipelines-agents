@@ -40,7 +40,7 @@ variables:
 - name: ImageTag
   value: $(resources.pipeline.image-build.runName)
 - name: ValueFile
-  value: Windows/Deploy/Deployment
+  value: Windows/Deploy/Deployment/values.yaml
 
 stages:
   - stage: DeployPreProd

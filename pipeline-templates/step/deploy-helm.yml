@@ -36,6 +36,7 @@ steps:
     command: upgrade
     chartType: FilePath
     chartPath: $(System.DefaultWorkingDirectory)/agent-chart
+    chartVersion: ^1.0.0
     releaseName: ${{ parameters.deploymentName }}
     install: true
     valueFile: $(System.DefaultWorkingDirectory)/${{ parameters.ValueFile }}
