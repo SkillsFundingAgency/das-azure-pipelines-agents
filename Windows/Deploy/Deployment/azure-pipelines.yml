@@ -49,19 +49,11 @@ stages:
       displayName: DeployManifest
       variables:
       - group: PreProd Management Resources
-      - name: AgentCount
-        value: 2
-      - name: AzureDevopsAgentPool
-        value: DAS - Continuous Deployment Beta
-      - name: DeploymentName
-        value: beta-azure-pipelines-deploy-agent-win
-      - name: Type
-        value: standard
       steps:
         - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
             AgentCount: 2
-            AzureDevopsAgentPool: DAS - Continuous Deployment Beta
+            AzureDevopsAgentPool: "DAS - Continuous Deployment Beta"
             AzureServiceConnection: SFA-DIG-PreProd-ARM
             ContainerImageName: ${{ variables.ContainerImageName }}
             DeploymentName: beta-azure-pipelines-deploy-agent-win
