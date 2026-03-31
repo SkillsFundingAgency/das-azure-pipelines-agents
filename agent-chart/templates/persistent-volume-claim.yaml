@@ -1,5 +1,5 @@
 {{ if .Values.persistentVolumeClaim.enable }}
-{{ range $i := until (divf $.Values.deployment.agentCount 4 | ceil | int) }}
+{{ range $i := until (divf $.Values.agentCount 4 | ceil | int) }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
