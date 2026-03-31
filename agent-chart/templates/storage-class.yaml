@@ -6,8 +6,8 @@ metadata:
 parameters:
   cachingMode: {{ .Values.storageClass.cachingMode }}
   skuName: {{ .Values.storageClass.skuName }}
-  DiskIOPSReadWrite: {{ .Values.storageClass.DiskIOPSReadWrite }}
-  DiskMBpsReadWrite: {{ .Values.storageClass.DiskMBpsReadWrite }}
+  DiskIOPSReadWrite: "{{ .Values.storageClass.DiskIOPSReadWrite }}"
+  DiskMBpsReadWrite: "{{ .Values.storageClass.DiskMBpsReadWrite }}"
 provisioner: disk.csi.azure.com
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
