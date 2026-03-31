@@ -1,0 +1,62 @@
+parameters:
+  AgentCount:
+  AzureDevopsAgentPool:
+  AzureServiceConnection:
+  ContainerImageName:
+  DeploymentName:
+  ImageTag:
+  PublicAcrName:
+  Type:
+  ValueFile:
+  VerifyDeployment:
+  WindowsDeployAgentsNodePoolLabel:
+  
+
+steps:
+- task: HelmInstaller@1
+  inputs:
+    helmVersionToInstall: latest
+- template:  azure-pipelines-templates/deploy/step/kubernetes-create-secret.yml@das-platform-building-blocks
+  parameters:
+    AksClusterName: $(AKSSharedClusterName)
+    AksResourceGroupName: $(AKSResourceGroupName)
+    AzureServiceConnection: ${{ parameters.AzureServiceConnection }}
+    KubectlVersion: $(KubectlVersion)
+    Namespace: $(AgentNameSpace)
+    SecretName: azp
+    SecretArguments: --from-literal=AZP_URL=$(AZP_URL) --from-literal=AZP_TOKEN=$(AZP_TOKEN)
+- task: HelmDeploy@1
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscription: ${{ parameters.AzureServiceConnection }}
+    azureResourceGroup: $(AKSResourceGroupName)
+    kubernetesCluster: $(AKSSharedClusterName)
+    useClusterAdmin: true
+    namespace: agents
+    command: upgrade
+    chartType: FilePath
+    chartPath: $(System.DefaultWorkingDirectory)/agent-chart
+    releaseName: ${{ parameters.deploymentName }}
+    install: true
+    valueFile: $(System.DefaultWorkingDirectory)/${{ parametes.ValueFile }}
+    overrideValues: |
+      agentCount=${{ parameters.AgentCount }}
+      azureDevopsAgentPool=${{ parameters.AzureDevopsAgentPool }}
+      containerImageName=${{ parameters.ContainerImageName }}
+      deploymentName=${{ parameters.DeploymentName }}
+      imageTag=${{ parameters.ImageTag }}
+      publicAcrName=${{ parameters.PublicAcrName }}
+      type=${{ parameters.Type }}
+      windowsDeployAgentsNodePoolLabel=${{ parameters.WindowsDeployAgentsNodePoolLabel }}
+- task: Kubernetes@1
+  condition: and(succeeded(), eq(${{ parameters.VerifyDeployment }}, 'true'))
+  displayName: get rollout status for ${{ parameters.DeploymentName }}
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: ${{parameters.AzureServiceConnection}}
+    azureResourceGroup: $(AKSResourceGroupName)
+    kubernetesCluster: $(AKSSharedClusterName)
+    useClusterAdmin: true
+    namespace: $(AgentNameSpace)
+    command: rollout
+    arguments: status deployment ${{ parameters.DeploymentName }}
