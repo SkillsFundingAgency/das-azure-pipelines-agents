@@ -53,7 +53,7 @@ stages:
         - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
             AgentCount: 2
-            AzureDevopsAgentPool: "'DAS - Continuous Deployment Beta'"
+            AzureDevopsAgentPool: '"DAS - Continuous Deployment Beta"'
             AzureServiceConnection: SFA-DIG-PreProd-ARM
             ContainerImageName: ${{ variables.ContainerImageName }}
             DeploymentName: beta-azure-pipelines-deploy-agent-win
@@ -62,7 +62,7 @@ stages:
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: "''"
+            WindowsDeployAgentsNodePoolLabel: '""'
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
@@ -72,7 +72,7 @@ stages:
         - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
             AgentCount: 2
-            AzureDevopsAgentPool: "'DAS - APIM Continuous Deployment Beta'"
+            AzureDevopsAgentPool: '"DAS - APIM Continuous Deployment Beta"'
             AzureServiceConnection: SFA-DIG-PreProd-ARM
             ContainerImageName: ${{ variables.ContainerImageName }}
             DeploymentName: beta-azure-pipelines-apim-deploy-agent-win
@@ -94,7 +94,7 @@ stages:
         - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
             AgentCount: 20
-            AzureDevopsAgentPool: "'DAS - Continuous Deployment Agents'"
+            AzureDevopsAgentPool: '"DAS - Continuous Deployment Agents"'
             AzureServiceConnection: SFA-DIG-Prod-ARM
             ContainerImageName: ${{ variables.ContainerImageName }}
             DeploymentName: azure-pipelines-deploy-agent-win
@@ -103,7 +103,7 @@ stages:
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: "''"
+            WindowsDeployAgentsNodePoolLabel: '""'
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
@@ -113,7 +113,7 @@ stages:
         - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
             AgentCount: 20
-            AzureDevopsAgentPool: "'DAS - APIM Continuous Deployment Agents'"
+            AzureDevopsAgentPool: '"DAS - APIM Continuous Deployment Agents"'
             AzureServiceConnection: SFA-DIG-Prod-ARM
             ContainerImageName: ${{ variables.ContainerImageName }}
             DeploymentName: azure-pipelines-apim-deploy-agent-win
