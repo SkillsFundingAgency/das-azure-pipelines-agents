@@ -38,7 +38,7 @@ steps:
     chartPath: $(System.DefaultWorkingDirectory)/agent-chart
     releaseName: ${{ parameters.deploymentName }}
     install: true
-    valueFile: $(System.DefaultWorkingDirectory)/${{ parametes.ValueFile }}
+    valueFile: $(System.DefaultWorkingDirectory)/${{ parameters.ValueFile }}
     overrideValues: |
       agentCount=${{ parameters.AgentCount }}
       azureDevopsAgentPool=${{ parameters.AzureDevopsAgentPool }}
