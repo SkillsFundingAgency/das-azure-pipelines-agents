@@ -38,7 +38,7 @@ spec:
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: {{ .Values.deploymentName }}
-        image: {{ .Values.PublicAcrName }}.azurecr.io/{{ .Values.ContainerImageName }}: {{ .Values.ImageTag }}
+        image: "{{ .Values.PublicAcrName }}.azurecr.io/{{ .Values.ContainerImageName }}: {{ .Values.ImageTag }}"
         command: ["powershell"]
         args: ["./start.ps1"]
         imagePullPolicy: Always
