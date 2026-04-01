@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: agent-cache-{{ $i }}
+  name: agent-cache-{{ $.Values.type }}-{{ $i }}
   namespace: {{ $.Values.namespace }}
   annotations:
     "helm.sh/resource-policy": keep
