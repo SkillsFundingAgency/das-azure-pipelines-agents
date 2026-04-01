@@ -6,6 +6,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: agent-cache-{{ $i }}
   namespace: {{ $.Values.namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
 spec:
   accessModes:
     - ReadWriteOnce

@@ -13,9 +13,6 @@ parameters:
   
 
 steps:
-- task: HelmInstaller@1
-  inputs:
-    helmVersionToInstall: latest
 - template:  azure-pipelines-templates/deploy/step/kubernetes-create-secret.yml@das-platform-building-blocks
   parameters:
     AksClusterName: $(AKSSharedClusterName)
@@ -25,6 +22,9 @@ steps:
     Namespace: $(AgentNameSpace)
     SecretName: azp
     SecretArguments: --from-literal=AZP_URL=$(AZP_URL) --from-literal=AZP_TOKEN=$(AZP_TOKEN)
+- task: HelmInstaller@1
+  inputs:
+    helmVersionToInstall: latest
 - task: HelmDeploy@1
   inputs:
     connectionType: Azure Resource Manager
