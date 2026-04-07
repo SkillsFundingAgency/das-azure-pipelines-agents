@@ -33,6 +33,10 @@ spec:
                     operator: In
                     values:
                       - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
+                  - key: agent-group
+                    operator: In
+                    values:
+                      - {{ $i }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
