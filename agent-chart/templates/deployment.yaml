@@ -25,6 +25,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
+      {{- if $.Values.windowsDeployAgentsNodePoolLabel }}
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
@@ -33,6 +34,7 @@ spec:
                     operator: In
                     values:
                       - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
+        {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
