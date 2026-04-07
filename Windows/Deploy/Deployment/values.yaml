@@ -5,7 +5,7 @@ persistentVolumeClaim:
   storage: 8Gi
 
 storageClass:
-  enable: true
+  enable: false
   name: premium2-disk-sc
   cachingMode: None
   skuName: PremiumV2_LRS

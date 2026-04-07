@@ -11,7 +11,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: premium2-disk-sc
+  storageClassName: managed-csi-premium
   resources:
     requests:
       storage: {{ $.Values.persistentVolumeClaim.storage }}
