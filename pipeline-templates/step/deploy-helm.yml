@@ -39,6 +39,7 @@ steps:
     chartVersion: ^1.0.0
     releaseName: ${{ parameters.deploymentName }}
     install: true
+    arguments: --timeout=30m
     valueFile: $(System.DefaultWorkingDirectory)/${{ parameters.ValueFile }}
     overrideValues: |
       agentCount=${{ parameters.AgentCount }}
