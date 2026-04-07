@@ -36,7 +36,7 @@ spec:
                   - key: agent-group
                     operator: In
                     values:
-                      - {{ $i }}
+                      - "{{ $i }}"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
