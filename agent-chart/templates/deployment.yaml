@@ -17,11 +17,11 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: {{ $.Values.deploymentName }}
+      app: "{{ $.Values.deploymentName }}-{{ $i }}"
   template:
     metadata:
       labels:
-        app: {{ $.Values.deploymentName }}
+        app: "{{ $.Values.deploymentName }}-{{ $i }}"
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -42,10 +42,10 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - {{ $.Values.deploymentName }}
+                        - "{{ $.Values.deploymentName }}-{{ $i }}"
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-      - name: {{ $.Values.deploymentName }}
+      - name: "{{ $.Values.deploymentName }}-{{ $i }}"
         image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
         command: ["powershell"]
         args: ["./start.ps1"]
