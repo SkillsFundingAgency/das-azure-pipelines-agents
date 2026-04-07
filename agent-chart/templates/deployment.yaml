@@ -25,7 +25,6 @@ spec:
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
-      {{- if $.Values.windowsDeployAgentsNodePoolLabel }}
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
@@ -34,7 +33,6 @@ spec:
                     operator: In
                     values:
                       - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
-        {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -48,7 +46,7 @@ spec:
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: {{ $.Values.deploymentName }}
-        image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}: {{ $.Values.imageTag }}"
+        image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
         command: ["powershell"]
         args: ["./start.ps1"]
         imagePullPolicy: Always

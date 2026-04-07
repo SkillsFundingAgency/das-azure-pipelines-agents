@@ -62,7 +62,7 @@ stages:
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: '""'
+            WindowsDeployAgentsNodePoolLabel: $(WindowsDeployAgentsNodePoolLabel)
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
@@ -103,7 +103,7 @@ stages:
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: '""'
+            WindowsDeployAgentsNodePoolLabel: $(WindowsDeployAgentsNodePoolLabel)
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
