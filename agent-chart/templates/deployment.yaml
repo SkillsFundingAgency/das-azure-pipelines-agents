@@ -17,7 +17,7 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: "{{ $.Values.deploymentName }}-{{ $i }}"
+      app: {{ $.Values.deploymentName }}
   template:
     metadata:
       labels:
