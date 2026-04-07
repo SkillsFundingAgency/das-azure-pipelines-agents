@@ -7,7 +7,7 @@ metadata:
   namespace: {{ $.Values.namespace }}
 spec:
   progressDeadlineSeconds: 1200
-  {{ if le $.Values.agentCount 4.0 -}}
+  {{ if le $.Values.agentCount 4 -}}
   replicas: {{ $.Values.agentCount }}
   {{ else if and (eq $i 0) (ne (mod $.Values.agentCount 4) 0) -}}
   replicas: {{ mod $.Values.agentCount 4 }}
