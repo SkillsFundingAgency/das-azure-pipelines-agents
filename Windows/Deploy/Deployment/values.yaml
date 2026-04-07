@@ -3,11 +3,3 @@ namespace: agents
 persistentVolumeClaim:
   enable: true
   storage: 8Gi
-
-storageClass:
-  enable: false
-  name: premium2-disk-sc
-  cachingMode: None
-  skuName: PremiumV2_LRS
-  DiskIOPSReadWrite: "3000"
-  DiskMBpsReadWrite: "125"
