@@ -52,7 +52,7 @@ stages:
       steps:
         - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
-            AgentCount: 5
+            AgentCount: 20
             AzureDevopsAgentPool: '"DAS - Continuous Deployment Beta"'
             AzureServiceConnection: SFA-DIG-PreProd-ARM
             ContainerImageName: ${{ variables.ContainerImageName }}
