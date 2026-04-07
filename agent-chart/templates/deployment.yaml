@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       labels:
-        app: "{{ $.Values.deploymentName }}-{{ $i }}"
+        app: {{ $.Values.deploymentName }}
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -45,7 +45,7 @@ spec:
                         - "{{ $.Values.deploymentName }}-{{ $i }}"
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-      - name: "{{ $.Values.deploymentName }}-{{ $i }}"
+      - name: {{ $.Values.deploymentName }}
         image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
         command: ["powershell"]
         args: ["./start.ps1"]
