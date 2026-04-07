@@ -17,11 +17,11 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: {{ $.Values.deploymentName }}
+      app: "{{ $.Values.deploymentName }}-{{ $i }}"
   template:
     metadata:
       labels:
-        app: {{ $.Values.deploymentName }}
+        app: "{{ $.Values.deploymentName }}-{{ $i }}"
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
