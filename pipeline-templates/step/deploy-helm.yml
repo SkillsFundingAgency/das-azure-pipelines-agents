@@ -22,6 +22,7 @@ steps:
     Namespace: $(AgentNameSpace)
     SecretName: azp
     SecretArguments: --from-literal=AZP_URL=$(AZP_URL) --from-literal=AZP_TOKEN=$(AZP_TOKEN)
+- task: KubeloginInstaller@0
 - task: AzureCLI@2
   displayName: Label Nodes
   inputs:
