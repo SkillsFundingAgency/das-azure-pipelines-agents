@@ -5,7 +5,6 @@ parameters:
   ContainerImageName:
   DeploymentName:
   ImageTag:
-  PoolName:
   PublicAcrName:
   Type:
   ValueFile:
@@ -22,25 +21,6 @@ steps:
     Namespace: $(AgentNameSpace)
     SecretName: azp
     SecretArguments: --from-literal=AZP_URL=$(AZP_URL) --from-literal=AZP_TOKEN=$(AZP_TOKEN)
-- task: KubeloginInstaller@0
-- task: AzureCLI@2
-  displayName: Label Nodes
-  inputs:
-    azureSubscription: ${{ parameters.AzureServiceConnection }}
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      echo "Getting AKS credentials"
-      az aks get-credentials -g $(AKSResourceGroupName) -n $(AKSSharedClusterName) --overwrite-existing
-      kubelogin convert-kubeconfig -l azurecli
-
-      echo "Labelling nodes in pool: $POOL"
-      i=0
-      for node in $(kubectl get nodes -l agentpool=${{ parameters.PoolName }} -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | sort); do
-        kubectl label node $node agent-group=$i --overwrite
-        i=$((i+1))
-      done
-      echo "Finished labelling nodes"
 - task: HelmInstaller@1
   inputs:
     helmVersionToInstall: latest
