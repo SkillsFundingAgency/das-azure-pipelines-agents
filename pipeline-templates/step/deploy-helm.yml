@@ -31,6 +31,7 @@ steps:
     inlineScript: |
       echo "Getting AKS credentials"
       az aks get-credentials -g $(AKSResourceGroupName) -n $(AKSSharedClusterName) --overwrite-existing
+      kubelogin convert-kubeconfig -l azurecli
 
       echo "Labelling nodes in pool: $POOL"
       i=0
