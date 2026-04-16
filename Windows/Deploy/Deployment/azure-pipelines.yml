@@ -119,7 +119,7 @@ stages:
             DeploymentName: azure-pipelines-apim-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
-            Type: standard
+            Type: apim
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
             WindowsDeployAgentsNodePoolLabel: $(ApimDeployAgentsNodePoolLabel)
