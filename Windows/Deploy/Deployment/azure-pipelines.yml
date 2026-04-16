@@ -39,6 +39,8 @@ variables:
   value: azure-pipelines-deploy-agent-win
 - name: ImageTag
   value: $(resources.pipeline.image-build.runName)
+- name: ValueFile
+  value: Windows/Deploy/Deployment/values.yaml
 
 stages:
   - stage: DeployPreProd
@@ -47,37 +49,39 @@ stages:
       displayName: DeployManifest
       variables:
       - group: PreProd Management Resources
-      - name: AgentCount
-        value: 2
-      - name: AzureDevopsAgentPool
-        value: DAS - Continuous Deployment Beta
-      - name: DeploymentName
-        value: beta-azure-pipelines-deploy-agent-win
       steps:
-        - template: /pipeline-templates/step/deploy(no-keda).yml
+        - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
-            VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AgentCount: 2
+            AzureDevopsAgentPool: '"DAS - Continuous Deployment Beta"'
             AzureServiceConnection: SFA-DIG-PreProd-ARM
+            ContainerImageName: ${{ variables.ContainerImageName }}
+            DeploymentName: beta-azure-pipelines-deploy-agent-win
+            ImageTag: ${{ variables.ImageTag }}
+            PublicAcrName: $(PublicAcrName)
+            Type: standard
+            ValueFile: ${{ variables.ValueFile }}
+            VerifyDeployment: true
+            WindowsDeployAgentsNodePoolLabel: $(WindowsDeployAgentsNodePoolLabel)
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
       variables:
       - group: PreProd Management Resources
-      - name: AgentCount
-        value: 2
-      - name: AzureDevopsAgentPool
-        value: DAS - APIM Continuous Deployment Beta
-      - name: DeploymentName
-        value: beta-azure-pipelines-apim-deploy-agent-win
-      - name: WindowsDeployAgentsNodePoolLabel
-        value: $(ApimDeployAgentsNodePoolLabel)
       steps:
-        - template: /pipeline-templates/step/deploy(no-keda).yml
+        - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
-            VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AgentCount: 2
+            AzureDevopsAgentPool: '"DAS - APIM Continuous Deployment Beta"'
             AzureServiceConnection: SFA-DIG-PreProd-ARM
+            ContainerImageName: ${{ variables.ContainerImageName }}
+            DeploymentName: beta-azure-pipelines-apim-deploy-agent-win
+            ImageTag: ${{ variables.ImageTag }}
+            PublicAcrName: $(PublicAcrName)
+            Type: apim
+            ValueFile: ${{ variables.ValueFile }}
+            VerifyDeployment: true
+            WindowsDeployAgentsNodePoolLabel: $(ApimDeployAgentsNodePoolLabel)
   - stage: DeployProd
     dependsOn: DeployPreProd
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -86,34 +90,36 @@ stages:
       displayName: DeployManifest
       variables:
       - group: PROD Management Resources
-      - name: AgentCount
-        value: 20
-      - name: AzureDevopsAgentPool
-        value: DAS - Continuous Deployment Agents
-      - name: DeploymentName
-        value: azure-pipelines-deploy-agent-win
       steps:
-        - template: /pipeline-templates/step/deploy(no-keda).yml
+        - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
-            VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AgentCount: 20
+            AzureDevopsAgentPool: '"DAS - Continuous Deployment Agents"'
             AzureServiceConnection: SFA-DIG-Prod-ARM
+            ContainerImageName: ${{ variables.ContainerImageName }}
+            DeploymentName: azure-pipelines-deploy-agent-win
+            ImageTag: ${{ variables.ImageTag }}
+            PublicAcrName: $(PublicAcrName)
+            Type: standard
+            ValueFile: ${{ variables.ValueFile }}
+            VerifyDeployment: true
+            WindowsDeployAgentsNodePoolLabel: $(WindowsDeployAgentsNodePoolLabel)
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
       variables:
       - group: PROD Management Resources
-      - name: AgentCount
-        value: 20
-      - name: AzureDevopsAgentPool
-        value: DAS - APIM Continuous Deployment Agents
-      - name: DeploymentName
-        value: azure-pipelines-apim-deploy-agent-win
-      - name: WindowsDeployAgentsNodePoolLabel
-        value: $(ApimDeployAgentsNodePoolLabel)
       steps:
-        - template: /pipeline-templates/step/deploy(no-keda).yml
+        - template: /pipeline-templates/step/deploy-helm.yml
           parameters:
-            VerifyDeployment: true
-            Directory: $(System.DefaultWorkingDirectory)/Windows/Deploy/Deployment
+            AgentCount: 20
+            AzureDevopsAgentPool: '"DAS - APIM Continuous Deployment Agents"'
             AzureServiceConnection: SFA-DIG-Prod-ARM
+            ContainerImageName: ${{ variables.ContainerImageName }}
+            DeploymentName: azure-pipelines-apim-deploy-agent-win
+            ImageTag: ${{ variables.ImageTag }}
+            PublicAcrName: $(PublicAcrName)
+            Type: standard
+            ValueFile: ${{ variables.ValueFile }}
+            VerifyDeployment: true
+            WindowsDeployAgentsNodePoolLabel: $(ApimDeployAgentsNodePoolLabel)

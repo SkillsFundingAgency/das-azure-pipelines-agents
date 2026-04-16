@@ -1,19 +1,27 @@
+{{ range $i := until (divf $.Values.agentCount 4 | ceil | int) }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: __DeploymentName__
-  namespace: __AgentNameSpace__
+  name: "{{ $.Values.deploymentName }}-{{ $i }}"
+  namespace: {{ $.Values.namespace }}
 spec:
   progressDeadlineSeconds: 1200
-  replicas: __AgentCount__
+  {{ if le $.Values.agentCount 4 -}}
+  replicas: {{ $.Values.agentCount }}
+  {{ else if and (eq $i 0) (ne (mod $.Values.agentCount 4) 0) -}}
+  replicas: {{ mod $.Values.agentCount 4 }}
+  {{ else -}}
+  replicas: 4
+  {{ end -}}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: __DeploymentName__
+      app: "{{ $.Values.deploymentName }}-{{ $i }}"
   template:
     metadata:
       labels:
-        app: __DeploymentName__
+        app: "{{ $.Values.deploymentName }}-{{ $i }}"
     spec:
       terminationGracePeriodSeconds: 300
       affinity:
@@ -24,7 +32,11 @@ spec:
                   - key: nodepool
                     operator: In
                     values:
-                      - __WindowsDeployAgentsNodePoolLabel__
+                      - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
+                  - key: agent-group
+                    operator: In
+                    values:
+                      - "{{ $i }}"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -34,15 +46,18 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - __DeploymentName__
+                        - "{{ $.Values.deploymentName }}-{{ $i }}"
                 topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
-      - name: __DeploymentName__
-        image: __PublicAcrName__.azurecr.io/__ContainerImageName__:__ImageTag__
+      - name: {{ $.Values.deploymentName }}
+        image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
         command: ["powershell"]
         args: ["./start.ps1"]
         imagePullPolicy: Always
         resources:
+          limits:
+            cpu: 700m
+            memory: 3Gi
           requests:
             cpu: 270m
             memory: 256Mi
@@ -58,7 +73,7 @@ spec:
                 name: azp
                 key: AZP_TOKEN
           - name: AZP_POOL
-            value: __AzureDevopsAgentPool__
+            value: {{ $.Values.azureDevopsAgentPool }}
           - name: POD_NAME
             valueFrom:
               fieldRef:
@@ -66,6 +81,10 @@ spec:
         volumeMounts:
         - mountPath: /azptmp
           name: azp-tmp-volume
+        - mountPath: /azp/agent/_work/_tasks
+          name: agent-cache-{{ $.Values.type }}
+        - mountPath: /azp/agent/_work/_tool
+          name: agent-cache-{{ $.Values.type }}
       tolerations:
         - key: agent-os
           operator: Equal
@@ -75,3 +94,7 @@ spec:
       - name: azp-tmp-volume
         emptyDir:
           sizeLimit: 30Gi
+      - name: agent-cache-{{ $.Values.type }}
+        persistentVolumeClaim:
+          claimName: "agent-cache-{{ $.Values.type }}-{{ $i }}"
+{{ end -}}

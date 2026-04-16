@@ -1,0 +1,19 @@
+{{ if .Values.persistentVolumeClaim.enable }}
+{{ range $i := until (divf $.Values.agentCount 4 | ceil | int) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: agent-cache-{{ $.Values.type }}-{{ $i }}
+  namespace: {{ $.Values.namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: managed-csi-premium
+  resources:
+    requests:
+      storage: {{ $.Values.persistentVolumeClaim.storage }}
+{{ end -}}
+{{ end -}}
