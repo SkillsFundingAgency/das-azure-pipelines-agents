@@ -36,17 +36,6 @@ spec:
                     operator: In
                     values:
                       - "{{ $i }}"
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - "{{ $.Values.deploymentName }}-{{ $i }}"
-                topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: {{ $.Values.deploymentName }}
         image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
