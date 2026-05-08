@@ -35,7 +35,7 @@ spec:
                   - key: agent-group
                     operator: In
                     values:
-                      - {{ $i }}
+                      - "{{ $i }}"
       containers:
       - name: {{ $.Values.deploymentName }}
         image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
