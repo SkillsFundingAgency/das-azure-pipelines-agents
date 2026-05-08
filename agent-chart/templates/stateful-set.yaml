@@ -1,17 +1,4 @@
-{{- $pool := .Values.nodepool }}
-{{- $allNodes := (lookup "v1" "Node" "" "").items }}
-{{- $nodes := list }}
-
-{{- range $allNodes }}
-  {{- if eq (index .metadata.labels "agentpool") $pool }}
-    {{- $nodes = append $nodes . }}
-  {{- end }}
-{{- end }}
-
-{{- $setCount := divf $.Values.agentCount 4 | ceil | int }}
-
-{{- range $i := until $setCount }}
-{{- $node := index $nodes $i }}
+{{ range $i := until (divf $.Values.agentCount 4 | ceil | int) }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -36,8 +23,19 @@ spec:
         app: "{{ $.Values.deploymentName }}-{{ $i }}"
     spec:
       terminationGracePeriodSeconds: 300
-      nodeName: {{ $node.metadata.name }}
       affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: nodepool
+                    operator: In
+                    values:
+                      - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
+                  - key: agent-group
+                    operator: In
+                    values:
+                      - "{{ $i }}"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
