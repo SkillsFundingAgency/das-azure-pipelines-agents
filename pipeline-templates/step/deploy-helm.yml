@@ -59,4 +59,4 @@ steps:
     useClusterAdmin: true
     namespace: $(AgentNameSpace)
     command: rollout
-    arguments: status deployment ${{ parameters.DeploymentName }}-0
+    arguments: status statefulset ${{ parameters.DeploymentName }}-0
