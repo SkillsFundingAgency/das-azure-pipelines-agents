@@ -31,7 +31,7 @@ spec:
                   - key: nodepool
                     operator: In
                     values:
-                      - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
+                      - {{ $.Values.NodepoolLabel }}
                   - key: agent-group
                     operator: In
                     values:
