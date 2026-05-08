@@ -45,13 +45,6 @@ variables:
 stages:
   - stage: DeployPreProd
     jobs:
-    - deployment: ApprovalGate
-      environment: PREPROD
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - script: echo Approved, continuing...
     - job: DeployManifest
       displayName: DeployManifest
       variables:
