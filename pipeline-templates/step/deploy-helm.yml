@@ -31,13 +31,14 @@ steps:
     azureResourceGroup: $(AKSResourceGroupName)
     kubernetesCluster: $(AKSSharedClusterName)
     useClusterAdmin: true
-    namespace: agents
+    namespace: $(AgentNameSpace)
     command: upgrade
     chartType: FilePath
     chartPath: $(System.DefaultWorkingDirectory)/agent-chart
     chartVersion: ^1.0.0
     releaseName: ${{ parameters.deploymentName }}
     install: true
+    arguments: '--force --recreate-pods'
     valueFile: $(System.DefaultWorkingDirectory)/${{ parameters.ValueFile }}
     overrideValues: |
       agentCount=${{ parameters.AgentCount }}
