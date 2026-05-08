@@ -44,9 +44,6 @@ variables:
 
 stages:
   - stage: DeployPreProd
-    pool:
-      name: DAS - Continuous Integration Beta
-      demands: Agent.OS -equals Linux
     jobs:
     - deployment: ApprovalGate
       environment: PREPROD
@@ -93,8 +90,6 @@ stages:
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
   - stage: DeployProd
-    pool:
-      name: DAS - Continuous Integration Agents
     dependsOn: DeployPreProd
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
