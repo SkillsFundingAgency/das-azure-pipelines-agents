@@ -1,12 +1,25 @@
-{{ range $i := until (divf $.Values.agentCount 4 | ceil | int) }}
+{{- $pool := .Values.nodepool }}
+{{- $allNodes := (lookup "v1" "Node" "" "").items }}
+{{- $nodes := list }}
+
+{{- range $allNodes }}
+  {{- if eq (index .metadata.labels "agentpool") $pool }}
+    {{- $nodes = append $nodes . }}
+  {{- end }}
+{{- end }}
+
+{{- $setCount := divf $.Values.agentCount 4 | ceil | int }}
+
+{{- range $i := until $setCount }}
+{{- $node := index $nodes $i }}
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: "{{ $.Values.deploymentName }}-{{ $i }}"
   namespace: {{ $.Values.namespace }}
 spec:
-  progressDeadlineSeconds: 1200
+  serviceName: "ado-agent"
   {{ if le $.Values.agentCount 4 -}}
   replicas: {{ $.Values.agentCount }}
   {{ else if and (eq $i 0) (ne (mod $.Values.agentCount 4) 0) -}}
@@ -14,7 +27,6 @@ spec:
   {{ else -}}
   replicas: 4
   {{ end -}}
-  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: "{{ $.Values.deploymentName }}-{{ $i }}"
@@ -24,19 +36,8 @@ spec:
         app: "{{ $.Values.deploymentName }}-{{ $i }}"
     spec:
       terminationGracePeriodSeconds: 300
+      nodeName: {{ $node.metadata.name }}
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: nodepool
-                    operator: In
-                    values:
-                      - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
-                  - key: agent-group
-                    operator: In
-                    values:
-                      - "{{ $i }}"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -81,10 +82,8 @@ spec:
         volumeMounts:
         - mountPath: /azptmp
           name: azp-tmp-volume
-        - mountPath: /azp/agent/_work/_tasks
-          name: agent-cache-{{ $.Values.type }}
-        - mountPath: /azp/agent/_work/_tool
-          name: agent-cache-{{ $.Values.type }}
+        - mountPath: /azp/cache
+          name: agent-cache
       tolerations:
         - key: agent-os
           operator: Equal
@@ -94,7 +93,13 @@ spec:
       - name: azp-tmp-volume
         emptyDir:
           sizeLimit: 30Gi
-      - name: agent-cache-{{ $.Values.type }}
-        persistentVolumeClaim:
-          claimName: "agent-cache-{{ $.Values.type }}-{{ $i }}"
-{{ end -}}
+  volumeClaimTemplates:
+  - metadata:
+      name: agent-cache
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: managed-csi-premium
+      resources:
+        requests:
+          storage: 2Gi
+{{- end }}

@@ -45,6 +45,13 @@ variables:
 stages:
   - stage: DeployPreProd
     jobs:
+    - deployment: ApprovalGate
+      environment: PREPROD
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - script: echo Approved, continuing...
     - job: DeployManifest
       displayName: DeployManifest
       variables:
@@ -86,6 +93,13 @@ stages:
     dependsOn: DeployPreProd
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
+    - deployment: ApprovalGate
+      environment: PROD
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - script: echo Approved, continuing...
     - job: DeployManifest
       displayName: DeployManifest
       variables:
