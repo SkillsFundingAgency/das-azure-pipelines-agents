@@ -6,7 +6,7 @@ parameters:
   DeploymentName:
   ImageTag:
   PublicAcrName:
-  NodepoolLabel:
+  NodePoolLabel:
   Type:
   ValueFile:
   VerifyDeployment:
@@ -46,7 +46,7 @@ steps:
       deploymentName=${{ parameters.DeploymentName }}
       imageTag=${{ parameters.ImageTag }}
       publicAcrName=${{ parameters.PublicAcrName }}
-      NodepoolLabel=${{ parameters.NodepoolLabel }}
+      NodePoolLabel=${{ parameters.NodePoolLabel }}
       type=${{ parameters.Type }}
 - task: Kubernetes@1
   condition: and(succeeded(), eq(${{ parameters.VerifyDeployment }}, 'true'))

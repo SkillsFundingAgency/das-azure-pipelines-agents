@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: agentpool
+                  - key: nodepool
                     operator: In
                     values:
-                      - {{ $.Values.NodepoolLabel }}
+                      - {{ $.Values.NodePoolLabel }}
                   - key: agent-group
                     operator: In
                     values:

@@ -59,7 +59,7 @@ stages:
             DeploymentName: beta-azure-pipelines-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
-            NodepoolLabel: $(WindowsDeployAgentsNodePoolLabel)
+            NodePoolLabel: $(WindowsDeployAgentsNodePoolName)
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
@@ -78,7 +78,7 @@ stages:
             DeploymentName: beta-azure-pipelines-apim-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
-            NodepoolLabel: $(ApimDeployAgentsNodePoolLabel)
+            NodePoolLabel: $(ApimDeployAgentsNodePoolName)
             Type: apim
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
@@ -107,7 +107,7 @@ stages:
             DeploymentName: azure-pipelines-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
-            NodepoolLabel: $(WindowsDeployAgentsNodePoolLabel)
+            NodePoolLabel: $(WindowsDeployAgentsNodePoolName)
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
@@ -126,7 +126,7 @@ stages:
             DeploymentName: azure-pipelines-apim-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
-            NodepoolLabel: $(ApimDeployAgentsNodePoolLabel)
+            NodePoolLabel: $(ApimDeployAgentsNodePoolName)
             Type: apim
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
