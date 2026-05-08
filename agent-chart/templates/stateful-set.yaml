@@ -28,7 +28,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: nodepool
+                  - key: agentpool
                     operator: In
                     values:
                       - {{ $.Values.NodepoolLabel }}
