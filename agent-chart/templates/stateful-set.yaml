@@ -101,5 +101,5 @@ spec:
       storageClassName: managed-csi-premium
       resources:
         requests:
-          storage: 2Gi
+          storage: {{ $.Values.persistentVolumeClaim.storage }}
 {{- end }}

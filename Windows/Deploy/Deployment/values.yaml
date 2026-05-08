@@ -1,5 +1,4 @@
 namespace: agents
 
 persistentVolumeClaim:
-  enable: true
-  storage: 8Gi
+  storage: 2Gi

@@ -6,10 +6,10 @@ parameters:
   DeploymentName:
   ImageTag:
   PublicAcrName:
+  Nodepool:
   Type:
   ValueFile:
   VerifyDeployment:
-  WindowsDeployAgentsNodePoolLabel:
 
 steps:
 - template:  azure-pipelines-templates/deploy/step/kubernetes-create-secret.yml@das-platform-building-blocks
@@ -46,8 +46,8 @@ steps:
       deploymentName=${{ parameters.DeploymentName }}
       imageTag=${{ parameters.ImageTag }}
       publicAcrName=${{ parameters.PublicAcrName }}
+      Nodepool=${{ parameters.Nodepool }}
       type=${{ parameters.Type }}
-      windowsDeployAgentsNodePoolLabel=${{ parameters.WindowsDeployAgentsNodePoolLabel }}
 - task: Kubernetes@1
   condition: and(succeeded(), eq(${{ parameters.VerifyDeployment }}, 'true'))
   displayName: get rollout status for ${{ parameters.DeploymentName }}-0
