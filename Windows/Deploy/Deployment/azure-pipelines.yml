@@ -22,7 +22,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.73
+    ref: refs/tags/3.0.30
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: image-build
@@ -59,10 +59,10 @@ stages:
             DeploymentName: beta-azure-pipelines-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
+            NodePoolLabel: $(WindowsDeployAgentsNodePoolName)
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: $(WindowsDeployAgentsNodePoolLabel)
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
@@ -78,14 +78,21 @@ stages:
             DeploymentName: beta-azure-pipelines-apim-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
+            NodePoolLabel: $(ApimDeployAgentsNodePoolName)
             Type: apim
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: $(ApimDeployAgentsNodePoolLabel)
   - stage: DeployProd
     dependsOn: DeployPreProd
     condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
+    - deployment: ApprovalGate
+      environment: PROD
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - script: echo Approved, continuing...
     - job: DeployManifest
       displayName: DeployManifest
       variables:
@@ -100,10 +107,10 @@ stages:
             DeploymentName: azure-pipelines-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
+            NodePoolLabel: $(WindowsDeployAgentsNodePoolName)
             Type: standard
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: $(WindowsDeployAgentsNodePoolLabel)
     - job: DeployApimManifest
       dependsOn: DeployManifest
       displayName: DeployApimManifest
@@ -119,7 +126,7 @@ stages:
             DeploymentName: azure-pipelines-apim-deploy-agent-win
             ImageTag: ${{ variables.ImageTag }}
             PublicAcrName: $(PublicAcrName)
+            NodePoolLabel: $(ApimDeployAgentsNodePoolName)
             Type: apim
             ValueFile: ${{ variables.ValueFile }}
             VerifyDeployment: true
-            WindowsDeployAgentsNodePoolLabel: $(ApimDeployAgentsNodePoolLabel)

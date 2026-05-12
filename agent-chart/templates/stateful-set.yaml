@@ -1,12 +1,12 @@
 {{ range $i := until (divf $.Values.agentCount 4 | ceil | int) }}
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: "{{ $.Values.deploymentName }}-{{ $i }}"
   namespace: {{ $.Values.namespace }}
 spec:
-  progressDeadlineSeconds: 1200
+  serviceName: "ado-agent"
   {{ if le $.Values.agentCount 4 -}}
   replicas: {{ $.Values.agentCount }}
   {{ else if and (eq $i 0) (ne (mod $.Values.agentCount 4) 0) -}}
@@ -14,7 +14,6 @@ spec:
   {{ else -}}
   replicas: 4
   {{ end -}}
-  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: "{{ $.Values.deploymentName }}-{{ $i }}"
@@ -29,31 +28,20 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: nodepool
+                  - key: agentpool
                     operator: In
                     values:
-                      - {{ $.Values.windowsDeployAgentsNodePoolLabel }}
+                      - {{ $.Values.NodePoolLabel }}
                   - key: agent-group
                     operator: In
                     values:
                       - "{{ $i }}"
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - "{{ $.Values.deploymentName }}-{{ $i }}"
-                topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: {{ $.Values.deploymentName }}
         image: "{{ $.Values.publicAcrName }}.azurecr.io/{{ $.Values.containerImageName }}:{{ $.Values.imageTag }}"
         command: ["powershell"]
         args: ["./start.ps1"]
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             cpu: 700m
@@ -81,10 +69,8 @@ spec:
         volumeMounts:
         - mountPath: /azptmp
           name: azp-tmp-volume
-        - mountPath: /azp/agent/_work/_tasks
-          name: agent-cache-{{ $.Values.type }}
-        - mountPath: /azp/agent/_work/_tool
-          name: agent-cache-{{ $.Values.type }}
+        - mountPath: /azp/agent/_work
+          name: agent-cache
       tolerations:
         - key: agent-os
           operator: Equal
@@ -94,7 +80,13 @@ spec:
       - name: azp-tmp-volume
         emptyDir:
           sizeLimit: 30Gi
-      - name: agent-cache-{{ $.Values.type }}
-        persistentVolumeClaim:
-          claimName: "agent-cache-{{ $.Values.type }}-{{ $i }}"
-{{ end -}}
+  volumeClaimTemplates:
+  - metadata:
+      name: agent-cache
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: managed-csi-premium
+      resources:
+        requests:
+          storage: {{ $.Values.persistentVolumeClaim.storage }}
+{{- end }}

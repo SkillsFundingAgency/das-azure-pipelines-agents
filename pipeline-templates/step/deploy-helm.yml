@@ -6,10 +6,10 @@ parameters:
   DeploymentName:
   ImageTag:
   PublicAcrName:
+  NodePoolLabel:
   Type:
   ValueFile:
   VerifyDeployment:
-  WindowsDeployAgentsNodePoolLabel:
 
 steps:
 - template:  azure-pipelines-templates/deploy/step/kubernetes-create-secret.yml@das-platform-building-blocks
@@ -31,7 +31,7 @@ steps:
     azureResourceGroup: $(AKSResourceGroupName)
     kubernetesCluster: $(AKSSharedClusterName)
     useClusterAdmin: true
-    namespace: agents
+    namespace: $(AgentNameSpace)
     command: upgrade
     chartType: FilePath
     chartPath: $(System.DefaultWorkingDirectory)/agent-chart
@@ -46,8 +46,8 @@ steps:
       deploymentName=${{ parameters.DeploymentName }}
       imageTag=${{ parameters.ImageTag }}
       publicAcrName=${{ parameters.PublicAcrName }}
+      NodePoolLabel=${{ parameters.NodePoolLabel }}
       type=${{ parameters.Type }}
-      windowsDeployAgentsNodePoolLabel=${{ parameters.WindowsDeployAgentsNodePoolLabel }}
 - task: Kubernetes@1
   condition: and(succeeded(), eq(${{ parameters.VerifyDeployment }}, 'true'))
   displayName: get rollout status for ${{ parameters.DeploymentName }}-0
@@ -59,4 +59,4 @@ steps:
     useClusterAdmin: true
     namespace: $(AgentNameSpace)
     command: rollout
-    arguments: status deployment ${{ parameters.DeploymentName }}-0
+    arguments: status statefulset ${{ parameters.DeploymentName }}-0
