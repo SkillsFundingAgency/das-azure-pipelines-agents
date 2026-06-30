@@ -1,0 +1,32 @@
+trigger:
+- none
+
+# schedules:
+# - cron: '0 2 1 * *'
+#   displayName: Monthly storage disc clean
+#   branches:
+#     include:
+#     - main
+
+stages:
+- stage: clear_node0
+  displayName: Clear PVCs in Node 0
+  jobs:
+  - job: clear_pods
+    strategy:
+      matrix:
+        pod0:
+          agentName: azure-pipelines-deploy-agent-win-0-0
+        pod1:
+          agentName: azure-pipelines-deploy-agent-win-0-1
+        pod2:
+          agentName: azure-pipelines-deploy-agent-win-0-2
+        pod3:
+          agentName: azure-pipelines-deploy-agent-win-0-3
+      maxParallel: 4
+    pool:
+      name: DAS - Continuous Deployment Agents
+      demands: Agent.Name -equals $(agentName)
+    steps:
+      - pwsh: |
+          ls
