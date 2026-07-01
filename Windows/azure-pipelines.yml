@@ -15,8 +15,8 @@ stages:
   - job: clear_pods
     strategy:
       matrix:
-        pod00:
-          agentName: azure-pipelines-deploy-agent-win-0-0
+        # pod00:
+        #   agentName: azure-pipelines-deploy-agent-win-0-0
         # pod01:
         #   agentName: azure-pipelines-deploy-agent-win-0-1
         # pod02:
@@ -53,8 +53,8 @@ stages:
         #   agentName: azure-pipelines-deploy-agent-win-4-1
         # pod42:
         #   agentName: azure-pipelines-deploy-agent-win-4-2
-        # pod43:
-        #   agentName: azure-pipelines-deploy-agent-win-4-3
+        pod43:
+          agentName: azure-pipelines-deploy-agent-win-4-3
       maxParallel: 4
     pool:
       name: DAS - Continuous Deployment Agents
