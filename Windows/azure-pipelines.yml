@@ -62,5 +62,4 @@ stages:
     steps:
       - pwsh: |
           Set-Location ../..
-          whoami
-          # Remove-Item -Recurse .\_tasks\*
+          Remove-Item -Recurse .\_tasks\*
