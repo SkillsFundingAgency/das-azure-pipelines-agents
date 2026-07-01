@@ -2,11 +2,13 @@ trigger:
 - none
 
 schedules:
-- cron: '0 2 1-7 * */2' # change /2 to /7 if it works, else 0 2 1 * *
+- cron: '0 2 1-7 * */2'
+# - cron: '0 2 1-7 * */7' # change to 0 2 1 * * if it doesn't work
   displayName: Monthly storage disc clean
   branches:
     include:
-    - main
+    # - main
+    - dasd-15471
   always: true
 
 stages:
