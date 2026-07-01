@@ -1,12 +1,13 @@
 trigger:
 - none
 
-# schedules:
-# - cron: '0 2 1 * *'
-#   displayName: Monthly storage disc clean
-#   branches:
-#     include:
-#     - main
+schedules:
+- cron: '0 2 1-7 * */2' # change /2 to /7 if it works, else 0 2 1 * *
+  displayName: Monthly storage disc clean
+  branches:
+    include:
+    - main
+  always: true
 
 stages:
 - stage: clear_wndpy
