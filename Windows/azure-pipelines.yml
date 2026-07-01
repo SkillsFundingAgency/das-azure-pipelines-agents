@@ -62,4 +62,6 @@ stages:
     steps:
       - pwsh: |
           Set-Location ../..
-          Remove-Item -Recurse .\_tasks\*
+          Get-ChildItem .\_tasks |
+            Where-Object { $_.Name -notlike 'Powershell*' } |
+            Remove-Item -Recurse -Force
