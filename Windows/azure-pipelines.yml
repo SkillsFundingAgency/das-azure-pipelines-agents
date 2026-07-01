@@ -9,24 +9,57 @@ trigger:
 #     - main
 
 stages:
-- stage: clear_node0
-  displayName: Clear PVCs in Node 0
+- stage: clear_wndpy
+  displayName: Clear PVCs in Windows Deploy Node Pool 
   jobs:
   - job: clear_pods
     strategy:
       matrix:
-        pod0:
+        pod00:
           agentName: azure-pipelines-deploy-agent-win-0-0
-        pod1:
-          agentName: azure-pipelines-deploy-agent-win-0-1
-        pod2:
-          agentName: azure-pipelines-deploy-agent-win-0-2
-        pod3:
-          agentName: azure-pipelines-deploy-agent-win-0-3
+        # pod01:
+        #   agentName: azure-pipelines-deploy-agent-win-0-1
+        # pod02:
+        #   agentName: azure-pipelines-deploy-agent-win-0-2
+        # pod03:
+        #   agentName: azure-pipelines-deploy-agent-win-0-3
+        # pod10:
+        #   agentName: azure-pipelines-deploy-agent-win-1-0
+        # pod11:
+        #   agentName: azure-pipelines-deploy-agent-win-1-1
+        # pod12:
+        #   agentName: azure-pipelines-deploy-agent-win-1-2
+        # pod13:
+        #   agentName: azure-pipelines-deploy-agent-win-1-3
+        # pod20:
+        #   agentName: azure-pipelines-deploy-agent-win-2-0
+        # pod21:
+        #   agentName: azure-pipelines-deploy-agent-win-2-1
+        # pod22:
+        #   agentName: azure-pipelines-deploy-agent-win-2-2
+        # pod23:
+        #   agentName: azure-pipelines-deploy-agent-win-2-3
+        # pod30:
+        #   agentName: azure-pipelines-deploy-agent-win-3-0
+        # pod31:
+        #   agentName: azure-pipelines-deploy-agent-win-3-1
+        # pod32:
+        #   agentName: azure-pipelines-deploy-agent-win-3-2
+        # pod33:
+        #   agentName: azure-pipelines-deploy-agent-win-3-3
+        # pod40:
+        #   agentName: azure-pipelines-deploy-agent-win-4-0
+        # pod41:
+        #   agentName: azure-pipelines-deploy-agent-win-4-1
+        # pod42:
+        #   agentName: azure-pipelines-deploy-agent-win-4-2
+        # pod43:
+        #   agentName: azure-pipelines-deploy-agent-win-4-3
       maxParallel: 4
     pool:
       name: DAS - Continuous Deployment Agents
       demands: Agent.Name -equals $(agentName)
     steps:
       - pwsh: |
-          ls
+          Set-Location ../../..
+          Remove-Item -Recurse .\_tasks\
