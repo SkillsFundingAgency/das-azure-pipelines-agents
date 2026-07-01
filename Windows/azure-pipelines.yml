@@ -62,5 +62,5 @@ stages:
     steps:
       - pwsh: |
           Set-Location ../..
-          Get-Location
-          # Remove-Item -Recurse .\_tasks\
+          Remove-Item -Recurse .\_tasks\
+          # Get-Location
