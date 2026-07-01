@@ -61,6 +61,6 @@ stages:
       demands: Agent.Name -equals $(agentName)
     steps:
       - pwsh: |
-          Set-Location ../../..
+          Set-Location ../..
           Get-Location
           # Remove-Item -Recurse .\_tasks\
