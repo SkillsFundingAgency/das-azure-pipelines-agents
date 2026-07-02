@@ -1,5 +1,6 @@
-trigger:
-- none
+trigger: none
+
+pr: none
 
 schedules:
 - cron: '0 2 1-7 * 6'
