@@ -60,8 +60,8 @@ CMD ["./start.sh"]
 # Based on https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile
 
 # Setup the locale
-ENV LANG en_US.UTF-8
-ENV LC_ALL $LANG
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=$LANG
 RUN locale-gen $LANG \
   && update-locale
 
@@ -76,9 +76,9 @@ RUN apt-get update \
 
 # Install Java OpenJDK
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openjdk-17-jdk \
+  && apt-get install -y --no-install-recommends openjdk-21-jdk \
   && rm -rf /var/lib/apt/lists/*
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 
 # Install MS SQL Server client tools (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017)
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
