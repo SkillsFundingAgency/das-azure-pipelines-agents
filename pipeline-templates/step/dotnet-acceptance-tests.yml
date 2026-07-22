@@ -23,5 +23,5 @@ steps:
     displayName: Assert dotnet builds
     inputs:
       command: build
-  - task: SonarCloudAnalyze@1
+  - task: SonarCloudAnalyze@4
     displayName: Run SonarCloud analysis
