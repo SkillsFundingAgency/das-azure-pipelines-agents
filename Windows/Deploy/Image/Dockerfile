@@ -34,6 +34,9 @@ RUN Install-Module PSScriptAnalyzer -Force
 RUN Install-Module AWSPowerShell -AllowClobber -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
+# Module required to use AWSPowerShellModule task, hardcoded to 4.1.120 to workaround bug with 4.1.121
+RUN Install-Module AWSPowerShell -RequiredVersion 4.1.120 -Scope AllUsers -Force -SkipPublisherCheck
+
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
 RUN Invoke-WebRequest -Uri https://aka.ms/sqlpackage-windows -OutFile .\sqlpackage.zip -UseBasicParsing; Expand-Archive -Path .\sqlpackage.zip -DestinationPath 'C:\Program Files\sqlpackage'; rm .\sqlpackage.zip
