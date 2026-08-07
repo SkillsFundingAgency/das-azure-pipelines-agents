@@ -7,7 +7,7 @@ schedules:
   displayName: Monthly storage disc clean
   branches:
     include:
-    - main
+    - master
   always: true
 
 stages:
