@@ -27,7 +27,7 @@ RUN choco install mongodb --version 5.0.3 --confirm --limit-output --timeout 216
 # Add mongodb, sqlpackage and azcopy to the system path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sqlpackage;%ProgramFiles%\azcopy"
 
-SHELL ["powershell", "-NoProfile", "-Command"]
+SHELL ["powershell", "-NoProfile", "-NonInteractive", "-Command"]
 RUN Install-PackageProvider -Name NuGet -Force; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 RUN Install-Module Az -Scope AllUsers -Force -AllowClobber
 RUN Install-Module PSScriptAnalyzer -Scope AllUsers -Force
@@ -52,12 +52,10 @@ RUN curl -L -f -o dacfx.msi https://aka.ms/dacfx-msi \
   && msiexec /I dacfx.msi /quiet /norestart \
   && del /Q dacfx.msi
 
-SHELL ["pwsh", "-NoProfile", "-NonInteractive", "-Command"]
+SHELL ["powershell", "-NoProfile", "-NonInteractive", "-Command"]
 RUN Remove-Item -Recurse -Force $env:TEMP\* -ErrorAction SilentlyContinue
-RUN Write-Host 'Configuring PSGallery for pwsh...'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted; if (-not (Get-PackageProvider -ListAvailable -Name NuGet)) { Install-PackageProvider -Name NuGet -Force }; Write-Host 'PSGallery configured.'
 RUN Write-Host 'Installing AzTable...'; $ProgressPreference = 'SilentlyContinue'; Install-Module AzTable -Scope AllUsers -Force -SkipPublisherCheck; Write-Host 'AzTable install completed.'
 RUN Write-Host 'Installing SqlServer...'; $ProgressPreference = 'SilentlyContinue'; Install-Module SqlServer -Scope AllUsers -AllowClobber -Force -SkipPublisherCheck; Write-Host 'SqlServer install completed.'
 RUN Remove-Item -Recurse -Force $env:TEMP\* -ErrorAction SilentlyContinue; Get-ChildItem "$env:ProgramFiles\PackageManagement\NuGet\Packages" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-RUN Write-Host 'Installing AWSPowerShell.NetCore...'; $ProgressPreference = 'SilentlyContinue'; Install-Module AWSPowerShell.NetCore -Scope AllUsers -AllowClobber -Force -SkipPublisherCheck; Write-Host 'AWSPowerShell.NetCore install completed.'
-RUN Write-Host 'Ensuring Pester 4.10.1 is available in pwsh...'; $ProgressPreference = 'SilentlyContinue'; Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck; Write-Host 'Pester install completed.'
-RUN Write-Host 'Verifying PowerShell modules...'; $required = @('AzTable','SqlServer','Pester','PSScriptAnalyzer','AWSPowerShell.NetCore'); foreach ($name in $required) { if (-not (Get-Module -ListAvailable -Name $name)) { throw ('Module not available: ' + $name) } }; Write-Host 'All required modules verified.'
+RUN Write-Host 'Installing AWSPowerShell.NetCore...'; $ProgressPreference = 'SilentlyContinue'; $awsModuleRoot = Join-Path $env:ProgramFiles 'PowerShell\Modules\AWSPowerShell.NetCore'; New-Item -ItemType Directory -Force -Path $awsModuleRoot | Out-Null; $cache = Join-Path $env:TEMP 'SaveModuleAwsNetCore'; if (Test-Path $cache) { Remove-Item -Recurse -Force $cache }; Save-Module -Name AWSPowerShell.NetCore -Path $cache -Force; $versionDir = Get-ChildItem (Join-Path $cache 'AWSPowerShell.NetCore') -Directory | Sort-Object Name -Descending | Select-Object -First 1; Copy-Item -Path $versionDir.FullName -Destination (Join-Path $awsModuleRoot $versionDir.Name) -Recurse -Force; Remove-Item -Recurse -Force $cache; Write-Host 'AWSPowerShell.NetCore install completed.'
+RUN Write-Host 'Verifying PowerShell modules in pwsh...'; & 'C:\Program Files\PowerShell\7\pwsh.exe' -NoProfile -NonInteractive -Command '& { foreach ($n in @(''AzTable'',''SqlServer'',''Pester'',''PSScriptAnalyzer'',''AWSPowerShell.NetCore'')) { if (-not (Get-Module -ListAvailable -Name $n)) { throw (''Missing in pwsh: '' + $n) } } }'; Write-Host 'All required modules verified.'
