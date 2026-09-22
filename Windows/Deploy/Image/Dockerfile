@@ -54,7 +54,7 @@ RUN curl -L -f -o dacfx.msi https://aka.ms/dacfx-msi \
 
 SHELL ["pwsh", "-NoProfile", "-NonInteractive", "-Command"]
 RUN Remove-Item -Recurse -Force $env:TEMP\* -ErrorAction SilentlyContinue
-RUN Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+RUN Write-Host 'Configuring PSGallery for pwsh...'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted; if (-not (Get-PackageProvider -ListAvailable -Name NuGet)) { Install-PackageProvider -Name NuGet -Force }; Write-Host 'PSGallery configured.'
 RUN Write-Host 'Installing AzTable...'; $ProgressPreference = 'SilentlyContinue'; Install-Module AzTable -Scope AllUsers -Force -SkipPublisherCheck; Write-Host 'AzTable install completed.'
 RUN Write-Host 'Installing SqlServer...'; $ProgressPreference = 'SilentlyContinue'; Install-Module SqlServer -Scope AllUsers -AllowClobber -Force -SkipPublisherCheck; Write-Host 'SqlServer install completed.'
 RUN Remove-Item -Recurse -Force $env:TEMP\* -ErrorAction SilentlyContinue; Get-ChildItem "$env:ProgramFiles\PackageManagement\NuGet\Packages" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
