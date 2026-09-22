@@ -29,7 +29,7 @@ RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sq
 
 SHELL ["powershell", "-NoProfile", "-Command"]
 RUN Install-PackageProvider -Name NuGet -Force
-RUN Install-Module Az -Force
+RUN Install-Module Az -Scope AllUsers -Force -AllowClobber
 RUN Install-Module PSScriptAnalyzer -Force
 RUN Install-Module AWSPowerShell -AllowClobber -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
@@ -53,6 +53,6 @@ RUN curl -L -f -o dacfx.msi https://aka.ms/dacfx-msi \
   && del /Q dacfx.msi
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
-RUN Install-Module Az -Force
-RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
+RUN Remove-Item -Recurse -Force $env:TEMP\* -ErrorAction SilentlyContinue
+RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Scope AllUsers -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
