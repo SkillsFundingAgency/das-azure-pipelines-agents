@@ -35,11 +35,24 @@ RUN Install-Module AWSPowerShell -AllowClobber -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
 
+SHELL ["cmd", "/S", "/C"]
+RUN curl -L -f -o "%TEMP%\sqlpackage.zip" https://aka.ms/sqlpackage-windows \
+  && if not exist "C:\Program Files\sqlpackage" mkdir "C:\Program Files\sqlpackage" \
+  && powershell -NoProfile -Command "Expand-Archive -LiteralPath '%TEMP%\sqlpackage.zip' -DestinationPath 'C:\Program Files\sqlpackage' -Force" \
+  && del /Q "%TEMP%\sqlpackage.zip"
+RUN curl -L -f -o "%TEMP%\azcopy.zip" https://aka.ms/downloadazcopy-v10-windows \
+  && if not exist "C:\Program Files\azcopy" mkdir "C:\Program Files\azcopy" \
+  && powershell -NoProfile -Command "Expand-Archive -LiteralPath '%TEMP%\azcopy.zip' -DestinationPath 'C:\Program Files\azcopy' -Force" \
+  && del /Q "%TEMP%\azcopy.zip" \
+  && powershell -NoProfile -Command "Move-Item -Path 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' -Destination 'C:\Program Files\azcopy\azcopy.exe'; Remove-Item -Recurse -Force 'C:\Program Files\azcopy\azcopy_windows_amd64_*'"
+RUN curl -L -f -o AzureCLI.msi https://aka.ms/installazurecliwindows \
+  && msiexec /I AzureCLI.msi /quiet /norestart \
+  && del /Q AzureCLI.msi
+RUN curl -L -f -o dacfx.msi https://aka.ms/dacfx-msi \
+  && msiexec /I dacfx.msi /quiet /norestart \
+  && del /Q dacfx.msi
+
 SHELL ["pwsh", "-NoProfile", "-Command"]
-RUN Invoke-WebRequest -Uri https://aka.ms/sqlpackage-windows -OutFile .\sqlpackage.zip -UseBasicParsing; Expand-Archive -Path .\sqlpackage.zip -DestinationPath 'C:\Program Files\sqlpackage'; rm .\sqlpackage.zip
-RUN Invoke-WebRequest -Uri https://aka.ms/downloadazcopy-v10-windows -OutFile .\azcopy.zip -UseBasicParsing; Expand-Archive -Path .\azcopy.zip -DestinationPath 'C:\Program Files\azcopy'; rm .\azcopy.zip; mv 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' 'C:\Program Files\azcopy\azcopy.exe'; rm -r 'C:\Program Files\azcopy\azcopy_windows_amd64_*'
-RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
-RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; rm .\dacfx.msi
 RUN Install-Module Az -Force
 RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
