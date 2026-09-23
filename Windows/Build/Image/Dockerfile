@@ -32,8 +32,12 @@ RUN choco install \
   --timeout 216000 \
   && rmdir /S /Q C:\chococache
 
-RUN  @pwsh -NoProfile -Command "Install-Module Az, AzTable, PSScriptAnalyzer, powershell-yaml -Force"
-RUN  @pwsh -NoProfile -Command "Install-Module Pester -RequiredVersion 4.10.1 -Force"
+SHELL ["powershell", "-NoProfile", "-Command"]
+RUN Install-PackageProvider -Name NuGet -Force; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+RUN Install-Module Az, AzTable, PSScriptAnalyzer, powershell-yaml -Scope AllUsers -Force -AllowClobber
+RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
+
+SHELL ["cmd", "/S", "/C"]
 
 RUN  @pwsh -NoProfile -Command "Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi"
 
