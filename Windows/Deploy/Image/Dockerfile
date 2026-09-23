@@ -15,11 +15,11 @@ RUN choco config set cachelocation C:\chococache \
 
 RUN choco install \
   git  \
-  powershell-core --version=7.5.4 \
   nodejs-lts \
   --confirm \
   --limit-output \
   --timeout 216000 \
+  && choco install powershell-core --version=7.5.4 --confirm --limit-output --timeout 216000 \
   && rmdir /S /Q C:\chococache \
   && setx npm true
 
