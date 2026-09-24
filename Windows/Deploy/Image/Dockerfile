@@ -27,24 +27,17 @@ RUN choco install mongodb --version 5.0.3 --confirm --limit-output --timeout 216
 # Add mongodb, sqlpackage and azcopy to the system path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sqlpackage;%ProgramFiles%\azcopy"
 
-# TEMPORARY DIAGNOSTIC: output from failing steps is lost, so Test-Pwsh.ps1 always succeeds and the build is stopped on the next step.
-COPY Test-Pwsh.ps1 .
-RUN powershell -NoProfile -ExecutionPolicy Bypass -File .\Test-Pwsh.ps1
-RUN echo Stopping build after pwsh diagnostics && exit 1
-
 SHELL ["pwsh", "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 RUN Invoke-WebRequest -Uri 'https://aka.ms/sqlpackage-windows' -OutFile '.\sqlpackage.zip' -UseBasicParsing; New-Item -ItemType Directory -Force -Path 'C:\Program Files\sqlpackage' | Out-Null; tar.exe -xf '.\sqlpackage.zip' -C 'C:\Program Files\sqlpackage'; Remove-Item '.\sqlpackage.zip'
 RUN Invoke-WebRequest -Uri 'https://aka.ms/downloadazcopy-v10-windows' -OutFile '.\azcopy.zip' -UseBasicParsing; New-Item -ItemType Directory -Force -Path 'C:\Program Files\azcopy' | Out-Null; tar.exe -xf '.\azcopy.zip' -C 'C:\Program Files\azcopy'; Remove-Item '.\azcopy.zip'; Move-Item 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' 'C:\Program Files\azcopy\azcopy.exe'; Remove-Item 'C:\Program Files\azcopy\azcopy_windows_amd64_*' -Recurse -Force
 RUN Invoke-WebRequest -Uri 'https://aka.ms/installazurecliwindowsx64' -OutFile '.\AzureCLI.msi' -UseBasicParsing; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; Remove-Item '.\AzureCLI.msi'
 RUN Invoke-WebRequest -Uri 'https://aka.ms/dacfx-msi' -OutFile '.\dacfx.msi' -UseBasicParsing; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; Remove-Item '.\dacfx.msi'
-RUN Install-Module Az -Scope AllUsers -Force
-RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Scope AllUsers -Force
-RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
 
-SHELL ["powershell", "-NoProfile", "-Command"]
+SHELL ["powershell", "-NoProfile", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 RUN Install-PackageProvider -Name NuGet -Force
-RUN Install-Module Az -Force
-RUN Install-Module PSScriptAnalyzer -Force
-RUN Install-Module AWSPowerShell -AllowClobber -Force
+RUN Install-Module Az -Scope AllUsers -Force
+RUN Install-Module PSScriptAnalyzer, SqlServer, AzTable -Scope AllUsers -Force
+RUN Install-Module AWSPowerShell -Scope AllUsers -AllowClobber -Force
+RUN New-Item -ItemType Directory -Force -Path 'C:\Program Files\PowerShell\Modules' | Out-Null; Save-Module AWSPowerShell.NetCore -Path 'C:\Program Files\PowerShell\Modules' -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
