@@ -28,8 +28,7 @@ RUN choco install mongodb --version 5.0.3 --confirm --limit-output --timeout 216
 RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sqlpackage;%ProgramFiles%\azcopy"
 
 SHELL ["pwsh", "-NoProfile", "-Command"]
-RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/sqlpackage-windows' -OutFile '.\sqlpackage.zip' -UseBasicParsing; Get-Item '.\sqlpackage.zip' | Format-List FullName,Length
-RUN Expand-Archive -LiteralPath '.\sqlpackage.zip' -DestinationPath 'C:\Program Files\sqlpackage' -Force
+RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/sqlpackage-windows' -OutFile '.\sqlpackage.zip' -UseBasicParsing; New-Item -ItemType Directory -Force -Path 'C:\Program Files\sqlpackage' | Out-Null; tar.exe -xf '.\sqlpackage.zip' -C 'C:\Program Files\sqlpackage'; Remove-Item '.\sqlpackage.zip'
 RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/downloadazcopy-v10-windows' -OutFile '.\azcopy.zip' -UseBasicParsing; Expand-Archive -LiteralPath '.\azcopy.zip' -DestinationPath 'C:\Program Files\azcopy'; Remove-Item '.\azcopy.zip'; Move-Item 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' 'C:\Program Files\azcopy\azcopy.exe'; Remove-Item 'C:\Program Files\azcopy\azcopy_windows_amd64_*' -Recurse -Force
 RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/installazurecliwindowsx64' -OutFile '.\AzureCLI.msi' -UseBasicParsing; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; Remove-Item '.\AzureCLI.msi'
 RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/dacfx-msi' -OutFile '.\dacfx.msi' -UseBasicParsing; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; Remove-Item '.\dacfx.msi'
