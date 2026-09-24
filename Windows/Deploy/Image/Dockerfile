@@ -27,11 +27,10 @@ RUN choco install mongodb --version 5.0.3 --confirm --limit-output --timeout 216
 # Add mongodb, sqlpackage and azcopy to the system path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sqlpackage;%ProgramFiles%\azcopy"
 
-# Diagnostic: fail fast with the pwsh version, module paths and any crash details from the Application event log.
-RUN pwsh -NoProfile -NonInteractive -Command "$PSVersionTable | Out-String; $env:PSModulePath -split ';'; Import-Module Microsoft.PowerShell.Archive, PackageManagement, PowerShellGet -Verbose; Get-Module | Format-Table Name, Version, Path -AutoSize | Out-String -Width 300; Find-Module Pester -RequiredVersion 4.10.1 | Out-String" \
-  || (echo ===== pwsh failed, dumping Application event log ===== \
-  & powershell -NoProfile -Command "Get-WinEvent -FilterHashtable @{LogName='Application'; Level=1,2,3} -MaxEvents 10 -ErrorAction SilentlyContinue | Format-List TimeCreated, ProviderName, Id, Message" \
-  & exit 1)
+# TEMPORARY DIAGNOSTIC: output from failing steps is lost, so Test-Pwsh.ps1 always succeeds and the build is stopped on the next step.
+COPY Test-Pwsh.ps1 .
+RUN powershell -NoProfile -ExecutionPolicy Bypass -File .\Test-Pwsh.ps1
+RUN echo Stopping build after pwsh diagnostics && exit 1
 
 SHELL ["pwsh", "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 RUN Invoke-WebRequest -Uri 'https://aka.ms/sqlpackage-windows' -OutFile '.\sqlpackage.zip' -UseBasicParsing; New-Item -ItemType Directory -Force -Path 'C:\Program Files\sqlpackage' | Out-Null; tar.exe -xf '.\sqlpackage.zip' -C 'C:\Program Files\sqlpackage'; Remove-Item '.\sqlpackage.zip'
