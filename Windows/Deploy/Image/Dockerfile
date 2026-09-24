@@ -15,11 +15,11 @@ RUN choco config set cachelocation C:\chococache \
 
 RUN choco install \
   git  \
+  powershell-core \
   nodejs-lts \
   --confirm \
   --limit-output \
   --timeout 216000 \
-  && choco install powershell-core --version=7.5.4 --confirm --limit-output --timeout 216000 \
   && rmdir /S /Q C:\chococache \
   && setx npm true
 
@@ -27,20 +27,18 @@ RUN choco install mongodb --version 5.0.3 --confirm --limit-output --timeout 216
 # Add mongodb, sqlpackage and azcopy to the system path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\5.0\bin;%ProgramFiles%\sqlpackage;%ProgramFiles%\azcopy"
 
+SHELL ["pwsh", "-NoProfile", "-Command"]
+RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/downloadazcopy-v10-windows' -OutFile '.\azcopy.zip'; Expand-Archive -LiteralPath '.\azcopy.zip' -DestinationPath 'C:\Program Files\azcopy'; Remove-Item '.\azcopy.zip'; Move-Item 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' 'C:\Program Files\azcopy\azcopy.exe'; Remove-Item 'C:\Program Files\azcopy\azcopy_windows_amd64_*' -Recurse -Force
+RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/installazurecliwindowsx64' -OutFile '.\AzureCLI.msi' -UseBasicParsing; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; Remove-Item '.\AzureCLI.msi'
+RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://aka.ms/dacfx-msi' -OutFile '.\dacfx.msi' -UseBasicParsing; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; Remove-Item '.\dacfx.msi'
+RUN Install-Module Az -Force
+RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Force
+RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force
+
 SHELL ["powershell", "-NoProfile", "-Command"]
 RUN Install-PackageProvider -Name NuGet -Force
 RUN Install-Module Az -Force
 RUN Install-Module PSScriptAnalyzer -Force
 RUN Install-Module AWSPowerShell -AllowClobber -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
-RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
-RUN Invoke-WebRequest -Uri https://aka.ms/sqlpackage-windows -OutFile .\sqlpackage.zip -UseBasicParsing; Expand-Archive -Path .\sqlpackage.zip -DestinationPath 'C:\Program Files\sqlpackage'; rm .\sqlpackage.zip
-RUN Invoke-WebRequest -Uri https://aka.ms/downloadazcopy-v10-windows -OutFile .\azcopy.zip -UseBasicParsing; Expand-Archive -Path .\azcopy.zip -DestinationPath 'C:\Program Files\azcopy'; rm .\azcopy.zip; mv 'C:\Program Files\azcopy\azcopy_windows_amd64_*\azcopy.exe' 'C:\Program Files\azcopy\azcopy.exe'; rm -r 'C:\Program Files\azcopy\azcopy_windows_amd64_*'
-RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
-RUN Invoke-WebRequest -Uri https://aka.ms/dacfx-msi -OutFile .\dacfx.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I dacfx.msi /quiet'; rm .\dacfx.msi
-
-SHELL ["pwsh", "-NoProfile", "-Command"]
-RUN Install-PackageProvider -Name NuGet -Force; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-RUN Install-Module Az -Scope AllUsers -Force -AllowClobber
-RUN Install-Module SqlServer, AzTable, AWSPowerShell.NetCore, PSScriptAnalyzer -Scope AllUsers -Force -AllowClobber
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
