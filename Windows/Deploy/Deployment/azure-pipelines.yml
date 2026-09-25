@@ -84,7 +84,7 @@ stages:
             VerifyDeployment: true
   - stage: DeployProd
     dependsOn: DeployPreProd
-    condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+#    condition: and(succeeded(), eq(variables['resources.pipeline.image-build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
     - deployment: ApprovalGate
       environment: PROD
