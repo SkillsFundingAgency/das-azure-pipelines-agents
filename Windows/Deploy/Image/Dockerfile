@@ -35,6 +35,9 @@ RUN Install-Module AWSPowerShell -Scope AllUsers -AllowClobber -Force
 RUN New-Item -ItemType Directory -Force -Path 'C:\Program Files\PowerShell\Modules' | Out-Null; Save-Module AWSPowerShell.NetCore -Path 'C:\Program Files\PowerShell\Modules' -Force
 # This module is required to run the Test-Configuration.ps1 script, DASD-9583 has been created to improve this, the module can be removed when that is done.
 RUN Install-Module Pester -RequiredVersion 4.10.1 -Scope AllUsers -Force -SkipPublisherCheck
+# Module required to use AWSPowerShellModule task, hardcoded to 4.1.120 to workaround bug with 4.1.121
+RUN Install-Module AWSPowerShell -RequiredVersion 4.1.120 -Scope AllUsers -Force -SkipPublisherCheck
+
 
 SHELL ["pwsh", "-NoProfile", "-NonInteractive", "-Command"]
 RUN Invoke-WebRequest -Uri 'https://aka.ms/sqlpackage-windows' -OutFile '.\sqlpackage.zip' -UseBasicParsing; New-Item -ItemType Directory -Force -Path 'C:\Program Files\sqlpackage' | Out-Null; tar.exe -xf '.\sqlpackage.zip' -C 'C:\Program Files\sqlpackage'; Remove-Item '.\sqlpackage.zip'
