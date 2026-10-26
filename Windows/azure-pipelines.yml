@@ -3,8 +3,8 @@ trigger: none
 pr: none
 
 schedules:
-- cron: '0 2 1-7 * 6'
-  displayName: Monthly storage disc clean
+- cron: '0 2 1 * *'
+  displayName: Storage disc cleanup 
   branches:
     include:
     - master
